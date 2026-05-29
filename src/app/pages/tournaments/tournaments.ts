@@ -24,7 +24,4 @@ export class TournamentsComponent implements OnInit {
       this.cdr.detectChanges();
     });
   }
-  openTrailer(url: string) {
-  window.open(url, '_blank');
-  }
 }

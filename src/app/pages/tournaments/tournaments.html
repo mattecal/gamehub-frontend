@@ -10,14 +10,11 @@
       <a [routerLink]="['/tournaments', t.id]" class="detail-link">
         <h3>{{ t.title }}</h3>
       </a>
-  
       <p><strong>Gioco: </strong> {{ t.game?.title }}</p>
       <p><strong>Data: </strong> {{ t.date }}</p>
       <p><strong>Genere: </strong> {{ t.game?.genere }}</p>
       <p><strong>Status: </strong> {{ t.status || 'Da definire' }}</p>
       <p><strong>Rating: </strong>{{ t.game?.rating }} ⭐</p>
-      
-      <button class="btn" (click)="openTrailer(t.game?.trailerUrl)">Guarda Trailer</button>
       
     </div>
   } @empty {
