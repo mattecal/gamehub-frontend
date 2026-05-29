@@ -92,3 +92,26 @@ h2 {
   font-style: italic;
   grid-column: 1 / -1;
 }
+
+.trailer-btn {
+  background-color: transparent;
+  color: #9b8cff; 
+  padding: 8px 16px;
+  border: 1px solid #6a5acd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: bold;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%; 
+  margin-top: 15px; 
+}
+
+.trailer-btn:hover {
+  background: #6a5acd;
+  color: white;
+  box-shadow: 0 0 12px rgba(106, 90, 205, 0.6);
+  transform: translateY(-2px); 
+}

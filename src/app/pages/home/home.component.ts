@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from "@angular/core";
 import { RouterLink } from "@angular/router";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-home',
@@ -11,7 +12,7 @@ import { RouterLink } from "@angular/router";
 export class HomeComponent implements OnInit, OnDestroy{
 
   @ViewChild('carousel', {static:false}) carousel!:ElementRef;
-  carouselGames = [
+  originalGames = [
     {title: 'Dragonball', image: 'https://media.rawg.io/media/resize/640/-/screenshots/1b5/1b5662e70cb5c980350d2f6ca2978141.jpg'},
     { title: 'The Witcher 3', image: 'https://media.rawg.io/media/games/618/618c2031a07bbff6b4f611f10b6bcdbc.jpg' },
     { title: 'Cyberpunk 2077', image: 'https://media.rawg.io/media/resize/640/-/games/062/06285b425e61623530c5430f20e5d222.jpg' },
@@ -25,6 +26,9 @@ export class HomeComponent implements OnInit, OnDestroy{
     {title: 'Tom Clancy s Rainbow Six Siege', image:'https://media.rawg.io/media/resize/420/-/screenshots/cde/cde4694574a78e355478cf6e438106ac.jpg'},
     {title:'Marvel s Wolverine', image:'https://media.rawg.io/media/resize/640/-/games/28d/28d61be51ec0411e24c28f71122dcaaf.jpeg'}
   ];
+
+  carouselGames = [...this.originalGames, ...this.originalGames];
+  constructor(private router:Router){}
 
   private autoplauInterval: any;
 
@@ -51,5 +55,9 @@ export class HomeComponent implements OnInit, OnDestroy{
         }
       }
     }, 3000);
+  }
+  vaiAiGiochi() {
+    console.log("Navigo verso i giochi per:");
+    this.router.navigate(['/giochi']);
   }
 }
