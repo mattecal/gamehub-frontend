@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TournamentService } from '../../services/tournament.service';
+import { CommonModule } from '@angular/common';
+import { Tournament } from '../../models/tournament';
 
 @Component({
   selector: 'app-tournament-detail',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './tournament-detail.html',
   styleUrls: ['./tournament-detail.css']
 })
-
-
 export class TournamentDetailComponent implements OnInit {
 
-  tournament: any;
+  tournament: Tournament | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -23,11 +23,10 @@ export class TournamentDetailComponent implements OnInit {
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.tournamentService.getTournamentById(id).subscribe({
-      next : (data : any) => {
-      this.tournament = data;
-      console.log("DETTAGLI TORNEO:", data);
-      }, 
-      error: (err) => console.error("Errore nel caricamento dei dettagli: ", err)
+      next: (data: Tournament) => {
+        this.tournament = data;
+      },
+      error: (err) => console.error('Errore nel caricamento dei dettagli del torneo:', err)
     });
   }
 }

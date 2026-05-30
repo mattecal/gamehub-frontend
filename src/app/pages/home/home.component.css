@@ -57,6 +57,10 @@
   background: transparent;
   border: 2px solid #6a5acd;
   color: #6a5acd;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-secondary:hover {

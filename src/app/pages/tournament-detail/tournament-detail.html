@@ -1,29 +1,29 @@
 @if (tournament) {
-  <div class="detail-container">
-    
-    <a class="btn-back" routerLink="/tornei">⬅ Torna ai Tornei</a>
+<div class="detail-container">
 
-    <div class="tournament-header">
-      <h2>{{ tournament.title || tournament.name }}</h2>
-      <p class="description">{{ tournament.description || 'Nessuna descrizione disponibile.' }}</p>
-    </div>
+  <a class="btn-back" routerLink="/tornei">⬅ Torna ai Tornei</a>
 
-    <div class="players-section">
-      <h3>Partecipanti ({{ tournament.players?.length || 0 }})</h3>
-      
-      <ul class="players-list">
-        @for (p of tournament.players; track p.id || p.username) {
-          <li>
-            <span class="player-icon">🎮</span> 
-            {{ p.username }}
-          </li>
-        } @empty {
-          <li class="empty-list">Nessun partecipante ancora iscritto.</li>
-        }
-      </ul>
-    </div>
-    
+  <div class="tournament-header">
+    <h2>{{ tournament.title }}</h2>
+    <p class="description">{{ tournament.description || 'Nessuna descrizione disponibile.' }}</p>
   </div>
+
+  <div class="players-section">
+    <h3>Partecipanti ({{ tournament.players?.length || 0 }})</h3>
+
+    <ul class="players-list">
+      @for (p of tournament.players; track p.id || p.username) {
+      <li>
+        <span class="player-icon">🎮</span>
+        {{ p.username }}
+      </li>
+      } @empty {
+      <li class="empty-list">Nessun partecipante ancora iscritto.</li>
+      }
+    </ul>
+  </div>
+
+</div>
 } @else {
-  <div class="loading">Caricamento dettagli torneo...</div>
+<div class="loading">Caricamento dettagli torneo...</div>
 }

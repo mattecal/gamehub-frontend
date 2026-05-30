@@ -1,9 +1,12 @@
-import { Game } from "./game";
+import { Game } from './game';
 
 export interface Tournament {
   id: number;
   title: string;
-  date: string; // o Date se preferisci
-  participantsCount: number;
-  game: Game;   // <-- OGGETTO, NON STRINGA
+  description?: string;
+  date: string;
+  status?: string;
+  participantsCount?: number;
+  players?: { id: number; username: string }[];
+  game: Game;
 }

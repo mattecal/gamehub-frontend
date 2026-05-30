@@ -1,24 +1,24 @@
 <h2>Lista Tornei</h2>
 
 <div class="tournament-list">
-  
+
   @for (t of tournaments; track t.id) {
-    <div class="tournament-card">
-      
-      <img class="game-cover" [src]="t.game?.coverUrl" alt="cover">
-      
-      <a [routerLink]="['/tournaments', t.id]" class="detail-link">
-        <h3>{{ t.title }}</h3>
-      </a>
-      <p><strong>Gioco: </strong> {{ t.game?.title }}</p>
-      <p><strong>Data: </strong> {{ t.date }}</p>
-      <p><strong>Genere: </strong> {{ t.game?.genere }}</p>
-      <p><strong>Status: </strong> {{ t.status || 'Da definire' }}</p>
-      <p><strong>Rating: </strong>{{ t.game?.rating }} ⭐</p>
-      
-    </div>
+  <div class="tournament-card">
+
+    <img class="game-cover" [src]="t.game.coverUrl" alt="cover">
+
+    <a [routerLink]="['/tornei', t.id]" class="detail-link">
+      <h3>{{ t.title }}</h3>
+    </a>
+    <p><strong>Gioco: </strong> {{ t.game.title }}</p>
+    <p><strong>Data: </strong> {{ t.date }}</p>
+    <p><strong>Genere: </strong> {{ t.game.genere }}</p>
+    <p><strong>Status: </strong> {{ t.status || 'Da definire' }}</p>
+    <p><strong>Rating: </strong>{{ t.game.rating }} ⭐</p>
+
+  </div>
   } @empty {
-    <p>Nessun torneo trovato o caricamento in corso...</p>
+  <p>Nessun torneo trovato o caricamento in corso...</p>
   }
-  
+
 </div>

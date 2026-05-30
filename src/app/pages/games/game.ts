@@ -2,7 +2,11 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { GameService } from '../../services/games.service';
 import { CommonModule } from '@angular/common';
+<<<<<<< HEAD
 import { FormsModule } from '@angular/forms';
+=======
+import { Game } from '../../models/game';
+>>>>>>> a084b1432fcf5c0e81d452ba3f89bcf807894e55
 
 @Component({
   selector: 'app-games',
@@ -12,12 +16,17 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./games.css']
 })
 export class GamesComponent implements OnInit {
+<<<<<<< HEAD
   
   games: any[] = [];
   filteredGames: any[] = [];
   searchQuery: string = '';
   selectedGenre: string = '';
   availableGenres: string[] = [];
+=======
+
+  games: Game[] = [];
+>>>>>>> a084b1432fcf5c0e81d452ba3f89bcf807894e55
 
   constructor(
     private gameService: GameService,
@@ -26,17 +35,21 @@ export class GamesComponent implements OnInit {
 
   ngOnInit(): void {
     this.gameService.getAllGames().subscribe({
-      next: (data: any) => {
-        console.log("GIOCHI DAL BACKEND:", data);
+      next: (data: Game[]) => {
         this.games = data;
+<<<<<<< HEAD
         this.filteredGames = data;
         this.extractGenres();
         this.cdr.detectChanges(); 
+=======
+        this.cdr.detectChanges();
+>>>>>>> a084b1432fcf5c0e81d452ba3f89bcf807894e55
       },
-      error: (err: any) => console.error("Errore caricamento giochi:", err)
+      error: (err) => console.error('Errore nel caricamento dei giochi:', err)
     });
   }
 
+<<<<<<< HEAD
   extractGenres() {
     const genres = this.games.map(g => g.genere).filter(g => g);
     this.availableGenres = [...new Set(genres)].sort();
@@ -51,6 +64,9 @@ export class GamesComponent implements OnInit {
   }
 
   apriTrailer(game: any) {
+=======
+  apriTrailer(game: Game): void {
+>>>>>>> a084b1432fcf5c0e81d452ba3f89bcf807894e55
     if (!game.rawgId) {
       const youtubeFallback = `https://www.youtube.com/results?search_query=${encodeURIComponent(game.title + ' official trailer')}`;
       window.open(youtubeFallback, '_blank');
@@ -59,17 +75,15 @@ export class GamesComponent implements OnInit {
 
     this.gameService.getTrailerFromRawg(game.rawgId).subscribe({
       next: (response: any) => {
-        if (response.results && response.results.length > 0) {
-          const videoUrl = response.results[0].data.max; 
+        if (response?.results?.length > 0) {
+          const videoUrl = response.results[0].data.max;
           window.open(videoUrl, '_blank');
         } else {
-          console.log("RAWG non ha il trailer, fallback su YouTube...");
           const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(game.title + ' official trailer')}`;
           window.open(youtubeSearchUrl, '_blank');
         }
       },
-      error: (err) => {
-        console.error("Errore RAWG:", err);
+      error: () => {
         const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(game.title + ' official trailer')}`;
         window.open(youtubeSearchUrl, '_blank');
       }

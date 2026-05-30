@@ -4,8 +4,25 @@
     <li><a routerLink="/">Home</a></li>
     <li><a routerLink="/tornei">Tornei</a></li>
     <li><a routerLink="/giochi">Giochi</a></li>
-    <li><a routerLink="/leaderboard">Leaderboard</a></li>
-    <li><a class="login-btn" routerLink="/login">Login</a></li>
+
+    @if (authService.isLoggedIn()) {
+      <li class="user-info">
+        @if (authService.getCurrentUser()?.role === 'ADMIN') {
+          <a routerLink="/admin" class="username-label clickable-name">
+            🎮 {{ authService.getCurrentUser()?.username }}
+          </a>
+        }
+        @else{
+        <span class="username-label">🎮 {{ authService.getCurrentUser()?.username }}</span>
+        }
+      </li>
+      <li>
+        <button class="logout-btn" (click)="logout()">Esci</button>
+      </li>
+    } @else {
+      <li><a routerLink="/registrati">Registrati</a></li>
+      <li><a class="login-btn" routerLink="/login">Login</a></li>
+    }
   </ul>
 </nav>
 
