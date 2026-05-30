@@ -18,6 +18,7 @@ export class RegisterComponent {
   confermaPassword = '';
   errore = '';
   caricamento = false;
+  ruolo = '';
 
   constructor(
     private authService: AuthService,
@@ -25,10 +26,17 @@ export class RegisterComponent {
   ) {}
 
   register(): void {
-    if (!this.username || !this.email || !this.password || !this.confermaPassword) {
+    if (!this.username || !this.email || !this.password || !this.confermaPassword || !this.ruolo) {
       this.errore = 'Tutti i campi sono obbligatori.';
       return;
     }
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(this.email)) {
+      this.errore = 'Inserisci un indirizzo email valido (es. utente@dominio.com).';
+      return;
+    }
+    
     if (this.password !== this.confermaPassword) {
       this.errore = 'Le password non coincidono.';
       return;
@@ -44,7 +52,9 @@ export class RegisterComponent {
     this.authService.register({
       username: this.username,
       email: this.email,
-      password: this.password
+      password: this.password,
+      role: this.ruolo
+
     }).subscribe({
       next: () => {
         this.caricamento = false;

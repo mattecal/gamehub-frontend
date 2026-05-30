@@ -7,7 +7,14 @@
 
     @if (authService.isLoggedIn()) {
       <li class="user-info">
+        @if (authService.getCurrentUser()?.role === 'ADMIN') {
+          <a routerLink="/admin" class="username-label clickable-name">
+            🎮 {{ authService.getCurrentUser()?.username }}
+          </a>
+        }
+        @else{
         <span class="username-label">🎮 {{ authService.getCurrentUser()?.username }}</span>
+        }
       </li>
       <li>
         <button class="logout-btn" (click)="logout()">Esci</button>

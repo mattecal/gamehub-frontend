@@ -12,6 +12,8 @@ import { Router } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App {
+
+  menuAperto = false;
   constructor(
     public authService: AuthService,
     private router: Router
@@ -20,5 +22,12 @@ export class App {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/']);
+  }
+  toggleMenu() {
+    this.menuAperto = !this.menuAperto;
+  }
+  chiudiEdEsci() {
+    this.menuAperto = false;
+    this.logout(); // Richiama il tuo metodo logout esistente!
   }
 }

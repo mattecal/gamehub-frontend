@@ -1,0 +1,84 @@
+.admin-page {
+  min-height: 90vh;
+  background-color: #0b0b14;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  font-family: 'Orbitron', monospace;
+}
+
+.admin-container {
+  width: 100%;
+  max-width: 800px;
+}
+
+.main-title {
+  color: white;
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 40px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.terminal-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed #3a3a5a;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  padding: 20px;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.card-header {
+  color: #9b8cff;
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 15px;
+  font-family: monospace;
+}
+
+.card-body {
+  padding-left: 10px;
+}
+
+.stats-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: monospace;
+  font-size: 16px;
+  color: #cfcfcf;
+  line-height: 2;
+}
+
+.stats-list .prefix {
+  color: #6a5acd;
+  margin-right: 10px;
+}
+
+.stats-list .number {
+  color: white;
+  font-weight: bold;
+}
+.card-body.actions {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.btn-terminal {
+  background: transparent;
+  border: none;
+  color: #cfcfcf;
+  font-family: monospace;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 5px 10px;
+  transition: all 0.2s ease;
+}
+
+.btn-terminal.ban:hover { color: #ff6b6b; text-shadow: 0 0 8px #ff6b6b; }
+.btn-terminal.promote:hover { color: #51cf66; text-shadow: 0 0 8px #51cf66; }
+.btn-terminal.delete:hover { color: #dc3545; text-shadow: 0 0 8px #dc3545; }
