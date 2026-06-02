@@ -12,9 +12,8 @@
 </div>
 
 <div class="games-grid">
-  
   @for (game of filteredGames; track game.id) {
-    <div class="game-card">
+    <div class="game-card" (click)="apriPopup(game)">
       <img class="cover-image" [src]="game.coverUrl" alt="Cover del gioco">
       
       <div class="game-info">
@@ -24,13 +23,33 @@
         <div class="rating-section">
           <span class="rating-label">Valutazione RAWG:</span>
           <span class="stars">{{ game.rating }} ⭐</span>
-
-          <button class="trailer-btn"(click)="apriTrailer(game)">▶ Guarda Trailer</button>
+          
         </div>
       </div>
     </div>
   } @empty {
     <p class="loading-text">Nessun gioco presente o caricamento in corso...</p>
   }
-
 </div>
+
+@if (selectedGame) {
+  <div class="modal-overlay" (click)="chiudiPopup()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="chiudiPopup()">✖</button>
+      
+      <img class="modal-image" [src]="selectedGame.coverUrl" alt="Cover del gioco">
+      
+      <div class="modal-info">
+        <h2>{{ selectedGame.title }}</h2>
+        <p class="modal-description">
+          {{ selectedGame.description || 'Nessuna descrizione disponibile per questo gioco.' }}
+        </p>
+        
+        <!-- IL BOTTONE GUARDA TRAILER È STATO SPOSTATO QUI SOTTO LA DESCRIZIONE -->
+        <button class="trailer-btn popup-trailer-btn" (click)="apriTrailer(selectedGame)">
+          ▶ Guarda Trailer
+        </button>
+      </div>
+    </div>
+  </div>
+}
