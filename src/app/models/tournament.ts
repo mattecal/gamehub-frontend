@@ -1,12 +1,20 @@
 import { Game } from './game';
 
 export interface Tournament {
+date: any;
   id: number;
   title: string;
   description?: string;
-  date: string;
   status?: string;
   participantsCount?: number;
   players?: { id: number; username: string }[];
+  teams: Team[];
   game: Game;
+  gameImageUrl?: string;
+}
+
+export interface Team{
+  id: number;
+  name: string;
+  score: number;
 }

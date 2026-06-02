@@ -44,22 +44,22 @@ export class AuthService {
   }
 
   logout(): void {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem(this.TOKEN_KEY);
-      localStorage.removeItem(this.USER_KEY);
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.removeItem(this.TOKEN_KEY);
+      sessionStorage.removeItem(this.USER_KEY);
     }
   }
 
   getToken(): string | null {
-    if (typeof localStorage !== 'undefined') {
-      return localStorage.getItem(this.TOKEN_KEY);
+    if (typeof sessionStorage !== 'undefined') {
+      return sessionStorage.getItem(this.TOKEN_KEY);
     }
     return null;
   }
 
   getCurrentUser(): AuthResponse | null {
-    if (typeof localStorage !== 'undefined') {
-      const raw = localStorage.getItem(this.USER_KEY);
+    if (typeof sessionStorage !== 'undefined') {
+      const raw = sessionStorage.getItem(this.USER_KEY);
       return raw ? JSON.parse(raw) : null;
     }
     return null;
@@ -71,8 +71,8 @@ export class AuthService {
 
   private saveSession(res: AuthResponse): void {
     if (typeof localStorage !== 'undefined') {
-      localStorage.setItem(this.TOKEN_KEY, res.token);
-      localStorage.setItem(this.USER_KEY, JSON.stringify(res));
+      sessionStorage.setItem(this.TOKEN_KEY, res.token);
+      sessionStorage.setItem(this.USER_KEY, JSON.stringify(res));
     }
   }
 }
