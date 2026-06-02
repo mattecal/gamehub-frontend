@@ -28,6 +28,7 @@ h2 {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 }
 
 .game-card:hover {
@@ -151,4 +152,80 @@ h2 {
 .genre-select option {
   background: #1e1e2f;
   color: white;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+/* Contenitore bianco/scuro del popup */
+.modal-content {
+  background: #1e1e2f;
+  border: 1px solid #6a5acd;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  padding: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  box-shadow: 0 0 20px rgba(106, 90, 205, 0.5);
+  animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+/* Bottone per chiudere la modale */
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  color: #cfcfcf;
+  font-size: 18px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.close-btn:hover {
+  color: white;
+}
+/* Immagine dentro la modale */
+.modal-image {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #3a3a5a;
+}
+.modal-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.modal-info h2 {
+  margin: 0;
+  font-size: 24px;
+  text-shadow: none;
+}
+.modal-description {
+  color: #cfcfcf;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.popup-trailer-btn {
+  margin-top: 10px;
+  width: auto;
+  align-self: flex-start;
 }

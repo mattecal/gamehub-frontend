@@ -20,6 +20,8 @@ export class GamesComponent implements OnInit {
   selectedGenre: string = '';
   availableGenres: string[] = [];
 
+  selectedGame : Game | null = null;
+
   constructor(
     private gameService: GameService,
     private cdr: ChangeDetectorRef
@@ -50,6 +52,14 @@ export class GamesComponent implements OnInit {
       const matchesGenre = this.selectedGenre ? game.genere === this.selectedGenre : true;
       return matchesSearch && matchesGenre;
     });
+  }
+
+  apriPopup(game: Game): void {
+    this.selectedGame = game;
+  }
+
+  chiudiPopup(): void{
+    this.selectedGame=null;
   }
 
  

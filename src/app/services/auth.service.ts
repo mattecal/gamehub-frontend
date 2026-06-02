@@ -76,9 +76,9 @@ export class AuthService {
   }
 
   private saveSession(res: AuthResponse): void {
-    if (typeof sessionStorage !== 'undefined') {
-      sessionStorage.setItem(this.TOKEN_KEY, res.token);
-      sessionStorage.setItem(this.USER_KEY, JSON.stringify(res));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(this.TOKEN_KEY, res.token);
+      localStorage.setItem(this.USER_KEY, JSON.stringify(res));
     }
   }
 

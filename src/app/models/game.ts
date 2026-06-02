@@ -6,4 +6,5 @@ export interface Game {
   rating: number;
   trailerUrl?: string;
   rawgId?: string;
+  description?: string;
 }

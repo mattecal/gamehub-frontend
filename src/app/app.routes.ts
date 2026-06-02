@@ -15,5 +15,6 @@ export const routes: Routes = [
   { path: 'giochi', component: GamesComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registrati', component: RegisterComponent },
+  { path: 'tornei-details', component: TournamentDetailComponent},
   { path: '**', redirectTo: '' }
 ];

@@ -4,21 +4,65 @@
   <a class="btn-back" routerLink="/tornei">⬅ Torna ai Tornei</a>
 
   <div class="tournament-header">
-    <h2>{{ tournament.title }}</h2>
-    <p class="description">{{ tournament.description || 'Nessuna descrizione disponibile.' }}</p>
+    <div class="image-wrapper">
+      <img [src]="tournament.gameImageUrl || 'assets/default-game.jpg'" alt="Cover Gioco" class="game-cover">
+    </div>
+    <div class="header-info">
+      <h2>{{ tournament.title }}</h2>
+      <p class="description">{{ tournament.description || 'Nessuna descrizione disponibile.' }}</p>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="ranking-section">
+      <h3>Classifica Ranking</h3>
+      <table class="ranking-table">
+        <thead>
+          <tr>
+            <th>Pos</th>
+            <th>Squadra</th>
+            <th>Punti</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (team of tournament.teams; track team.id; let i = $index) {
+          <tr>
+            <td class="rank-pos">{{ i + 1 }}°</td>
+            <td>{{ team.name }}</td>
+            <td class="score">{{ team.score }}</td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="3" class="empty-list">Nessun dato in classifica.</td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="chart-section">
+      <h3>Grafico Punteggi</h3>
+      <div class="chart-wrapper">
+        <canvas baseChart
+          [data]="barChartData"
+          [options]="barChartOptions"
+          [type]="barChartType">
+        </canvas>
+      </div>
+    </div>
   </div>
 
   <div class="players-section">
-    <h3>Partecipanti ({{ tournament.players?.length || 0 }})</h3>
+    <h3>Squadre Iscritte ({{ tournament.teams?.length || 0 }})</h3>
 
     <ul class="players-list">
-      @for (p of tournament.players; track p.id || p.username) {
+      @for (team of tournament.teams; track team.id) {
       <li>
-        <span class="player-icon">🎮</span>
-        {{ p.username }}
+        <span class="player-icon">🛡️</span>
+        {{ team.name }}
       </li>
       } @empty {
-      <li class="empty-list">Nessun partecipante ancora iscritto.</li>
+      <li class="empty-list">Nessuna squadra ancora iscritta.</li>
       }
     </ul>
   </div>

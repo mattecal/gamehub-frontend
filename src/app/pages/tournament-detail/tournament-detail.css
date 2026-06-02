@@ -130,3 +130,84 @@ h3 {
   color: white;
   box-shadow: 0 0 10px #6a5acd;
 }
+
+.tournament-header {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.game-cover {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid #6a5acd;
+  box-shadow: 0 0 15px rgba(106, 90, 205, 0.4);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #3a3a5a;
+  padding-bottom: 30px;
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr; 
+  }
+}
+
+/* --- Tabella Classifica --- */
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(106, 90, 205, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #3a3a5a;
+}
+
+.ranking-table th, .ranking-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #3a3a5a;
+}
+
+.ranking-table th {
+  background: rgba(106, 90, 205, 0.2);
+  color: #9b8cff;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.ranking-table tr:last-child td {
+  border-bottom: none;
+}
+
+.ranking-table tr:hover {
+  background: rgba(106, 90, 205, 0.15);
+}
+
+.rank-pos {
+  font-weight: bold;
+  color: #6a5acd;
+}
+
+.score {
+  font-family: 'Inter', sans-serif;
+  font-weight: bold;
+  color: #cfcfcf;
+}
+
+/* --- Container Grafico --- */
+.chart-wrapper {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid #3a3a5a;
+}
