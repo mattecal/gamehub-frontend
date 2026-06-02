@@ -12,6 +12,9 @@
       <p class="description">{{ tournament.description || 'Nessuna descrizione disponibile.' }}</p>
     </div>
   </div>
+  @if (isPlayer) {
+  <button class="btn btn-rate" (click)="openRatingModal()">⭐ Inserisci Rating</button>
+  }
 
   <div class="stats-grid">
     <div class="ranking-section">
@@ -53,7 +56,7 @@
   </div>
 
   <div class="players-section">
-    <h3>Squadre Iscritte ({{ tournament.teams?.length || 0 }})</h3>
+    <h3>Squadre Iscritte ({{ tournament.teams.length || 0 }})</h3>
 
     <ul class="players-list">
       @for (team of tournament.teams; track team.id) {
@@ -70,4 +73,30 @@
 </div>
 } @else {
 <div class="loading">Caricamento dettagli torneo...</div>
+}
+@if (isRatingModalOpen) {
+<div class="modal-overlay" (click)="closeRatingModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    
+    <h3>Valuta "{{ tournament?.title }}"</h3>
+    <p>Quante stelle dai a questo torneo?</p>
+
+    <div class="stars-container" (mouseleave)="hoveredScore = 0">
+      @for (star of [1, 2, 3, 4, 5]; track star) {
+        <span class="star" 
+              [class.active]="star <= (hoveredScore || selectedScore)"
+              (mouseenter)="hoveredScore = star"
+              (click)="setRating(star)">
+          ★
+        </span>
+      }
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-cancel" (click)="closeRatingModal()">Annulla</button>
+      <button class="btn btn-submit" [disabled]="selectedScore === 0" (click)="submitRating()">Conferma</button>
+    </div>
+
+  </div>
+</div>
 }

@@ -17,6 +17,11 @@ export class TournamentDetailComponent implements OnInit {
 
   /*tournament: Tournament | null = null;*/
   tournament?: Tournament;
+  isRatingModalOpen = false;
+  selectedScore = 0;
+  hoveredScore = 0;
+  isPlayer = false;
+  currentUserId:number | null=null;
 
   // Configurazione del Grafico a barre
   public barChartType: ChartType = 'bar';
@@ -68,5 +73,33 @@ export class TournamentDetailComponent implements OnInit {
       this.barChartData.labels = sortedTeams.map(t=>t.name);
       this.barChartData.datasets[0].data = sortedTeams.map(t=>t.score);
     }
+  }
+
+  openRatingModal() {
+    this.isRatingModalOpen = true;
+    this.selectedScore = 0;
+  }
+
+  closeRatingModal() {
+    this.isRatingModalOpen = false;
+  }
+
+  setRating(score: number) {
+    this.selectedScore = score;
+  }
+
+  submitRating() {
+    if (this.selectedScore === 0) return; // Non ha selezionato nulla
+    if (!this.tournament || !this.currentUserId) return;
+
+    this.tournamentService.rateTournament(this.tournament.id, this.currentUserId, this.selectedScore)
+      .subscribe({
+        next: () => {
+          alert('Grazie per il tuo voto!');
+          this.closeRatingModal();
+          // Opzionale: Ricarica i dati del torneo per vedere la media aggiornata subito!
+        },
+        error: (err) => console.error('Errore salvataggio rating', err)
+      });
   }
 }

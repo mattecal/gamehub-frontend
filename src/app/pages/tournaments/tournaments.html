@@ -1,24 +1,28 @@
-<h2>Lista Tornei</h2>
-
-<div class="tournament-list">
-
+<div class="tournaments-grid">
   @for (t of tournaments; track t.id) {
-  <div class="tournament-card">
+  <div class="game-card" [routerLink]="['/tornei', t.id]">
+    
+    <div class="card-image-wrapper">
+      <img [src]="t.gameImageUrl || 'assets/default-game.jpg'" alt="Cover" class="card-image">
+      
+      <div class="status-indicator" 
+           [class.open]="t.registrationOpen" 
+           [class.closed]="!t.registrationOpen"
+           [title]="t.registrationOpen ? 'Iscrizioni Aperte' : 'Iscrizioni Chiuse'">
+      </div>
+    </div>
 
-    <img class="game-cover" [src]="t.game.coverUrl" alt="cover">
-
-    <a [routerLink]="['/tornei', t.id]" class="detail-link">
-      <h3>{{ t.title }}</h3>
-    </a>
-    <p><strong>Gioco: </strong> {{ t.game.title }}</p>
-    <p><strong>Data: </strong> {{ t.date }}</p>
-    <p><strong>Genere: </strong> {{ t.game.genere }}</p>
-    <p><strong>Status: </strong> {{ t.status || 'Da definire' }}</p>
-    <p><strong>Rating: </strong>{{ t.game.rating }} ⭐</p>
+    <div class="card-content">
+      <h3 class="card-title">{{ t.title }}</h3>
+      
+      <div class="card-rating">
+        <span class="star-icon">⭐</span>
+        <span class="rating-value">{{ t.rating | number:'1.1-1' }} / 5.0</span>
+      </div>
+    </div>
 
   </div>
   } @empty {
-  <p>Nessun torneo trovato o caricamento in corso...</p>
+    <p class="no-tournaments">Nessun torneo disponibile al momento.</p>
   }
-
 </div>

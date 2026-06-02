@@ -11,6 +11,8 @@ date: any;
   teams: Team[];
   game: Game;
   gameImageUrl?: string;
+  registrationOpen?:boolean;
+  rating?:number;
 }
 
 export interface Team{
