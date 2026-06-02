@@ -138,3 +138,35 @@ input::placeholder {
   color: white;
   text-shadow: 0 0 8px #6a5acd;
 }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85); /* Nero semitrasparente molto scuro */
+  display: flex;
+  justify-content: center; /* Centra in orizzontale */
+  align-items: center;     /* Centra in verticale */
+  z-index: 9999;           /* Forza la modale a stare sopra a qualsiasi altra cosa */
+}
+
+.modal-card {
+  width: 90%;
+  max-width: 450px;
+  background: #0d0d1a; /* Colore scuro da terminale */
+  border: 2px solid #ff3838;
+  border-radius: 4px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(255, 56, 56, 0.4);
+}
+.blink {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}

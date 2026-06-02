@@ -7,11 +7,20 @@
 
     @if (authService.isLoggedIn()) {
       <li class="user-info">
-        @if (authService.getCurrentUser()?.role === 'ADMIN') {
+        @if (authService.getCurrentUser()?.role === 'ROLE_ADMIN') {
           <a routerLink="/admin" class="username-label clickable-name">
-            🎮 {{ authService.getCurrentUser()?.username }}
+            👑 {{ authService.getCurrentUser()?.username }}
+          </a>
+        }@else if (authService.getCurrentUser()?.role === 'ROLE_ORGANIZER'){
+          <a routerLink="/organizer" class="username-label clickable-name">
+            📂{{authService.getCurrentUser()?.username}}
+          </a>
+        }@else if(authService.getCurrentUser()?.role === 'ROLE_PLAYER'){
+          <a routerLink="/player" class="username-label clickable-name">
+            🎮{{authService.getCurrentUser()?.username}}
           </a>
         }
+        
         @else{
         <span class="username-label">🎮 {{ authService.getCurrentUser()?.username }}</span>
         }

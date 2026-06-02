@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { RouterLink, Router } from "@angular/router";
+import { AuthService } from "../../services/auth.service";
 
 @Component({
   selector: 'app-home',
@@ -37,4 +38,18 @@ export class HomeComponent {
     { title: "Rainbow Six Siege", image: 'https://media.rawg.io/media/resize/420/-/screenshots/cde/cde4694574a78e355478cf6e438106ac.jpg' },
     { title: "Marvel's Wolverine", image: 'https://media.rawg.io/media/resize/640/-/games/28d/28d61be51ec0411e24c28f71122dcaaf.jpeg' },
   ];
+
+  constructor(
+    private authService : AuthService,
+    private router: Router
+  ){}
+
+  gestisciCreaTorneo() {
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/crea-torneo']);    
+    } else {
+      this.router.navigate(['/login']);
+      
+    }
+  }
 }

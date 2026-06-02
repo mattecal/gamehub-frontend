@@ -52,3 +52,30 @@
 
   </div>
 </div>
+@if (isBannedModalOpen) {
+  <div class="modal-overlay">
+    <div class="terminal-card modal-card" style="border-color: #ff3838; box-shadow: 0 0 20px rgba(255, 56, 56, 0.4); max-width: 400px; text-align: center;">
+      <div class="card-header" style="color: #ff3838; border-bottom-color: #ff3838; font-weight: bold;">
+        > ACCESS DENIED: TERMINAL BLOCKED_
+      </div>
+      
+      <div class="card-body" style="padding: 25px 15px;">
+        <h1 style="color: #ff3838; font-size: 2.5rem; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px;" class="blink">
+          SEI STATO BANNATO!
+        </h1>
+        
+        <p style="color: #ff7979; font-family: monospace; font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">
+          Il tuo account è stato sospeso permanentemente dal sistema per violazione dei termini di servizio di GameHub Arena. 
+          <br><br>
+          <span style="color: #fff;">[CODICE ERRORE: 403_BAN_HAMMER]</span>
+        </p>
+
+        <div class="modal-actions" style="justify-content: center;">
+          <button class="btn-terminal delete" (click)='closeBannedModal()' style="background: #ff3838; color: #fff; box-shadow: 0 0 10px rgba(255, 56, 56, 0.3);">
+            CHIUDI TERMINALE
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

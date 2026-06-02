@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -16,10 +16,12 @@ export class LoginComponent {
   password = '';
   errore = '';
   caricamento = false;
+  isBannedModalOpen = false;
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   login(): void {
@@ -36,10 +38,21 @@ export class LoginComponent {
         this.caricamento = false;
         this.router.navigate(['/']);
       },
-      error: () => {
+      error: (err) => {
         this.caricamento = false;
+        if(err.error && err.error.errore ==='ACCOUNT_BANNED'){
+          this.isBannedModalOpen = true;
+          this.errore = '';
+        }
         this.errore = 'Credenziali errate. Riprova.';
+
+        this.cdr.detectChanges();
+
       }
     });
+  }
+  closeBannedModal(): void {
+    this.isBannedModalOpen = false;
+    this.cdr.detectChanges();
   }
 }

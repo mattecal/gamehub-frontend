@@ -28,6 +28,6 @@ export class App {
   }
   chiudiEdEsci() {
     this.menuAperto = false;
-    this.logout(); // Richiama il tuo metodo logout esistente!
+    this.logout(); 
   }
 }
