@@ -44,17 +44,25 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem(this.USER_KEY);
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem(this.TOKEN_KEY);
+      localStorage.removeItem(this.USER_KEY);
+    }
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    if (typeof localStorage !== 'undefined') {
+      return localStorage.getItem(this.TOKEN_KEY);
+    }
+    return null;
   }
 
   getCurrentUser(): AuthResponse | null {
-    const raw = localStorage.getItem(this.USER_KEY);
-    return raw ? JSON.parse(raw) : null;
+    if (typeof localStorage !== 'undefined') {
+      const raw = localStorage.getItem(this.USER_KEY);
+      return raw ? JSON.parse(raw) : null;
+    }
+    return null;
   }
 
   isLoggedIn(): boolean {
@@ -62,7 +70,9 @@ export class AuthService {
   }
 
   private saveSession(res: AuthResponse): void {
-    localStorage.setItem(this.TOKEN_KEY, res.token);
-    localStorage.setItem(this.USER_KEY, JSON.stringify(res));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(this.TOKEN_KEY, res.token);
+      localStorage.setItem(this.USER_KEY, JSON.stringify(res));
+    }
   }
 }
