@@ -14,8 +14,8 @@ import { Game } from '../../models/game';
 })
 export class GamesComponent implements OnInit {
   
-  games: Game[] = [];
-  filteredGames: Game[] = [];
+  games: any[] = [];
+  filteredGames: any[] = [];
   searchQuery: string = '';
   selectedGenre: string = '';
   availableGenres: string[] = [];
@@ -32,6 +32,7 @@ export class GamesComponent implements OnInit {
         this.games = data;
         this.filteredGames = data;
         this.extractGenres();
+        this.cdr.detectChanges(); 
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Errore nel caricamento dei giochi:', err)
