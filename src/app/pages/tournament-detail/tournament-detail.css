@@ -131,6 +131,17 @@ h3 {
   box-shadow: 0 0 10px #6a5acd;
 }
 
+.btn-rate {
+  background: #ffaa00;
+  color: #1a1a2e; /* Colore scuro per contrasto */
+  box-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
+  margin-top: 10px;
+}
+.btn-rate:hover {
+  background: #ffbb33;
+  box-shadow: 0 0 15px rgba(255, 170, 0, 0.8);
+}
+
 .tournament-header {
   display: flex;
   flex-direction: column;
@@ -204,10 +215,85 @@ h3 {
   color: #cfcfcf;
 }
 
-/* --- Container Grafico --- */
+
 .chart-wrapper {
   background: rgba(0, 0, 0, 0.2);
   padding: 15px;
   border-radius: 8px;
   border: 1px solid #3a3a5a;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #1e1e38; /* Sfondo scuro in stile col tuo sito */
+  border: 1px solid #6a5acd;
+  border-radius: 12px;
+  padding: 30px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(106, 90, 205, 0.5);
+  animation: slide-down 0.3s ease-out;
+}
+
+@keyframes slide-down {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-content h3 { color: #9b8cff; margin-bottom: 10px; }
+.modal-content p { color: #cfcfcf; margin-bottom: 20px; }
+
+/* --- Le Stelle Interattive --- */
+.stars-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+  font-size: 40px;
+  cursor: pointer;
+  color: #3a3a5a; /* Stella spenta */
+  transition: 0.2s;
+}
+
+.star.active {
+  color: #ffaa00; /* Stella accesa (Oro) */
+  text-shadow: 0 0 15px rgba(255, 170, 0, 0.7);
+}
+
+.star:hover { transform: scale(1.2); }
+
+/* --- Bottoni Modale --- */
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.btn-cancel {
+  background: transparent;
+  border: 1px solid #ff3366;
+  color: #ff3366;
+}
+.btn-cancel:hover { background: rgba(255, 51, 102, 0.1); }
+
+.btn-submit {
+  background: #00ff88;
+  color: #1a1a2e;
+}
+.btn-submit:disabled {
+  background: #3a3a5a;
+  color: #888;
+  cursor: not-allowed;
+  box-shadow: none;
 }
