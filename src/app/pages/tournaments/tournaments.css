@@ -12,33 +12,7 @@ h2 {
   text-shadow: 0 0 10px #6a5acd; 
 }
 
-.tournament-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid #3a3a5a;
-  padding: 0;
-  border-radius: 12px;
-  overflow: hidden;
-  backdrop-filter: blur(4px);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
 
-.tournament-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 15px rgba(106, 90, 205, 0.4); 
-}
-
-.tournament-card h3 {
-  margin: 15px;
-  font-size: 22px;
-  font-weight: 700;
-  color: white;
-}
-
-.tournament-card p {
-  margin: 5px 15px 15px 15px;
-  color: #cfcfcf;
-  font-size: 15px;
-}
 
 .btn {
   display: inline-block;
@@ -57,15 +31,102 @@ h2 {
   background: #7b6df0;
   box-shadow: 0 0 10px #6a5acd;
 }
-.tournament-list {
+
+.tournaments-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 25px;
 }
 
-.game-cover {
+/* Stile della Card identico a "Giochi" */
+.game-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #3a3a5a;
+  border-radius: 12px;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(106, 90, 205, 0.5); /* Luce viola al passaggio del mouse */
+  border-color: #6a5acd;
+}
+
+/* Contenitore immagine relativo per posizionare il pallino in modo assoluto */
+.card-image-wrapper {
+  position: relative;
   width: 100%;
-  height: 160px;
+  height: 160px; /* Mantenuta la tua altezza originale di 160px */
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-bottom: 1px solid #3a3a5a;
+  border-bottom: 2px solid #3a3a5a;
+}
+
+/* --- IL PALLINO DI STATO (Status Indicator) --- */
+.status-indicator {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Stato Aperto: Verde con animazione "battito" */
+.status-indicator.open {
+  background-color: #00ff88;
+  box-shadow: 0 0 12px #00ff88;
+  animation: pulse-green 2s infinite;
+}
+
+/* Stato Chiuso: Rosso fisso */
+.status-indicator.closed {
+  background-color: #ff3366;
+  box-shadow: 0 0 12px #ff3366;
+}
+
+@keyframes pulse-green {
+  0% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+}
+
+/* --- Sezione Testo --- */
+.card-content {
+  padding: 15px;
+}
+
+.card-title {
+  font-family: 'Orbitron', sans-serif; /* Mantiene il tuo font sci-fi */
+  color: #9b8cff;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.card-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Inter', sans-serif;
+  color: #cfcfcf;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.star-icon {
+  font-size: 16px;
 }

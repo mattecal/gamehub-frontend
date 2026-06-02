@@ -53,7 +53,7 @@
   </div>
 
   <div class="players-section">
-    <h3>Squadre Iscritte ({{ tournament.teams?.length || 0 }})</h3>
+    <h3>Squadre Iscritte ({{ tournament.teams.length || 0 }})</h3>
 
     <ul class="players-list">
       @for (team of tournament.teams; track team.id) {
