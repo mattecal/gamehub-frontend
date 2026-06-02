@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Tournament } from '../../models/tournament';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartType } from 'chart.js';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-tournament-detail',
@@ -52,11 +53,15 @@ export class TournamentDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private tournamentService: TournamentService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
+    const userRole = this.authService.getUserRole();
+    
+    this.isPlayer = userRole === "PLAYER"|| userRole === "ROLE_PLAYER";
     this.tournamentService.getTournamentById(id).subscribe({
       next: (data: Tournament) => {
         this.tournament = data;

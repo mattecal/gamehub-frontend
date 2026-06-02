@@ -161,4 +161,10 @@ export class AuthService {
     });
   }
 
+  getUserRole(): string | null {
+    const user = this.getCurrentUser();
+    return user ? user.role : null;
+  }
+
+
 }
