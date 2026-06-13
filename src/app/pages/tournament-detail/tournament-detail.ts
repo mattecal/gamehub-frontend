@@ -1,30 +1,34 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TournamentService } from '../../services/tournament.service';
 import { CommonModule } from '@angular/common';
 import { Tournament } from '../../models/tournament';
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration, ChartType } from 'chart.js';
+import { ChartConfiguration, ChartType, Chart, registerables } from 'chart.js';
 import { AuthService } from '../../services/auth.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Observable } from 'rxjs';
+
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-tournament-detail',
   standalone: true,
   imports: [RouterModule, CommonModule, BaseChartDirective],
   templateUrl: './tournament-detail.html',
-  styleUrls: ['./tournament-detail.css']
+  styleUrls: ['./tournament-detail.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TournamentDetailComponent implements OnInit {
-
-  /*tournament: Tournament | null = null;*/
   tournament?: Tournament;
   isRatingModalOpen = false;
   selectedScore = 0;
   hoveredScore = 0;
   isPlayer = false;
-  currentUserId:number | null=null;
+  currentUserId: number | null = null;
+  isLoading = true;
 
-  // Configurazione del Grafico a barre
+  // Chart configuration
   public barChartType: ChartType = 'bar';
   public barChartData: ChartConfiguration['data'] = {
     labels: [],
@@ -32,7 +36,7 @@ export class TournamentDetailComponent implements OnInit {
       {
         data: [],
         label: 'Punteggio Squadre',
-        backgroundColor: 'rgba(106, 90, 205, 0.6)', // Il tuo viola con opacità
+        backgroundColor: 'rgba(106, 90, 205, 0.6)',
         borderColor: '#6a5acd',
         borderWidth: 1,
         hoverBackgroundColor: 'rgba(155, 140, 255, 0.8)'
@@ -54,57 +58,87 @@ export class TournamentDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private tournamentService: TournamentService,
     private cdr: ChangeDetectorRef,
-    private authService: AuthService
+    private authService: AuthService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     const userRole = this.authService.getUserRole();
-    
-    this.isPlayer = userRole === "PLAYER"|| userRole === "ROLE_PLAYER";
-    this.tournamentService.getTournamentById(id).subscribe({
+    this.isPlayer = userRole === 'PLAYER' || userRole === 'ROLE_PLAYER';
+    // Try to obtain current user id if method exists
+    if ((this.authService as any).getUserId) {
+      this.currentUserId = (this.authService as any).getUserId();
+    }
+
+    this.tournamentService.getTournamentByIdCached(id).subscribe({
       next: (data: Tournament) => {
         this.tournament = data;
         this.setupChartData();
+        this.isLoading = false;
         this.cdr.detectChanges();
       },
-      error: (err) => console.error('Errore nel caricamento dei dettagli del torneo:', err)
+      error: err => {
+        console.error('Errore nel caricamento del torneo:', err);
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
     });
   }
 
-  private setupChartData() : void{
-    if (this.tournament && this.tournament.teams){
-      const sortedTeams = [...this.tournament.teams].sort((a,b) => b.score - a.score);
-      this.barChartData.labels = sortedTeams.map(t=>t.name);
-      this.barChartData.datasets[0].data = sortedTeams.map(t=>t.score);
+  trackByTeamId(index: number, team: any): number {
+    return team.id;
+  }
+
+  getSafeImageUrl(url: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
+  }
+
+  /** fallback image for tournament */
+  getTournamentImageUrl(): SafeUrl {
+    const img = this.tournament?.gameImageUrl ?? this.tournament?.game?.coverUrl;
+    return img ? this.getSafeImageUrl(img) : ('assets/default-game.jpg' as any);
+  }
+
+  private setupChartData(): void {
+    if (this.tournament && this.tournament.teams) {
+      const sortedTeams = [...this.tournament.teams].sort((a, b) => b.score - a.score);
+      this.barChartData.labels = sortedTeams.map(t => t.name);
+      this.barChartData.datasets[0].data = sortedTeams.map(t => t.score);
     }
   }
 
-  openRatingModal() {
+  openRatingModal(): void {
     this.isRatingModalOpen = true;
     this.selectedScore = 0;
   }
 
-  closeRatingModal() {
+  closeRatingModal(): void {
     this.isRatingModalOpen = false;
   }
 
-  setRating(score: number) {
+  setRating(score: number): void {
     this.selectedScore = score;
   }
 
-  submitRating() {
-    if (this.selectedScore === 0) return; // Non ha selezionato nulla
-    if (!this.tournament || !this.currentUserId) return;
+  submitRating(): void {
+    if (this.selectedScore === 0) return;
+    if (!this.tournament || this.currentUserId === null) return;
 
     this.tournamentService.rateTournament(this.tournament.id, this.currentUserId, this.selectedScore)
       .subscribe({
         next: () => {
           alert('Grazie per il tuo voto!');
           this.closeRatingModal();
-          // Opzionale: Ricarica i dati del torneo per vedere la media aggiornata subito!
+          // Invalidate cache and reload tournament data to refresh rating
+          this.tournamentService.invalidateTournamentCache(this.tournament!.id);
+          this.tournamentService.getTournamentByIdCached(this.tournament!.id).subscribe(data => {
+            this.tournament = data;
+            this.setupChartData();
+            this.cdr.detectChanges();
+          });
         },
-        error: (err) => console.error('Errore salvataggio rating', err)
+        error: err => console.error('Errore salvataggio rating', err)
       });
   }
 }

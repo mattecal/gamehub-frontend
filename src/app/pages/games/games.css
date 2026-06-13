@@ -229,3 +229,37 @@ h2 {
   width: auto;
   align-self: flex-start;
 }
+
+/* Bottone Importa all'Arena */
+.import-btn {
+  background-color: #6a5acd;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.import-btn:hover {
+  background-color: #5b49c3;
+  transform: translateY(-2px);
+}
+
+/* Bottone tab sorgente */
+.tab-btn {
+  background: transparent;
+  color: #cfcfcf;
+  border: 1px solid #6a5acd;
+  padding: 6px 12px;
+  margin-right: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.tab-btn.active {
+  background: #6a5acd;
+  color: white;
+}

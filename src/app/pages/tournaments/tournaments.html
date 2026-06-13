@@ -1,28 +1,23 @@
-<div class="tournaments-grid">
+<div *ngIf="isLoading" class="loading-text">Caricamento della pagina in corso...</div>
+<div *ngIf="!isLoading && tournaments.length === 0" class="no-tournaments">Nessun torneo disponibile</div>
+<div *ngIf="!isLoading && tournaments.length > 0" class="tournaments-grid">
   @for (t of tournaments; track t.id) {
-  <div class="game-card" [routerLink]="['/tornei', t.id]">
-    
-    <div class="card-image-wrapper">
-      <img [src]="t.gameImageUrl || 'assets/default-game.jpg'" alt="Cover" class="card-image">
-      
-      <div class="status-indicator" 
-           [class.open]="t.registrationOpen" 
-           [class.closed]="!t.registrationOpen"
-           [title]="t.registrationOpen ? 'Iscrizioni Aperte' : 'Iscrizioni Chiuse'">
+    <div class="game-card" [routerLink]="['/tornei', t.id]">
+      <div class="card-image-wrapper">
+        <img [src]="getTournamentImageUrl(t)" alt="Cover" class="card-image">
+        <div class="status-indicator"
+             [class.open]="t.registrationOpen"
+             [class.closed]="!t.registrationOpen"
+             [title]="t.registrationOpen ? 'Iscrizioni Aperte' : 'Iscrizioni Chiuse'">
+        </div>
+      </div>
+      <div class="card-content">
+        <h3 class="card-title">{{ t.title }}</h3>
+        <div class="card-rating">
+          <span class="star-icon">⭐</span>
+          <span class="rating-value">{{ t.rating | number:'1.1-1' }} / 5.0</span>
+        </div>
       </div>
     </div>
-
-    <div class="card-content">
-      <h3 class="card-title">{{ t.title }}</h3>
-      
-      <div class="card-rating">
-        <span class="star-icon">⭐</span>
-        <span class="rating-value">{{ t.rating | number:'1.1-1' }} / 5.0</span>
-      </div>
-    </div>
-
-  </div>
-  } @empty {
-    <p class="no-tournaments">Nessun torneo disponibile al momento.</p>
   }
 </div>

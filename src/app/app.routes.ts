@@ -18,3 +18,12 @@ export const routes: Routes = [
   { path: 'tornei-details', component: TournamentDetailComponent},
   { path: '**', redirectTo: '' }
 ];
+
+/**
+ * Required for Angular prerendering of parameterized routes.
+ * Returns an empty params object as the route does not need specific data for prerendering.
+ */
+export function getPrerenderParams(params: any) {
+  return {};
+}
+
