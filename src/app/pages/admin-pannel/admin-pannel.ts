@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { AdminStats, AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MessageService } from '../../services/message.service';
+import { Message } from '../../models/message';
 
 @Component({
   selector: 'app-admin-pannel',
@@ -49,7 +51,21 @@ export class AdminPannelComponent implements OnInit {
   unbanMessageType = '';
   isUnbanLoading = false;
 
+  isMessagesModalOpen = false;
+  messages: Message[] = [];
+  isLoadingMessages = false;
+
+  isSendMessageModalOpen = false;
+  isSendingMessage = false;
+  sendMsgReceiver: any = '';
+  sendMsgText = '';
+  sendMsgFeedback = '';
+  sendMsgFeedbackType = '';
+  usersList: {id: number, username: string}[] = [];
+  isLoadingUsers = false;
+
   constructor(private authService: AuthService, 
+              private messageService: MessageService,
               private cdr: ChangeDetectorRef,
               private router : Router){}
 
@@ -296,6 +312,100 @@ export class AdminPannelComponent implements OnInit {
         this.isUnbanLoading = false;
         this.unbanMessage = err.error || 'Errore di sistema durante la riammissione.';
         this.unbanMessageType = 'error';
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  openMessagesModal() {
+    this.isMessagesModalOpen = true;
+    this.loadMessages();
+  }
+
+  closeMessagesModal() {
+    this.isMessagesModalOpen = false;
+  }
+
+  loadMessages() {
+    this.isLoadingMessages = true;
+    this.cdr.detectChanges();
+
+    this.messageService.getMessagesForCurrentUser().subscribe({
+      next: (data) => {
+        this.messages = data;
+        this.isLoadingMessages = false;
+        this.cdr.detectChanges();
+        // Marca come letto ogni messaggio non ancora letto
+        data.filter(m => !m.read).forEach(m => {
+          this.messageService.markAsRead(m.id).subscribe({
+            next: () => { m.read = true; this.cdr.detectChanges(); }
+          });
+        });
+      },
+      error: (err) => {
+        console.error('Errore durante il caricamento dei messaggi', err);
+        this.isLoadingMessages = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  openSendMessageModal() {
+    this.isSendMessageModalOpen = true;
+    this.sendMsgReceiver = '';
+    this.sendMsgText = '';
+    this.sendMsgFeedback = '';
+    this.loadUsers();
+  }
+
+  closeSendMessageModal() {
+    this.isSendMessageModalOpen = false;
+  }
+
+  loadUsers() {
+    this.isLoadingUsers = true;
+    this.authService.getAllUsers().subscribe({
+      next: (users) => {
+        const currentUser = this.authService.getCurrentUser()?.username;
+        this.usersList = users.filter(u => u.username !== currentUser);
+        this.isLoadingUsers = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Errore caricamento utenti', err);
+        this.isLoadingUsers = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  submitSendMessage() {
+    if (!this.sendMsgReceiver || !this.sendMsgText) {
+      this.sendMsgFeedback = 'COMPILA TUTTI I CAMPI.';
+      this.sendMsgFeedbackType = 'error';
+      return;
+    }
+
+    this.isSendingMessage = true;
+    this.sendMsgFeedback = 'INVIO IN CORSO...';
+    this.sendMsgFeedbackType = '';
+    this.cdr.detectChanges();
+
+    this.messageService.sendMessage(Number(this.sendMsgReceiver), this.sendMsgText).subscribe({
+      next: () => {
+        this.isSendingMessage = false;
+        this.sendMsgFeedback = 'MESSAGGIO INVIATO CON SUCCESSO!';
+        this.sendMsgFeedbackType = 'success';
+        this.cdr.detectChanges();
+        setTimeout(() => {
+          this.closeSendMessageModal();
+          this.cdr.detectChanges();
+        }, 1500);
+      },
+      error: (err) => {
+        this.isSendingMessage = false;
+        this.sendMsgFeedback = err.error || 'Errore durante l\'invio.';
+        this.sendMsgFeedbackType = 'error';
         this.cdr.detectChanges();
       }
     });

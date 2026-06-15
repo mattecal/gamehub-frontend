@@ -1,0 +1,191 @@
+<div class="admin-page">
+  <div class="admin-container">
+
+    <h1 class="main-title">PROFILE PANEL <span class="blink">_</span></h1>
+
+    <div class="cards-wrapper" style="justify-content: center; display: flex;">
+
+      <div class="terminal-card" style="width: 100%; max-width: 500px;">
+        <div class="card-header">> GESTIONE PROFILO ({{role}})</div>
+        <div class="card-body actions">
+          <button class="btn-terminal change" (click)="openPasswordModal()"> CAMBIA PASSWORD </button>
+          <button class="btn-terminal promote" (click)="openMessagesModal()" style="border-bottom-color: #00d2d3;">
+            LEGGI MESSAGGI </button>
+          <button class="btn-terminal promote" (click)="openSendMessageModal()" style="border-bottom-color: #51cf66;">
+            INVIA MESSAGGIO </button>
+          <button class="btn-terminal delete" (click)="openDeleteModal()"> ELIMINA ACCOUNT </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+@if (isPasswordModalOpen) {
+<div class="modal-overlay">
+  <div class="terminal-card modal-card">
+    <div class="card-header">> SYSTEM LOG: CAMBIO PASSWORD_</div>
+
+    <div class="card-body">
+
+      <div class="input-group">
+        <label>> INSERISCI VECCHIA PASSWORD:</label>
+        <input type="password" [(ngModel)]="oldPassword" class="terminal-input" placeholder="***">
+      </div>
+
+      <div class="input-group">
+        <label>> INSERISCI NUOVA PASSWORD:</label>
+        <input type="password" [(ngModel)]="newPassword" class="terminal-input" placeholder="***">
+      </div>
+
+      @if (passwordMessage) {
+      <div class="system-message {{ passwordMessageType }}">
+        >> {{ passwordMessage }}
+      </div>
+      }
+
+      <div class="modal-actions">
+        <button class="btn-terminal promote" (click)="submitChangePassword()" [disabled]="isLoading">{{isLoading ?
+          'ATTENDERE...' : 'CONFERMA'}} </button>
+        <button class="btn-terminal delete" (click)="closePasswordModal()" [disabled]="isLoading"> ANNULLA </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+}
+
+@if (isDeleteModalOpen) {
+<div class="modal-overlay">
+  <div class="terminal-card modal-card" style="border-color: #ff4757; box-shadow: 0 0 15px rgba(255, 71, 87, 0.2);">
+    <div class="card-header" style="color: #ff4757; border-bottom-color: #ff4757;">> WARNING: ELIMINAZIONE ACCOUNT_
+    </div>
+
+    <div class="card-body">
+
+      <div class="input-group">
+        <p style="color: #ff6b81; font-family: monospace; line-height: 1.5; font-size: 14px;">
+          Sei sicuro di voler eliminare il tuo account, <strong style="color: white;">{{ username }}</strong>? Questa
+          azione è IRREVERSIBILE e tutti i tuoi dati andranno persi.
+        </p>
+      </div>
+
+      @if (deleteMessage) {
+      <div class="system-message {{ deleteMessageType }}">
+        >> {{ deleteMessage }}
+      </div>
+      }
+
+      <div class="modal-actions">
+        <button class="btn-terminal delete" (click)="submitDelete()" [disabled]="isDeleteLoading">
+          {{ isDeleteLoading ? 'ATTENDERE...' : 'CONFERMA ELIMINAZIONE' }}
+        </button>
+
+        <button class="btn-terminal promote" (click)="closeDeleteModal()" [disabled]="isDeleteLoading">
+          ANNULLA
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+}
+
+@if (isMessagesModalOpen) {
+<div class="modal-overlay">
+  <div class="terminal-card modal-card"
+    style="border-color: #00d2d3; box-shadow: 0 0 15px rgba(0, 210, 211, 0.2); max-width: 600px;">
+    <div class="card-header" style="color: #00d2d3; border-bottom-color: #00d2d3;">> SYSTEM LOG: MESSAGGI RICEVUTI_
+    </div>
+
+    <div class="card-body">
+      @if (isLoadingMessages) {
+      <p style="color: #e0ffff; font-family: monospace;">CARICAMENTO MESSAGGI...</p>
+      } @else {
+      <div class="messages-container" style="max-height: 300px; overflow-y: auto;">
+        @for (msg of messages; track msg.id) {
+        <div class="message-item"
+          style="border: 1px solid #3a3a5a; border-radius: 6px; padding: 10px; margin-bottom: 10px; background: rgba(0, 0, 0, 0.3);">
+          <div class="message-header"
+            style="display: flex; justify-content: space-between; border-bottom: 1px dashed #3a3a5a; padding-bottom: 5px; margin-bottom: 8px;">
+            <span style="color: #00d2d3; font-family: monospace; font-size: 13px; font-weight: bold;">
+              > DA: {{ msg.senderUsername || 'Sistema' }}
+            </span>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <span style="color: #888; font-size: 11px;">{{ msg.date || '' }}</span>
+              <span style="font-size: 11px; padding: 2px 8px; border-radius: 10px;"
+                [style.background]="msg.read ? 'rgba(81,207,102,0.15)' : 'rgba(255,180,0,0.15)'"
+                [style.color]="msg.read ? '#51cf66' : '#ffd43b'">
+                {{ msg.read ? '✓ LETTO' : '● NON LETTO' }}
+              </span>
+            </div>
+          </div>
+          <p style="color: #cfcfcf; font-family: monospace; font-size: 14px; margin: 0; line-height: 1.5;">{{
+            msg.message }}</p>
+        </div>
+        }
+        @if (messages.length === 0) {
+        <p style="color: #e0ffff; font-family: monospace;">NESSUN MESSAGGIO RICEVUTO.</p>
+        }
+      </div>
+      }
+
+      <div class="modal-actions">
+        <button class="btn-terminal" style="border-color: #00d2d3; color: #00d2d3; background: transparent;"
+          (click)="closeMessagesModal()">
+          CHIUDI
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+@if (isSendMessageModalOpen) {
+<div class="modal-overlay">
+  <div class="terminal-card modal-card"
+    style="border-color: #51cf66; box-shadow: 0 0 15px rgba(81, 207, 102, 0.2); max-width: 600px;">
+    <div class="card-header" style="color: #51cf66; border-bottom-color: #51cf66;">> SYSTEM LOG: INVIA MESSAGGIO_</div>
+
+    <div class="card-body">
+      <div class="input-group">
+        <label style="color: #51cf66;">> SELEZIONA DESTINATARIO:</label>
+        <select [(ngModel)]="sendMsgReceiver" class="terminal-input" style="border-color: #51cf66; color: #e0ffff;">
+          <option value="" disabled selected>-- Seleziona un utente --</option>
+
+          @for (u of usersList; track u.id) {
+          <option [value]="u.id">
+            {{ u.username }} ({{ u.role ? u.role.replace('ROLE_', '') : 'PLAYER' }})
+          </option>
+          }
+        </select>
+        @if (isLoadingUsers) {
+        <span style="color: #cfcfcf; font-size: 12px; margin-top: 5px;">Caricamento utenti...</span>
+        }
+      </div>
+
+      <div class="input-group">
+        <label style="color: #51cf66;">> INSERISCI MESSAGGIO:</label>
+        <textarea [(ngModel)]="sendMsgText" class="terminal-input" rows="4" placeholder="Scrivi il tuo messaggio qui..."
+          style="border-color: #51cf66; color: #e0ffff; resize: none;"></textarea>
+      </div>
+
+      @if (sendMsgFeedback) {
+      <div class="system-message {{ sendMsgFeedbackType }}">
+        >> {{ sendMsgFeedback }}
+      </div>
+      }
+
+      <div class="modal-actions">
+        <button class="btn-terminal" style="border-color: #51cf66; color: #51cf66; background: transparent;"
+          (click)="submitSendMessage()" [disabled]="isSendingMessage">
+          {{ isSendingMessage ? 'INVIO...' : 'INVIA' }}
+        </button>
+        <button class="btn-terminal delete" (click)="closeSendMessageModal()" [disabled]="isSendingMessage">
+          ANNULLA
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}

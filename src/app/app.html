@@ -6,34 +6,37 @@
     <li><a routerLink="/giochi">Giochi</a></li>
 
     @if (authService.isLoggedIn()) {
-      <li class="user-info">
-        @if (authService.getCurrentUser()?.role === 'ROLE_ADMIN') {
-          <a routerLink="/admin" class="username-label clickable-name">
-            👑 {{ authService.getCurrentUser()?.username }}
-          </a>
-        }@else if (authService.getCurrentUser()?.role === 'ROLE_ORGANIZER'){
-          <a routerLink="/organizer" class="username-label clickable-name">
-            📂{{authService.getCurrentUser()?.username}}
-          </a>
-        }@else if(authService.getCurrentUser()?.role === 'ROLE_PLAYER'){
-          <a routerLink="/player" class="username-label clickable-name">
-            🎮{{authService.getCurrentUser()?.username}}
-          </a>
-        }
-        
-        @else{
-        <span class="username-label">🎮 {{ authService.getCurrentUser()?.username }}</span>
-        }
-      </li>
-      <li>
-        <button class="logout-btn" (click)="logout()">Esci</button>
-      </li>
+    <li class="user-info">
+      @if (authService.getCurrentUser()?.role === 'ROLE_ADMIN') {
+      <a routerLink="/admin" class="username-label clickable-name">
+        👑 {{ authService.getCurrentUser()?.username }}
+        @if (messaggiNonLetti > 0) { <span class="notification-badge">{{ messaggiNonLetti }}</span> }
+      </a>
+      }@else if (authService.getCurrentUser()?.role === 'ROLE_ORGANIZER'){
+      <a routerLink="/organizer" class="username-label clickable-name">
+        📂 {{authService.getCurrentUser()?.username}}
+        @if (messaggiNonLetti > 0) { <span class="notification-badge">{{ messaggiNonLetti }}</span> }
+      </a>
+      }@else if(authService.getCurrentUser()?.role === 'ROLE_PLAYER'){
+      <a routerLink="/player" class="username-label clickable-name">
+        🎮 {{authService.getCurrentUser()?.username}}
+        @if (messaggiNonLetti > 0) { <span class="notification-badge">{{ messaggiNonLetti }}</span> }
+      </a>
+      }@else{
+      <span class="username-label">
+        🎮 {{ authService.getCurrentUser()?.username }}
+        @if (messaggiNonLetti > 0) { <span class="notification-badge">{{ messaggiNonLetti }}</span> }
+      </span>
+      }
+    </li>
+    <li>
+      <button class="logout-btn" (click)="logout()">Esci</button>
+    </li>
     } @else {
-      <li><a routerLink="/registrati">Registrati</a></li>
-      <li><a class="login-btn" routerLink="/login">Login</a></li>
+    <li><a routerLink="/registrati">Registrati</a></li>
+    <li><a class="login-btn" routerLink="/login">Login</a></li>
     }
   </ul>
 </nav>
-
 
 <router-outlet></router-outlet>

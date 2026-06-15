@@ -6,6 +6,7 @@ import { GamesComponent } from './pages/games/game';
 import { LoginComponent } from './pages/login/login';
 import { RegisterComponent } from './pages/register/register';
 import { AdminPannelComponent } from './pages/admin-pannel/admin-pannel';
+import { ProfileComponent } from './pages/profile/profile';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -16,6 +17,8 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'registrati', component: RegisterComponent },
   { path: 'tornei-details', component: TournamentDetailComponent},
+  { path: 'player', component: ProfileComponent },
+  { path: 'organizer', component: ProfileComponent },
   { path: '**', redirectTo: '' }
 ];
 

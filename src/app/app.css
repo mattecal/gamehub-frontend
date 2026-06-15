@@ -6,9 +6,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 40px;
-  background: #1a1a2e; 
-  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  background: #1a1a2e;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
+
 .navbar a {
   color: inherit;
   text-decoration: none;
@@ -83,13 +84,50 @@
 }
 
 .clickable-name {
-  text-decoration: none; 
+  text-decoration: none;
   cursor: pointer;
-  color: white; 
+  color: white;
   transition: color 0.2s, text-shadow 0.2s;
 }
 
 .clickable-name:hover {
-  color: #9b8cff; 
+  color: #9b8cff;
   text-shadow: 0 0 8px #9b8cff;
+}
+
+.username-label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  /* Spazio tra il nome e il pallino */
+}
+
+.notification-badge {
+  background-color: #ff4d4d;
+  /* Rosso notifiche */
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  /* Lo rende un cerchio perfetto */
+  min-width: 14px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  display: inline-block;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }

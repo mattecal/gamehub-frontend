@@ -9,7 +9,7 @@ export interface AuthResponse {
   role: string;
 }
 
-export interface LoginRequest {
+export interface UserLoginDTO {
   username: string;
   password: string;
 }
@@ -21,7 +21,7 @@ export interface RegisterRequest {
   role: string;
 }
 
-export interface AdminStats{
+export interface AdminStats {
   totalUsers: number;
   activeTournaments: number;
   bannedUsers: number;
@@ -35,9 +35,9 @@ export class AuthService {
   private readonly TOKEN_KEY = 'gh_token';
   private readonly USER_KEY = 'gh_user';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  login(credentials: LoginRequest): Observable<AuthResponse> {
+  login(credentials: UserLoginDTO): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials).pipe(
       tap(res => this.saveSession(res))
     );
@@ -82,7 +82,7 @@ export class AuthService {
     }
   }
 
-  getAdminStats():Observable<AdminStats>{
+  getAdminStats(): Observable<AdminStats> {
     const token = this.getToken();
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
@@ -97,28 +97,28 @@ export class AuthService {
     });
 
     const body = { oldPassword, newPassword };
-    return this.http.put(`${environment.apiUrl}/users/change-password`, body, { 
-      headers, 
-      responseType: 'text' 
+    return this.http.put(`${environment.apiUrl}/users/change-password`, body, {
+      headers,
+      responseType: 'text'
     });
   }
-  promoteToAdmin(targetUsername : string) : Observable<string>{
+  promoteToAdmin(targetUsername: string): Observable<string> {
     const token = this.getToken();
-    if(!token){
+    if (!token) {
       throw new Error('NESSUN TOKEN TROVATO, DEVI FARE IL LOGIN!')
     }
     const headers = new HttpHeaders({
-      'Authorization' : `Bearer ${token}`
+      'Authorization': `Bearer ${token}`
     });
     return this.http.put(`${environment.apiUrl}/admin/promote/${targetUsername}`, {}, {
       headers,
-      responseType: 'text' 
+      responseType: 'text'
     });
   }
 
   deleteUser(targetUsername: string): Observable<string> {
     const token = this.getToken();
-    
+
     if (!token) {
       throw new Error('Nessun token trovato, devi fare il login!');
     }
@@ -127,15 +127,15 @@ export class AuthService {
       'Authorization': `Bearer ${token}`
     });
 
-    return this.http.delete(`${environment.apiUrl}/admin/delete/${targetUsername}`, { 
-      headers, 
-      responseType: 'text' 
+    return this.http.delete(`${environment.apiUrl}/admin/delete/${targetUsername}`, {
+      headers,
+      responseType: 'text'
     });
   }
 
   banUser(targetUsername: string): Observable<string> {
     const token = this.getToken();
-    
+
     if (!token) {
       throw new Error('Nessun token trovato, devi fare il login!');
     }
@@ -144,9 +144,9 @@ export class AuthService {
       'Authorization': `Bearer ${token}`
     });
 
-    return this.http.put(`${environment.apiUrl}/admin/ban/${targetUsername}`, {}, { 
-      headers, 
-      responseType: 'text' 
+    return this.http.put(`${environment.apiUrl}/admin/ban/${targetUsername}`, {}, {
+      headers,
+      responseType: 'text'
     });
   }
   unbanUser(targetUsername: string): Observable<string> {
@@ -155,9 +155,9 @@ export class AuthService {
 
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
 
-    return this.http.put(`${environment.apiUrl}/admin/unban/${targetUsername}`, {}, { 
-      headers, 
-      responseType: 'text' 
+    return this.http.put(`${environment.apiUrl}/admin/unban/${targetUsername}`, {}, {
+      headers,
+      responseType: 'text'
     });
   }
 
@@ -166,5 +166,16 @@ export class AuthService {
     return user ? user.role : null;
   }
 
+  getAllUsers(): Observable<{ id: number, username: string, email: string, role: string, rank: number }[]> {
+    const token = this.getToken();
 
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    return this.http.get<{ id: number, username: string, email: string, role: string, rank: number }[]>(
+      `${environment.apiUrl}/users`,
+      { headers }
+    );
+  }
 }

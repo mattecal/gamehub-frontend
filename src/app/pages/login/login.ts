@@ -22,7 +22,7 @@ export class LoginComponent {
     private authService: AuthService,
     private router: Router,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   login(): void {
     if (!this.username || !this.password) {
@@ -40,14 +40,14 @@ export class LoginComponent {
       },
       error: (err) => {
         this.caricamento = false;
-        if(err.error && err.error.errore ==='ACCOUNT_BANNED'){
+
+        if (err.error && err.error.errore === 'ACCOUNT_BANNED') {
           this.isBannedModalOpen = true;
           this.errore = '';
+        } else {
+          this.errore = 'Credenziali errate. Riprova.';
         }
-        this.errore = 'Credenziali errate. Riprova.';
-
         this.cdr.detectChanges();
-
       }
     });
   }

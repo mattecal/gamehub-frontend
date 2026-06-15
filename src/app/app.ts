@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
+import { MessageService } from './services/message.service';
 
 @Component({
   selector: 'app-root',
@@ -14,10 +15,22 @@ import { Router } from '@angular/router';
 export class App {
 
   menuAperto = false;
+  messaggiNonLetti = 0;
+
   constructor(
     public authService: AuthService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private messageService: MessageService
+
+  ) { }
+
+  ngOnInit(): void {
+    this.messageService.unreadCount$.subscribe(count => {
+      this.messaggiNonLetti = count;
+      this.cdr.detectChanges();
+    });
+  }
 
   logout(): void {
     this.authService.logout();
@@ -28,6 +41,6 @@ export class App {
   }
   chiudiEdEsci() {
     this.menuAperto = false;
-    this.logout(); 
+    this.logout();
   }
 }
