@@ -165,7 +165,8 @@ export class GamesComponent implements OnInit {
       genere: gameFromRawg.genere || (gameFromRawg.genres && gameFromRawg.genres[0]?.name) || 'Generico',
       coverUrl: gameFromRawg.backgroundImage,
       rating: gameFromRawg.rating,
-      rawgId: gameFromRawg.slug
+      rawgId: gameFromRawg.slug,
+      description: gameFromRawg.description || "Descrizione nel trailer di Gioco"
     };
 
     this.gameService.saveGame(nuovoGioco).subscribe({

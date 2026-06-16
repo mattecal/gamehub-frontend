@@ -1,6 +1,10 @@
 <ng-container *ngIf="tournament; else loadingTemplate">
   <div class="detail-container">
 
+    <div *ngIf="mostraMessaggioSuccesso" class="success-banner" style="background: #00ff88; color: #1a1a2e; padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center; font-weight: bold;">
+    ✅ Voto registrato con successo!
+    </div>
+
     <a class="btn-back" routerLink="/tornei">⬅ Torna ai Tornei</a>
 
     <div class="tournament-header">
@@ -86,6 +90,7 @@
         <button class="btn btn-cancel" (click)="closeRatingModal()">Annulla</button>
         <button class="btn btn-submit" [disabled]="selectedScore === 0" (click)="submitRating()">Conferma</button>
       </div>
+      
     </div>
   </div>
 </ng-container>

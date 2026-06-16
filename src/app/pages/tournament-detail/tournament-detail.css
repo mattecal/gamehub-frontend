@@ -41,8 +41,9 @@ h2 {
   font-size: 38px;
   font-weight: 800;
   margin: 0 0 10px 0;
-  color: #6a5acd;
-  text-shadow: 0 0 10px #6a5acd;
+  color: #ffffff;
+  text-shadow: 0 4 10px rgba(106, 90, 205, 0.8)#6a5acd;
+  letter-spacing: 1px;
 }
 
 .description {

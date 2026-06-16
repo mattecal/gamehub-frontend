@@ -2,7 +2,7 @@
 
 <div class="source-tabs">
   <button class="tab-btn" [class.active]="sourceMode === 'local'" (click)="setSourceMode('local')">🎮 Giochi dell'Arena</button>
-  <button class="tab-btn" [class.active]="sourceMode === 'rawg'" (click)="setSourceMode('rawg')">🌐 Cerca su RAWG API</button>
+  <button class="tab-btn" [class.active]="sourceMode === 'rawg'" (click)="setSourceMode('rawg')">🌐 Cerca</button>
 </div>
 
 <div class="filters-container">
@@ -29,7 +29,7 @@
       <p class="genre">{{ game.genere || 'Generico' }}</p>
       
       <div class="rating-section">
-        <span class="rating-label">Valutazione RAWG:</span>
+        <span class="rating-label">Valutazione Gioco:</span>
         <span class="stars">{{ game.rating }} ⭐</span>
       </div>
       

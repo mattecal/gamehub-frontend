@@ -7,6 +7,7 @@ export interface AuthResponse {
   token: string;
   username: string;
   role: string;
+  id : number;
 }
 
 export interface UserLoginDTO {
@@ -177,5 +178,10 @@ export class AuthService {
       `${environment.apiUrl}/users`,
       { headers }
     );
+  }
+
+  getUserId(): number|null{
+    const user = this.getCurrentUser();
+    return user ? user.id : null;
   }
 }
