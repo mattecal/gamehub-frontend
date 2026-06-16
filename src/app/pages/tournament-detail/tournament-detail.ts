@@ -18,6 +18,7 @@ Chart.register(...registerables);
   templateUrl: './tournament-detail.html',
   styleUrls: ['./tournament-detail.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class TournamentDetailComponent implements OnInit {
   tournament?: Tournament;
@@ -27,6 +28,7 @@ export class TournamentDetailComponent implements OnInit {
   isPlayer = false;
   currentUserId: number | null = null;
   isLoading = true;
+  mostraMessaggioSuccesso = false;
 
   // Chart configuration
   public barChartType: ChartType = 'bar';
@@ -128,7 +130,15 @@ export class TournamentDetailComponent implements OnInit {
     this.tournamentService.rateTournament(this.tournament.id, this.currentUserId, this.selectedScore)
       .subscribe({
         next: () => {
-          alert('Grazie per il tuo voto!');
+          //alert('Grazie per il tuo voto!');
+          this.closeRatingModal();
+          this.mostraMessaggioSuccesso = true;
+          this.cdr.detectChanges();
+          
+          setTimeout(() => {
+            this.mostraMessaggioSuccesso = false;
+            this.cdr.detectChanges();
+          }, 3000);
           this.closeRatingModal();
           // Invalidate cache and reload tournament data to refresh rating
           this.tournamentService.invalidateTournamentCache(this.tournament!.id);
