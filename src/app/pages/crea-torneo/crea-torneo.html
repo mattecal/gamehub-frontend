@@ -1,0 +1,54 @@
+<div class="admin-page">
+  <div class="admin-container">
+    <h1 class="main-title">TOURNAMENT CREATION <span class="blink">_</span></h1>
+
+    <div class="cards-wrapper" style="justify-content: center; display: flex;">
+      <div class="terminal-card" style="width: 100%; max-width: 600px;">
+        <div class="card-header">> INIZIALIZZA NUOVO TORNEO</div>
+        <div class="card-body">
+          
+          <div class="input-group">
+            <label style="color: #6a5acd;">> TITOLO DEL TORNEO:</label>
+            <input type="text" [(ngModel)]="title" class="terminal-input" placeholder="Es. FIFA CUP 2026..." style="border-color: #6a5acd;">
+          </div>
+
+          <div class="input-group">
+            <label style="color: #6a5acd;">> SELEZIONA GIOCO:</label>
+            <select [(ngModel)]="selectedGameId" class="terminal-input" style="border-color: #6a5acd; color: #e0ffff;">
+              <option [value]="null" disabled selected>-- Seleziona un gioco --</option>
+              @for (g of gamesList; track g.id) {
+                <option [value]="g.id">{{ g.title }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label style="color: #6a5acd;">> SCADENZA ISCRIZIONI:</label>
+            <input type="date" [(ngModel)]="registrationDeadLine" class="terminal-input" style="border-color: #6a5acd; color: #e0ffff;">
+          </div>
+
+          <div class="input-group">
+            <label style="color: #6a5acd;">> REGOLAMENTO / DESCRIZIONE:</label>
+            <textarea [(ngModel)]="description" class="terminal-input" rows="4" placeholder="Es. Regole del torneo, montepremi, orari..." style="border-color: #6a5acd; color: #e0ffff; resize: vertical;"></textarea>
+          </div>
+
+          @if (message) {
+            <div class="system-message {{ messageType }}">
+              >> {{ message }}
+            </div>
+          }
+
+          <div class="modal-actions" style="margin-top: 30px; display: flex; gap: 15px; justify-content: flex-end;">
+            <button class="btn-terminal promote" (click)="submitCreate()" [disabled]="isLoading" style="border-color: #6a5acd; color: #6a5acd; background: transparent;">
+              {{ isLoading ? 'CREAZIONE...' : 'CREA TORNEO' }}
+            </button>
+            <button class="btn-terminal delete" (click)="goBack()" [disabled]="isLoading">
+              ANNULLA
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

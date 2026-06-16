@@ -18,21 +18,42 @@
   border-radius: 6px;
 }
 
-.hero {
-  text-align: center;
-}
-
-.hero h1 , .hero h2, .hero h3{
-  font-size: 42px;
-  font-weight: bold;
-  text-shadow: 0 0 10px #6a5acd;
-}
-
-.hero-buttons {
-  margin-top: 30px;
+/* --- NUOVO BANNER --- */
+.banner-section {
+  background: linear-gradient(135deg, rgba(106, 90, 205, 0.1) 0%, rgba(106, 90, 205, 0.4) 100%);
+  border: 1px solid rgba(106, 90, 205, 0.6);
+  border-radius: 16px;
+  margin: 50px auto;
+  padding: 40px 20px;
+  max-width: 800px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  gap: 20px;
+  align-items: center;
+  box-shadow: 0 10px 30px rgba(106, 90, 205, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.banner-section h3 {
+  font-size: 24px;
+  margin-bottom: 25px;
+  color: white;
+  text-shadow: 0 0 8px #6a5acd;
+  margin-top: 0;
+}
+
+/* Rende il bottone leggermente più grande nel banner */
+.banner-btn {
+  padding: 16px 40px;
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 0 15px rgba(106, 90, 205, 0.6);
+}
+
+.banner-btn:hover {
+  box-shadow: 0 0 25px rgba(106, 90, 205, 1);
+  transform: scale(1.05);
 }
 
 .btn-primary, .btn-secondary {
