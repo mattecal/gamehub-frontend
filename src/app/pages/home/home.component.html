@@ -18,10 +18,28 @@
   </div>
 </section>
 
-  <section class="banner-section">
-      <h3>Pronto a sfidare i migliori?</h3>
-      <button class="btn-primary banner-btn" (click)="gestisciCreaTorneo()">CREA TORNEO</button>
-  </section>
+  <!-- Il banner appare SOLO se non sei un ADMIN -->
+<section class="banner-section" *ngIf="userRole !== 'ROLE_ADMIN' && userRole !== 'ADMIN'">
+  
+  <!-- OSPITE (Non Loggato) -->
+  <ng-container *ngIf="!userRole">
+    <h3>Pronto a sfidare i migliori?</h3>
+    <button class="btn-primary banner-btn" routerLink="/login">ACCEDI PER INIZIARE</button>
+  </ng-container>
+
+  <!-- PLAYER -->
+  <ng-container *ngIf="userRole === 'ROLE_PLAYER' || userRole === 'PLAYER'">
+    <h3>L'arena ti aspetta, Campione.</h3>
+    <button class="btn-primary banner-btn" routerLink="/tornei">ESPLORA TORNEI</button>
+  </ng-container>
+
+  <!-- ORGANIZER -->
+  <ng-container *ngIf="userRole === 'ROLE_ORGANIZER' || userRole === 'ORGANIZER'">
+    <h3>Gestisci la prossima grande sfida.</h3>
+    <button class="btn-primary banner-btn" routerLink="/crea-torneo">CREA TORNEO</button>
+  </ng-container>
+
+</section>
 
  
 
