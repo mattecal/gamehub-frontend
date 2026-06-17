@@ -1,82 +1,131 @@
 <div class="home-container">
 
-  
 
-   <section class="carousel-section">
-  <h1>Competi. Vinci. Scala la classifica.</h1>
-  <h2>GIOCHI IN EVIDENZA</h2>
-  <p class="carousel-subtitle">GameHub offre ai giocatori la migliore esperienza di gioco su tutti i titoli supportati.</p>
-  
-  <div class="carousel-wrapper">
-    <div class="carousel-track">
-      @for(game of carouselGames; track $index){
+
+  <section class="carousel-section">
+    <h1>Competi. Vinci. Scala la classifica.</h1>
+    <h2>GIOCHI IN EVIDENZA</h2>
+    <p class="carousel-subtitle">GameHub offre ai giocatori la migliore esperienza di gioco su tutti i titoli
+      supportati.</p>
+
+    <div class="carousel-wrapper">
+      <div class="carousel-track">
+        @for(game of carouselGames; track $index){
         <div class="carousel-item">
           <img [src]="game.image" [alt]="game.title">
           <div class="carousel-caption">{{game.title}}</div>
         </div>
-      }
+        }
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
   <!-- Il banner appare SOLO se non sei un ADMIN -->
-<section class="banner-section" *ngIf="userRole !== 'ROLE_ADMIN' && userRole !== 'ADMIN'">
-  
-  <!-- OSPITE (Non Loggato) -->
-  <ng-container *ngIf="!userRole">
-    <h3>Pronto a sfidare i migliori?</h3>
-    <button class="btn-primary banner-btn" routerLink="/login">ACCEDI PER INIZIARE</button>
-  </ng-container>
+  <section class="banner-section" *ngIf="userRole !== 'ROLE_ADMIN' && userRole !== 'ADMIN'">
 
-  <!-- PLAYER -->
-  <ng-container *ngIf="userRole === 'ROLE_PLAYER' || userRole === 'PLAYER'">
-    <h3>L'arena ti aspetta, Campione.</h3>
-    <button class="btn-primary banner-btn" routerLink="/tornei">ESPLORA TORNEI</button>
-  </ng-container>
+    <!-- OSPITE (Non Loggato) -->
+    <ng-container *ngIf="!userRole">
+      <h3>Pronto a sfidare i migliori?</h3>
+      <button class="btn-primary banner-btn" routerLink="/login">ACCEDI PER INIZIARE</button>
+    </ng-container>
 
-  <!-- ORGANIZER -->
-  <ng-container *ngIf="userRole === 'ROLE_ORGANIZER' || userRole === 'ORGANIZER'">
-    <h3>Gestisci la prossima grande sfida.</h3>
-    <button class="btn-primary banner-btn" routerLink="/crea-torneo">CREA TORNEO</button>
-  </ng-container>
+    <!-- PLAYER -->
+    <ng-container *ngIf="userRole === 'ROLE_PLAYER' || userRole === 'PLAYER'">
+      <h3>L'arena ti aspetta, Campione.</h3>
+      <button class="btn-primary banner-btn" routerLink="/tornei">ESPLORA TORNEI</button>
+    </ng-container>
 
-</section>
-
- 
-
-  <section class="grid-section">
-
-      <div class="card">
-        <h2>TOP PLAYERS</h2>
-        <ul>
-          <li>#1 Marco – 2500 ELO</li>
-          <li>#2 Luca – 2300 ELO</li>
-          <li>#3 Simone – 2200 ELO</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <h2>TORNEI LIVE</h2>
-        <ul>
-          <li>FIFA CUP</li>
-          <li>LoL Arena</li>
-          <li>Fortnite Night</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <h2>TOP GAMES</h2>
-        <ul>
-          <li>Valorant</li>
-          <li>CS2</li>
-          <li>Minecraft</li>
-        </ul>
-      </div>
+    <!-- ORGANIZER -->
+    <ng-container *ngIf="userRole === 'ROLE_ORGANIZER' || userRole === 'ORGANIZER'">
+      <h3>Gestisci la prossima grande sfida.</h3>
+      <button class="btn-primary banner-btn" routerLink="/crea-torneo">CREA TORNEO</button>
+    </ng-container>
 
   </section>
 
+
+
+  <section class="grid-section">
+
+    <div class="card">
+      <h2>TOP PLAYERS</h2>
+      <ul>
+        <li>#1 Marco – 2500 ELO</li>
+        <li>#2 Luca – 2300 ELO</li>
+        <li>#3 Simone – 2200 ELO</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>TORNEI LIVE</h2>
+      <ul>
+        <li>FIFA CUP</li>
+        <li>LoL Arena</li>
+        <li>Fortnite Night</li>
+      </ul>
+    </div>
+
+    <div class="card review-card" style="display: flex; flex-direction: column; height: 350px;">
+      <h2>FEEDBACK ARENA</h2>
+
+      <div class="reviews-scroll-container" style="flex: 1; overflow-y: auto; margin-bottom: 10px; padding-right: 5px;">
+
+        @for (rev of reviewsList; track rev.id) {
+        <div class="review-item" style="border-bottom: 1px dashed #3a3a5a; padding: 8px 0; font-family: monospace;">
+          <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px;">
+            <span style="color: #00d2d3; font-weight: bold;">> {{ rev.username }}</span>
+            <span style="color: #ffd43b;">{{ '★'.repeat(rev.rating) }}{{ '☆'.repeat(5 - rev.rating) }}</span>
+          </div>
+          <p style="color: #cfcfcf; font-size: 13px; margin: 0; line-height: 1.4; word-break: break-word;">
+            {{ rev.comment }}
+          </p>
+        </div>
+        } @empty {
+        <p style="color: #888; font-family: monospace; font-size: 13px;">Nessuna recensione presente. Sii il primo!</p>
+        }
+
+      </div>
+
+      @if (isWritingReview) {
+      <div class="review-form" style="border-top: 1px solid #51cf66; padding-top: 10px; font-family: monospace;">
+        <textarea [(ngModel)]="newComment" class="terminal-input" rows="2" placeholder="Scrivi il tuo feedback..."
+          style="width: 100%; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid #3a3a5a; resize: none; font-family: monospace; padding: 5px; box-sizing: border-box;"></textarea>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 5px; align-items: center;">
+          <div>
+            <label style="color: #888; font-size: 11px;">VOTO: </label>
+            <select [(ngModel)]="newRating" style="background: #000; color: #ffd43b; border: 1px solid #3a3a5a;">
+              <option [value]="5">5 ★</option>
+              <option [value]="4">4 ★</option>
+              <option [value]="3">3 ★</option>
+              <option [value]="2">2 ★</option>
+              <option [value]="1">1 ★</option>
+            </select>
+          </div>
+          <div>
+            <button class="btn-terminal" (click)="submitReview()"
+              style="border-color: #51cf66; color: #51cf66; font-size: 11px; padding: 2px 8px; background: transparent; cursor: pointer;">INVIA</button>
+            <button class="btn-terminal" (click)="toggleReviewForm()"
+              style="border-color: #ff4757; color: #ff4757; font-size: 11px; padding: 2px 8px; background: transparent; cursor: pointer; margin-left: 5px;">ANNULLA</button>
+          </div>
+        </div>
+      </div>
+      } @else {
+      <button class="btn-terminal-action" (click)="toggleReviewForm()"
+        style="width: 100%; border: 1px dashed #00d2d3; color: #00d2d3; background: transparent; padding: 6px; font-family: monospace; font-size: 12px; cursor: pointer; text-transform: uppercase;">
+        + Lascia una recensione _
+      </button>
+      }
+
+      @if (reviewFeedback) {
+      <div style="color: #ff4757; font-size: 11px; font-family: monospace; margin-top: 5px; text-align: center;">{{
+        reviewFeedback }}</div>
+      }
+    </div>
+  </section>
+
   <footer>
-      © 2026 GameHub Arena – Tutti i diritti riservati
+    © 2026 GameHub Arena – Tutti i diritti riservati
   </footer>
 
 </div>

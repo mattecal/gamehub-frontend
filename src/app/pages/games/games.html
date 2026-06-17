@@ -1,17 +1,16 @@
 <h2>Libreria Giochi</h2>
 
 <div class="source-tabs">
-  <button class="tab-btn" [class.active]="sourceMode === 'local'" (click)="setSourceMode('local')">🎮 Giochi dell'Arena</button>
+  <button class="tab-btn" [class.active]="sourceMode === 'local'" (click)="setSourceMode('local')">🎮 Giochi
+    dell'Arena</button>
   <button class="tab-btn" [class.active]="sourceMode === 'rawg'" (click)="setSourceMode('rawg')">🌐 Cerca</button>
 </div>
 
 <div class="filters-container">
-  <input type="text"
-         [(ngModel)]="searchQuery"
-         (input)="onSearchInput()"
-         placeholder="{{ sourceMode === 'local' ? 'Cerca un gioco per titolo...' : '🔍 Cerca un gioco globale su RAWG...' }}"
-         class="search-input">
-  
+  <input type="text" [(ngModel)]="searchQuery" (input)="onSearchInput()"
+    placeholder="{{ sourceMode === 'local' ? 'Cerca un gioco per titolo...' : '🔍 Cerca un gioco globale su RAWG...' }}"
+    class="search-input">
+
   <select *ngIf="sourceMode === 'local'" [(ngModel)]="selectedGenre" (change)="onGenreChange()" class="genre-select">
     <option value="">Tutti i generi</option>
     <option *ngFor="let genre of availableGenres" [value]="genre">{{ genre }}</option>
@@ -20,43 +19,42 @@
 
 <div class="games-grid">
   <div class="game-card" *ngFor="let game of giochiDaMostrare" (click)="apriPopup(game)">
-    <img class="cover-image"
-         [src]="sourceMode === 'local' ? game.coverUrl : game.backgroundImage"
-         alt="Cover del gioco">
-    
+    <img class="cover-image" [src]="sourceMode === 'local' ? game.coverUrl : game.backgroundImage"
+      alt="Cover del gioco">
+
     <div class="game-info">
       <h3>{{ game.title }}</h3>
       <p class="genre">{{ game.genere || 'Generico' }}</p>
-      
+
       <div class="rating-section">
         <span class="rating-label">Valutazione Gioco:</span>
         <span class="stars">{{ game.rating }} ⭐</span>
       </div>
-      
-      <button *ngIf="sourceMode === 'rawg' && (authService.getUserRole() === 'ROLE_ADMIN' || authService.getUserRole() === 'ROLE_ORGANIZER')"
-              class="import-btn"
-              (click)="importaGiocoInArena(game, $event)">
-        ➕ Aggiungi all'Arena
+
+      <button *ngIf="sourceMode === 'rawg' && canImport" class="import-btn" [disabled]="game.isSaving"
+        [style.opacity]="game.isSaving ? '0.5' : '1'" [style.cursor]="game.isSaving ? 'not-allowed' : 'pointer'"
+        (click)="importaGiocoInArena(game, $event)">
+        {{ game.isSaving ? '⏳ Salvataggio...' : '➕ Aggiungi all\'Arena' }}
       </button>
     </div>
   </div>
-   <div *ngIf="isLoading" class="loader"></div>
-   <p *ngIf="isLoading" class="loading-text">Caricamento della pagina in corso...</p>
-   <p *ngIf="!isLoading && giochiDaMostrare.length === 0" class="loading-text">Nessun gioco disponibile</p>
+  <div *ngIf="isLoading" class="loader"></div>
+  <p *ngIf="isLoading" class="loading-text">Caricamento della pagina in corso...</p>
+  <p *ngIf="!isLoading && giochiDaMostrare.length === 0" class="loading-text">Nessun gioco disponibile</p>
 </div>
 
 <div *ngIf="selectedGame" class="modal-overlay" (click)="chiudiPopup()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <button class="close-btn" (click)="chiudiPopup()">✖</button>
-    
+
     <img class="modal-image" [src]="selectedGame.coverUrl" alt="Cover del gioco">
-    
+
     <div class="modal-info">
       <h2>{{ selectedGame.title }}</h2>
       <p class="modal-description">
         {{ selectedGame.description || 'Nessuna descrizione disponibile per questo gioco.' }}
       </p>
-      
+
       <button class="trailer-btn popup-trailer-btn" (click)="apriTrailer(selectedGame)">
         ▶ Guarda Trailer
       </button>

@@ -26,9 +26,10 @@ export class GamesComponent implements OnInit {
   availableGenres: string[] = [];
 
   sourceMode: 'local' | 'rawg' = 'local';
-  selectedGame: any | null = null; // Gestione camaleonte per la modale
+  selectedGame: any | null = null;
 
   isLoading: boolean = true;
+  canImport: boolean = false;
 
   constructor(
     private gameService: GameService,
@@ -37,13 +38,15 @@ export class GamesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const role = this.authService.getUserRole();
+    this.canImport = role === 'ROLE_ADMIN' || role === 'ADMIN' ||
+      role === 'ROLE_ORGANIZER' || role === 'ORGANIZER';
     this.caricaGiochiLocali();
   }
 
-  // 1. Carica i giochi locali usando la cache del vostro servizio
   caricaGiochiLocali(): void {
     this.isLoading = true;
-    this.cdr.markForCheck(); // Dice ad OnPush di mostrare lo spinner di caricamento
+    this.cdr.markForCheck();
 
     this.gameService.getCachedGames().subscribe({
       next: (data: Game[]) => {
@@ -52,7 +55,7 @@ export class GamesComponent implements OnInit {
         this.extractGenres();
         this.updateDisplayedGames();
         this.isLoading = false;
-        this.cdr.markForCheck(); // 👑 Obbligatorio con OnPush per aggiornare lo schermo
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Errore nel caricamento dei giochi:', err);
@@ -62,7 +65,6 @@ export class GamesComponent implements OnInit {
     });
   }
 
-  // 2. Estrae la lista dei generi combinando dati locali e dati RAWG
   extractGenres(): void {
     const localGenres = this.games.map(g => g.genere).filter(g => g);
     const rawgGenres = this.rawgSearchResults
@@ -72,7 +74,6 @@ export class GamesComponent implements OnInit {
     this.availableGenres = [...new Set([...localGenres, ...rawgGenres])].sort();
   }
 
-  // 3. Filtra i risultati RAWG in base al genere selezionato
   filterRawgByGenre(): void {
     if (this.selectedGenre) {
       this.rawgSearchResults = this.rawgSearchResults.filter(g => {
@@ -82,17 +83,14 @@ export class GamesComponent implements OnInit {
     }
   }
 
-  // 4. Gestisce il cambio di valore nel menu a tendina dei generi
   onGenreChange(): void {
     if (this.sourceMode === 'local') {
       this.filterGames();
     } else {
-      // Se siamo su RAWG, rieseguiamo prima la ricerca per avere i dati freschi e poi filtriamo
       this.cercaSuRawg();
     }
   }
 
-  // 5. Ricerca globale su RAWG
   cercaSuRawg(): void {
     if (this.searchQuery.trim().length < 3) {
       this.rawgSearchResults = [];
@@ -105,9 +103,9 @@ export class GamesComponent implements OnInit {
       next: (response: any) => {
         this.rawgSearchResults = response || [];
         this.extractGenres();
-        this.filterRawgByGenre(); // Applica il filtro genere se selezionato
+        this.filterRawgByGenre();
         this.updateDisplayedGames();
-        this.cdr.markForCheck(); // 👑 Rende visibili i risultati di RAWG a schermo
+        this.cdr.markForCheck();
       },
       error: (err: any) => {
         console.error('Errore durante la ricerca globale su RAWG:', err);
@@ -116,7 +114,6 @@ export class GamesComponent implements OnInit {
     });
   }
 
-  // 6. Cambia scheda tra locale e globale
   setSourceMode(mode: 'local' | 'rawg'): void {
     this.sourceMode = mode;
     this.searchQuery = '';
@@ -131,7 +128,6 @@ export class GamesComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  // 7. Scatta quando l'utente digita qualcosa nella barra di ricerca
   onSearchInput(): void {
     if (this.sourceMode === 'local') {
       this.filterGames();
@@ -140,7 +136,6 @@ export class GamesComponent implements OnInit {
     }
   }
 
-  // 8. Filtra i giochi del database locale
   filterGames(): void {
     this.filteredGames = this.games.filter(game => {
       const matchesSearch = game.title.toLowerCase().includes(this.searchQuery.toLowerCase());
@@ -151,14 +146,15 @@ export class GamesComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  // 9. Aggiorna l'array unico puntato dal ciclo @for nell'HTML
   updateDisplayedGames(): void {
     this.giochiDaMostrare = this.sourceMode === 'local' ? this.filteredGames : this.rawgSearchResults;
   }
 
-  // 10. Salva un gioco sul database di Spring Boot
   importaGiocoInArena(gameFromRawg: any, event: Event): void {
     event.stopPropagation();
+
+    gameFromRawg.isSaving = true;
+    this.cdr.markForCheck();
 
     const nuovoGioco = {
       title: gameFromRawg.title,
@@ -171,11 +167,17 @@ export class GamesComponent implements OnInit {
 
     this.gameService.saveGame(nuovoGioco).subscribe({
       next: () => {
+
+        gameFromRawg.isSaving = false;
+        this.cdr.markForCheck();
+
         alert(`"${nuovoGioco.title}" salvato con successo nel database di GameHub Arena!`);
-        this.gameService.refreshGamesCache(); // Invalida la vecchia cache per fare ordine
-        this.caricaGiochiLocali();            // Ricarica la lista aggiornata
+        this.gameService.refreshGamesCache();
+        this.caricaGiochiLocali();
       },
       error: (err: any) => {
+
+        gameFromRawg.isSaving = false;
         console.error('Errore durante il salvataggio:', err);
         alert('Impossibile salvare il gioco. Forse esiste già?');
         this.cdr.markForCheck();
@@ -183,7 +185,6 @@ export class GamesComponent implements OnInit {
     });
   }
 
-  // 11. Gestione Popup Dettagli
   apriPopup(game: any): void {
     this.selectedGame = {
       id: game.id,
@@ -202,7 +203,6 @@ export class GamesComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  // 12. Gestione Trailer
   apriTrailer(game: any): void {
     if (!game.rawgId) {
       const youtubeFallback = `https://www.youtube.com/results?search_query=${encodeURIComponent(game.title + ' official trailer')}`;
