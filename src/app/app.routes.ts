@@ -7,6 +7,7 @@ import { LoginComponent } from './pages/login/login';
 import { RegisterComponent } from './pages/register/register';
 import { AdminPannelComponent } from './pages/admin-pannel/admin-pannel';
 import { ProfileComponent } from './pages/profile/profile';
+import { CreaTorneoComponent } from './pages/crea-torneo/crea-torneo';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -19,6 +20,7 @@ export const routes: Routes = [
   { path: 'tornei-details', component: TournamentDetailComponent },
   { path: 'player', component: ProfileComponent },
   { path: 'organizer', component: ProfileComponent },
+  { path: 'crea-torneo', component: CreaTorneoComponent },
   { path: '**', redirectTo: '' }
 ];
 

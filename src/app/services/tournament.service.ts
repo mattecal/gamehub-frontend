@@ -4,12 +4,14 @@ import { environment } from '../app.config';
 import { Tournament } from '../models/tournament';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
+import { HttpHeaders } from '@angular/common/http';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TournamentService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private authService: AuthService) { }
 
   private tournamentCache = new Map<number, Observable<Tournament>>();
 
@@ -44,6 +46,19 @@ export class TournamentService {
   rateTournament(tournamentId: number, userId: number, score: number): Observable<any> {
     const url = `${environment.apiUrl}/tournaments/${tournamentId}/rate?userId=${userId}&score=${score}`;
     return this.http.post(url, {});
+  }
+
+  createTournament(title: string, gameId: number, registrationDeadLine: string, description: string): Observable<Tournament> {
+  const token = this.authService.getToken();
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${token}`
+  });
+  return this.http.post<Tournament>(`${environment.apiUrl}/tournaments`, {
+    title,
+    gameId,
+    registrationDeadLine,
+    description
+  }, { headers });
   }
 
 }

@@ -1,15 +1,17 @@
 import { Component } from "@angular/core";
-import { RouterLink, Router } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { AuthService } from "../../services/auth.service";
+import { CommonModule } from "@angular/common";
 
 @Component({
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  imports: [RouterLink]
+  imports: [CommonModule, RouterLink]
 })
 export class HomeComponent {
+  userRole: string | null = null;
 
   carouselGames = [
     { title: 'Dragonball', image: 'https://media.rawg.io/media/resize/640/-/screenshots/1b5/1b5662e70cb5c980350d2f6ca2978141.jpg' },
@@ -44,12 +46,8 @@ export class HomeComponent {
     private router: Router
   ){}
 
-  gestisciCreaTorneo() {
-    if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/crea-torneo']);    
-    } else {
-      this.router.navigate(['/login']);
-      
-    }
+  ngOnInit() {
+    // Quando la pagina si carica, leggiamo il ruolo dal token
+    this.userRole = this.authService.getUserRole();
   }
 }
