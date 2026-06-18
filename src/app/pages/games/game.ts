@@ -5,6 +5,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Game } from '../../models/game';
 import { AuthService } from '../../services/auth.service';
+import { ActivatedRoute } from '@angular/router';
+
+
 
 @Component({
   selector: 'app-games',
@@ -34,7 +37,8 @@ export class GamesComponent implements OnInit {
   constructor(
     private gameService: GameService,
     public authService: AuthService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -55,6 +59,8 @@ export class GamesComponent implements OnInit {
         this.extractGenres();
         this.updateDisplayedGames();
         this.isLoading = false;
+
+        this.controllaSeAprireGiocoDaHome();
         this.cdr.markForCheck();
       },
       error: (err) => {
@@ -223,6 +229,23 @@ export class GamesComponent implements OnInit {
       error: () => {
         const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(game.title + ' official trailer')}`;
         window.open(youtubeSearchUrl, '_blank');
+      }
+    });
+  }
+
+  controllaSeAprireGiocoDaHome() {
+    this.route.queryParams.subscribe(params => {
+      const titoloDaAprire = params['openGame'];
+
+      if (titoloDaAprire) {
+        const giocoTrovato = this.games.find(g =>
+          g.title.toLowerCase() === titoloDaAprire.toLowerCase()
+        );
+        if (giocoTrovato) {
+          this.apriPopup(giocoTrovato);
+        } else {
+          console.warn('Gioco non trovato nel database locale:', titoloDaAprire);
+        }
       }
     });
   }

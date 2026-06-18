@@ -66,7 +66,8 @@
   box-shadow: 0 0 15px rgba(106, 90, 205, 0.6);
 }
 
-.banner-btn, .discord-btn:hover {
+.banner-btn,
+.discord-btn:hover {
   box-shadow: 0 0 25px rgba(106, 90, 205, 1);
   transform: scale(1.05);
 }
@@ -120,7 +121,8 @@
   padding: 12px;
   border-radius: 8px;
   font-weight: bold;
-  text-decoration: none; /* Rimuove la linea sotto il link */
+  text-decoration: none;
+  /* Rimuove la linea sotto il link */
   text-transform: uppercase;
   letter-spacing: 1px;
   transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
@@ -179,7 +181,7 @@ footer {
 .carousel-track {
   display: flex;
   width: max-content;
-  animation: continuous-scroll 90s linear infinite;
+  animation: continuous-scroll 58s linear infinite;
 }
 
 .carousel-track:hover {
