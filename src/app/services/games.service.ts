@@ -36,12 +36,14 @@ export class GameService {
     return this.gamesCache$;
   }
 
-  /**
-   * Force refresh the games cache (e.g., after adding a new game).
-   */
   refreshGamesCache(): void {
     this.gamesCache$ = this.http.get<Game[]>(this.apiUrl).pipe(shareReplay(1));
   }
+
+  clearCache(): void{
+    this.gamesCache$=null;
+  }
+
   getTrailerFromRawg(rawgId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/${rawgId}/trailer`);
   }
