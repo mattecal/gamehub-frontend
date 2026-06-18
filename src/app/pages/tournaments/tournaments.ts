@@ -36,17 +36,25 @@ export class TournamentsComponent implements OnInit {
         this.tournaments = data;
         this.avalaibleGames = [...new Set(data.map(t=> t.game?.title).filter(title => title))].sort();
         this.isLoading = false;
-        this.gameService.getCachedGames().subscribe(libGames => {
-          this.libraryGameIds = libGames.map(g => g.id);});
-        this.cdr.detectChanges();
-      },
-      error: err => {
-        console.error('Errore nel caricamento dei tornei:', err);
-        this.isLoading = false;
-        this.cdr.detectChanges();
-      }
+        this.gameService.getCachedGames().subscribe( {next : (libGames)=> {this.libraryGameIds = libGames.map(g=>g.id);
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }, 
+        error : (err)=> {
+          console.error("Errore caricamento Libreria", err);
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
+    }, 
+    error: err => {
+    console.error("Errore caricamento Tornei", err);
+    this.isLoading=false;
+    this.cdr.detectChanges();
+    }
     });
   }
+        
 
   /** Track by tournament id */
   trackByTournamentId(index: number, tournament: Tournament): number {

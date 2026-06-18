@@ -14,6 +14,10 @@
   </div>
 </div>
 
+<div *ngIf="getfilteredTournaments().length === 0" class="no-tournaments">
+    Nessun torneo disponibile per la selezione attuale.
+</div>
+
 <div *ngIf="!isLoading && getfilteredTournaments().length > 0" class="tournaments-grid">
   @for (t of getfilteredTournaments(); track t.id) {
     <div class="game-card" [routerLink]="['/tornei', t.id]">
