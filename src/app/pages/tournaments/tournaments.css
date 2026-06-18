@@ -130,3 +130,34 @@ h2 {
 .star-icon {
   font-size: 16px;
 }
+
+.filters-container{
+  margin: 20px 0;
+  gap: 15px;
+  margin: bottom 30px;;
+}
+
+.genre-select{
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #3a3a5a;
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 15px;
+  outline: none;
+  backdrop-filter: blur(4px);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 200px;
+  cursor: pointer;
+}
+
+.genre-select:focus {
+  border-color: #6a5acd;
+  box-shadow: 0 0 10px rgba(106, 90, 205, 0.4);
+}
+
+.genre-select option {
+  background: #1e1e2f;
+  color: white;
+}
+

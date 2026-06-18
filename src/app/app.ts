@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
 import { MessageService } from './services/message.service';
+import { GameService } from './services/games.service';
 
 @Component({
   selector: 'app-root',
@@ -19,6 +20,7 @@ export class App {
 
   constructor(
     public authService: AuthService,
+    private gameService: GameService, 
     private router: Router,
     private cdr: ChangeDetectorRef,
     private messageService: MessageService
@@ -34,6 +36,7 @@ export class App {
 
   logout(): void {
     this.authService.logout();
+    this.gameService.clearCache();
     this.router.navigate(['/']);
   }
   toggleMenu() {

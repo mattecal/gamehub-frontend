@@ -17,10 +17,23 @@
 }
 
 .navbar .logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: #6a5acd;
+  font-size: 28px;
+  font-weight: 900;
   font-family: 'Orbitron', sans-serif;
+  display: flex;
+  cursor:pointer;
+}
+
+.logo-part1{
+  color: #ffffff;
+}
+
+.logo-part2{
+  color: #1a1a2e;
+  background-color: #9b8cff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 2px;
 }
 
 .navbar ul {

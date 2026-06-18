@@ -1,7 +1,25 @@
 <div *ngIf="isLoading" class="loading-text">Caricamento della pagina in corso...</div>
 <div *ngIf="!isLoading && tournaments.length === 0" class="no-tournaments">Nessun torneo disponibile</div>
-<div *ngIf="!isLoading && tournaments.length > 0" class="tournaments-grid">
-  @for (t of tournaments; track t.id) {
+
+<div class="tournaments-header">
+  <h2 class="page-title">Tornei</h2>
+
+
+  <div class="filters-container">
+    <select [(ngModel)]="filterMode" class="genre-select">
+    <option value="all">Tutti i giochi</option>
+    <option value="library">Giochi in Libreria</option>
+    </select>
+    
+  </div>
+</div>
+
+<div *ngIf="getfilteredTournaments().length === 0" class="no-tournaments">
+    Nessun torneo disponibile per la selezione attuale.
+</div>
+
+<div *ngIf="!isLoading && getfilteredTournaments().length > 0" class="tournaments-grid">
+  @for (t of getfilteredTournaments(); track t.id) {
     <div class="game-card" [routerLink]="['/tornei', t.id]">
       <div class="card-image-wrapper">
         <img [src]="getTournamentImageUrl(t)" alt="Cover" class="card-image">
