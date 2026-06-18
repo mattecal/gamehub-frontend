@@ -15,7 +15,42 @@
         <h2>{{ tournament.title }}</h2>
         <p class="description">{{ tournament.description || 'Nessuna descrizione disponibile.' }}</p>
       </div>
+
+      <div class="registration-section" *ngIf="isPlayer">
+      <div class="registration-content">
+        <h3>Partecipa al Torneo!</h3>
+        <p>Mostra il tuo valore, unisciti alla competizione e scala la classifica. <br>L'arena ti aspetta!</p>
+      </div>
+      <div class="registration-actions">
+        <!-- Mostra questo bottone SOLO se l'utente NON è ancora iscritto -->
+        <button *ngIf="!isUserJoined" class="btn btn-join-large" (click)="joinTournament()">🚀 Iscriviti Ora</button>
+        
+        <!-- Mostra questo bottone grigio/disabilitato se è GIA' iscritto -->
+        <button *ngIf="isUserJoined" class="btn btn-join-large" disabled style="background-color: #555; border-color: #444; cursor: not-allowed;">✅ Sei già Iscritto</button>
+      </div>
     </div>
+
+    <!-- Sezione dedicata al Game ID: Visibile solo ai giocatori -->
+    <div class="game-id-section" *ngIf="isPlayer">
+      
+      <!-- Appare SOLO SE l'utente NON ha ancora salvato il Game ID -->
+      <div *ngIf="!savedGameId" class="game-id-form">
+        <p style="color: #e0ffff; font-size: 14px;">Inserisci l'ID del gioco per farti riconoscere dal tuo avversario:</p>
+          <input type="text" [(ngModel)]="gameIdInput" placeholder="Es. NomeSuLoL#1234" class="terminal-input" style="background-color: #1a1a2e; color: #e0ffff; border: 1px solid #6a5acd; padding: 8px;">        
+          <button (click)="submitGameId()" class="btn btn-submit" style="margin-left: 10px; padding: 8px 16px;">Salva ID</button>
+      </div>
+      <!-- Appare SOLO SE l'utente HA GIÀ salvato il Game ID -->
+      <div *ngIf="savedGameId" class="game-id-saved" style="padding: 10px; background-color: rgba(106, 90, 205, 0.2); border-left: 4px solid #6a5acd; margin-top: 10px;">
+        <p style="color: #cfcfcf; margin: 0;">Il tuo Game ID per questo torneo è: <strong style="color: white; font-family: 'Orbitron';">{{ savedGameId }}</strong></p>
+      </div>
+    </div>
+
+    </div>
+
+
+    
+
+
     <button *ngIf="isPlayer" class="btn btn-rate" (click)="openRatingModal()">⭐ Inserisci Rating</button>
 
     <div class="stats-grid">

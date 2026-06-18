@@ -48,7 +48,33 @@ export class TournamentService {
     return this.http.post(url, {});
   }
 
-  createTournament(title: string, gameId: number, registrationDeadLine: string, description: string): Observable<Tournament> {
+  joinTournament(tournamentId: number, userId: number): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+    // Sfruttiamo l'endpoint che avevamo già nel TournamentController del backend
+    return this.http.post(`${environment.apiUrl}/tournaments/${tournamentId}/join/${userId}`, {}, { headers });
+  }
+
+  // Salva il Game ID
+  saveGameId(tournamentId: number, userId: number, gameId: string): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+    
+    const url = `${environment.apiUrl}/tournaments/${tournamentId}/player-id?userId=${userId}&gameId=${gameId}`;
+    return this.http.post(url, {}, { headers });
+  }
+  // Recupera il Game ID
+  getGameId(tournamentId: number, userId: number): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+    
+    const url = `${environment.apiUrl}/tournaments/${tournamentId}/player-id/${userId}`;
+    return this.http.get(url, { headers });
+  }
+
+  createTournament(title: string, gameId: number, registrationDeadLine: string, description: string, maxParticipants: number): Observable<Tournament> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders({
     'Authorization': `Bearer ${token}`
@@ -57,7 +83,8 @@ export class TournamentService {
     title,
     gameId,
     registrationDeadLine,
-    description
+    description,
+    maxParticipants
   }, { headers });
   }
 

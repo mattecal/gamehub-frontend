@@ -8,13 +8,14 @@ import { ChartConfiguration, ChartType, Chart, registerables } from 'chart.js';
 import { AuthService } from '../../services/auth.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-tournament-detail',
   standalone: true,
-  imports: [RouterModule, CommonModule, BaseChartDirective],
+  imports: [RouterModule, CommonModule, BaseChartDirective, FormsModule],
   templateUrl: './tournament-detail.html',
   styleUrls: ['./tournament-detail.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -29,6 +30,8 @@ export class TournamentDetailComponent implements OnInit {
   currentUserId: number | null = null;
   isLoading = true;
   mostraMessaggioSuccesso = false;
+  savedGameId: string | null = null;
+  gameIdInput: string = '';
 
   // Chart configuration
   public barChartType: ChartType = 'bar';
@@ -76,6 +79,7 @@ export class TournamentDetailComponent implements OnInit {
     this.tournamentService.getTournamentByIdCached(id).subscribe({
       next: (data: Tournament) => {
         this.tournament = data;
+        this.loadGameId();
         this.setupChartData();
         this.isLoading = false;
         this.cdr.detectChanges();
@@ -86,6 +90,12 @@ export class TournamentDetailComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  get isUserJoined(): boolean {
+    // Controlla se la lista squadre contiene una squadra con lo stesso ID dell'utente
+    if (!this.tournament || !this.tournament.teams || this.currentUserId === null) return false;
+    return this.tournament.teams.some(team => team.id === this.currentUserId);
   }
 
   trackByTeamId(index: number, team: any): number {
@@ -151,4 +161,60 @@ export class TournamentDetailComponent implements OnInit {
         error: err => console.error('Errore salvataggio rating', err)
       });
   }
+
+  joinTournament(): void {
+    // Controlliamo che i dati siano caricati e l'utente sia loggato
+    if (!this.tournament || this.currentUserId === null) {
+        alert('Devi essere loggato per iscriverti!');
+        return;
+    }
+    this.tournamentService.joinTournament(this.tournament.id, this.currentUserId)
+      .subscribe({
+        next: () => {
+          alert("Iscrizione avvenuta con successo! Benvenuto nell'arena.");
+          
+          // Sfruttiamo il sistema di cache già presente per aggiornare subito 
+          // i grafici e la lista squadre in tempo reale
+          this.tournamentService.invalidateTournamentCache(this.tournament!.id);
+          this.tournamentService.getTournamentByIdCached(this.tournament!.id).subscribe(data => {
+            this.tournament = data;
+            // Aggiorna i dati per i grafici e triggera il change detection
+            this.setupChartData();
+            this.cdr.detectChanges();
+          });
+        },
+        error: err => {
+          console.error('Errore durante l\'iscrizione', err);
+          // Messaggio in caso di errore (es. sei già iscritto)
+          alert('Si è verificato un errore o sei già iscritto al torneo.');
+        }
+      });
+  }
+
+   loadGameId(): void {
+    if (this.currentUserId !== null && this.tournament) {
+      this.tournamentService.getGameId(this.tournament.id, this.currentUserId).subscribe({
+        next: (res: any) => {
+          if (res && res.gameId) {
+            this.savedGameId = res.gameId;
+            this.cdr.detectChanges(); // Aggiorna la grafica
+          }
+        },
+        error: (err) => console.error('Errore nel caricamento del Game ID', err)
+      });
+    }
+  }
+  submitGameId(): void {
+    if (!this.gameIdInput || this.currentUserId === null || !this.tournament) return;
+    
+    this.tournamentService.saveGameId(this.tournament.id, this.currentUserId, this.gameIdInput).subscribe({
+      next: () => {
+        this.savedGameId = this.gameIdInput; // Lo salva localmente così l'interfaccia si aggiorna scomparendo
+        alert('Game ID salvato con successo!');
+        this.cdr.detectChanges();
+      },
+      error: (err) => alert('Impossibile salvare il Game ID: ' + (err.error?.error || 'Errore sconosciuto'))
+    });
+  }
+
 }

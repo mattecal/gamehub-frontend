@@ -24,7 +24,12 @@
 
           <div class="input-group">
             <label style="color: #6a5acd;">> SCADENZA ISCRIZIONI:</label>
-            <input type="date" [(ngModel)]="registrationDeadLine" class="terminal-input" style="border-color: #6a5acd; color: #e0ffff;">
+            <input type="date" [(ngModel)]="startDate" class="terminal-input" style="border-color: #6a5acd; color: #e0ffff;">
+          </div>
+
+          <div class="input-group">
+            <label style="color: #6a5acd;">> NUMERO MAX PARTECIPANTI:</label>
+            <input type="number" [(ngModel)]="maxParticipants" class="terminal-input" min="2" max="128" style="border-color: #6a5acd; color: #e0ffff;">
           </div>
 
           <div class="input-group">

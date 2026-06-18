@@ -17,8 +17,9 @@ import { Game } from '../../models/game';
 export class CreaTorneoComponent implements OnInit {
   title: string = '';
   selectedGameId: number | null = null;
-  registrationDeadLine: string = '';
+  startDate: string = '';
   description: string = '';
+  maxParticipants: number = 4;
   gamesList: Game[] = [];
   
   isLoading = false;
@@ -54,7 +55,7 @@ export class CreaTorneoComponent implements OnInit {
   }
 
   submitCreate() {
-    if (!this.title || !this.selectedGameId || !this.registrationDeadLine) {
+    if (!this.title || !this.selectedGameId || !this.startDate) {
       this.message = 'COMPILA TUTTI I CAMPI CORRETTAMENTE.';
       this.messageType = 'error';
       return;
@@ -67,8 +68,9 @@ export class CreaTorneoComponent implements OnInit {
     this.tournamentService.createTournament(
       this.title,
       this.selectedGameId,
-      this.registrationDeadLine,
-      this.description
+      this.startDate,
+      this.description,
+      this.maxParticipants
     ).subscribe({
       next: (res) => {
         this.isLoading = false;
