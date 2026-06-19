@@ -8,10 +8,10 @@
 
 <div class="filters-container">
   <input type="text" [(ngModel)]="searchQuery" (input)="onSearchInput()"
-    placeholder="{{ sourceMode === 'local' ? 'Cerca un gioco per titolo...' : '🔍 Cerca un gioco globale su RAWG...' }}"
-    class="search-input">
+    placeholder="{{ sourceMode === 'local' ? 'Cerca nella tua libreria...' : (canImport ? '🔍 Cerca un gioco globale su RAWG...' : 'Cerca un gioco nel catalogo...') }}"
+  class="search-input">
 
-  <select *ngIf="sourceMode === 'local'" [(ngModel)]="selectedGenre" (change)="onGenreChange()" class="genre-select">
+  <select [(ngModel)]="selectedGenre" (change)="onGenreChange()" class="genre-select">
     <option value="">Tutti i generi</option>
     <option *ngFor="let genre of availableGenres" [value]="genre">{{ genre }}</option>
   </select>
@@ -19,8 +19,7 @@
 
 <div class="games-grid">
   <div class="game-card" *ngFor="let game of giochiDaMostrare" (click)="apriPopup(game)">
-    <img class="cover-image" [src]="sourceMode === 'local' ? game.coverUrl : game.backgroundImage"
-      alt="Cover del gioco">
+    <img class="cover-image" [src]="game.coverUrl || game.backgroundImage || 'assets/images/default-cover.png'" alt="Cover del gioco">
 
     <div class="game-info">
       <h3>{{ game.title }}</h3>
@@ -36,6 +35,22 @@
         (click)="importaGiocoInArena(game, $event)">
         {{ game.isSaving ? '⏳ Salvataggio...' : '➕ Aggiungi all\'Arena' }}
       </button>
+
+      <button *ngIf="sourceMode === 'rawg' && !canImport && !isInLibrary(game)" class="import-btn"
+        (click)="aggiungiALibreria(game, $event)">
+        📚 Aggiungi alla libreria
+      </button>
+
+      <button *ngIf="sourceMode === 'rawg' && !canImport && isInLibrary(game)" class="import-btn"
+        (click)="rimuoviDaLibreria(game, $event)">
+        ✅ Nella libreria — Rimuovi
+      </button>
+
+      <button *ngIf="sourceMode === 'local'" class="import-btn"
+        (click)="rimuoviDaLibreria(game, $event)">
+        🗑 Rimuovi dalla libreria
+      </button>
+
     </div>
   </div>
   <div *ngIf="isLoading" class="loader"></div>
