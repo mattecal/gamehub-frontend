@@ -1,10 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, HostListener } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, HostListener, OnDestroy } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { AuthService } from "../../services/auth.service";
 import { CommonModule } from "@angular/common";
 import { Review } from "../../models/review";
 import { ReviewService } from "../../review/review.service";
 import { FormsModule } from "@angular/forms";
+import { ChatMessage, ChatService } from "../../services/chat.service";
 
 @Component({
   selector: 'app-home',
@@ -13,8 +14,10 @@ import { FormsModule } from "@angular/forms";
   styleUrls: ['./home.component.css'],
   imports: [CommonModule, RouterLink, FormsModule]
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   userRole: string | null = null;
+  chatMessages: ChatMessage[] = [];
+  newChatMessage: string = '';
 
   carouselGames = [
     { title: 'Dragon Ball Xenoverse', image: 'https://media.rawg.io/media/resize/640/-/games/729/729822a7ac978607241a310677c7775d.jpg' },
@@ -62,7 +65,8 @@ export class HomeComponent implements OnInit {
     private authService: AuthService,
     private reviewService: ReviewService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private chatService: ChatService
   ) { }
 
   gestisciMouse(event: MouseEvent) {
@@ -115,6 +119,37 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.loadReviews();
     this.userRole = this.authService.getUserRole();
+    this.chatService.loadHistory();
+    this.chatService.connect();
+    this.chatService.messages$.subscribe(msgs => {
+      this.chatMessages = msgs;
+      this.cdr.markForCheck();
+    });
+  }
+
+  ngOnDestroy() {
+    this.chatService.disconnect();
+  }
+
+  sendChatMessage() {
+    if (!this.authService.isLoggedIn()) {
+      return;
+    }
+
+    if (this.newChatMessage.trim() !== '') {
+      let senderName = localStorage.getItem('username');
+      if (!senderName) {
+        senderName = 'Utente_Sconosciuto';
+      }
+
+      const msg: ChatMessage = {
+        sender: senderName,
+        content: this.newChatMessage
+      };
+
+      this.chatService.sendMessage(msg);
+      this.newChatMessage = '';
+    }
   }
 
   loadReviews() {
