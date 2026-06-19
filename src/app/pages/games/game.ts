@@ -15,11 +15,11 @@ import { ActivatedRoute } from '@angular/router';
   imports: [RouterModule, CommonModule, FormsModule],
   templateUrl: './games.html',
   styleUrls: ['./games.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush // Mantenuta l'ottimizzazione OnPush!
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GamesComponent implements OnInit {
 
-  games: any[] = [];               // Cambiato in any[] per la massima flessibilità con RAWG
+  games: any[] = [];
   filteredGames: any[] = [];
   rawgSearchResults: any[] = [];
   giochiDaMostrare: any[] = [];

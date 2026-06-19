@@ -2,13 +2,22 @@
 
 
 
-  <section class="carousel-section">
-    <h1>Competi. Vinci. Scala la classifica.</h1>
-    <h2>GIOCHI IN EVIDENZA</h2>
-    <p class="carousel-subtitle">GameHub offre ai giocatori la migliore esperienza di gioco su tutti i titoli
-      supportati.</p>
+  <section class="carousel-section gamehub-arena-hero">
 
-    <div class="carousel-wrapper">
+    <h1 class="hero-main-title">
+      <span class="line-1">COMPETI. VINCI.</span>
+      <span class="line-2">SCALA LA CLASSIFICA.</span>
+    </h1>
+
+    <div class="hero-sub-graphic">
+      <div class="sub-text-top">DON'T BOTHER ME</div>
+      <div class="sub-text-bottom">
+        <span class="headset-icon">🎧</span> I'M GAMING
+      </div>
+    </div>
+
+
+    <div class="carousel-wrapper" (mousemove)="gestisciMouse($event)" (mouseleave)="ripristinaCarosello($event)">
       <div class="carousel-track">
         @for(game of carouselGames; track $index){
         <div class="carousel-item" (mousedown)="vaiAlGioco(game.title)"

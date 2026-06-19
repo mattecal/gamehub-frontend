@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, HostListener } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { AuthService } from "../../services/auth.service";
 import { CommonModule } from "@angular/common";
@@ -56,6 +56,7 @@ export class HomeComponent implements OnInit {
   newComment = '';
   newRating = 5;
   reviewFeedback = '';
+  currentZone = 'normal';
 
   constructor(
     private authService: AuthService,
@@ -63,6 +64,53 @@ export class HomeComponent implements OnInit {
     private router: Router,
     private cdr: ChangeDetectorRef
   ) { }
+
+  gestisciMouse(event: MouseEvent) {
+    const track = document.querySelector('.carousel-track') as HTMLElement;
+    const wrapper = document.querySelector('.carousel-wrapper') as HTMLElement;
+    if (!track || !wrapper) return;
+
+    const animations = track.getAnimations();
+    if (animations.length === 0) return;
+
+    const larghezza = wrapper.offsetWidth;
+    const rect = wrapper.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+
+    let nuovaZona = 'center';
+    if (x > larghezza * 0.75) {
+      nuovaZona = 'right';
+    } else if (x < larghezza * 0.25) {
+      nuovaZona = 'left';
+    }
+
+    if (this.currentZone !== nuovaZona) {
+      this.currentZone = nuovaZona;
+
+      if (nuovaZona === 'right') {
+        track.style.animationPlayState = 'running';
+        animations[0].playbackRate = 3;
+      } else if (nuovaZona === 'left') {
+        track.style.animationPlayState = 'running';
+        animations[0].playbackRate = 0.3;
+      } else {
+        track.style.animationPlayState = 'paused';
+        animations[0].playbackRate = 1;
+      }
+    }
+  }
+
+  ripristinaCarosello(event: MouseEvent) {
+    this.currentZone = 'normal';
+    const track = document.querySelector('.carousel-track') as HTMLElement;
+    if (!track) return;
+    track.style.animationPlayState = 'running';
+
+    const animations = track.getAnimations();
+    if (animations.length > 0) {
+      animations[0].playbackRate = 1;
+    }
+  }
 
   ngOnInit() {
     this.loadReviews();
@@ -110,7 +158,6 @@ export class HomeComponent implements OnInit {
   }
 
   vaiAlGioco(titoloGioco: string) {
-    console.log("🔥 Bersaglio colpito! Vado al gioco:", titoloGioco); // Riga di debug!
     this.router.navigate(['/giochi'], { queryParams: { openGame: titoloGioco } });
   }
 }
