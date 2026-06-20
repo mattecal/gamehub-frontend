@@ -38,6 +38,7 @@ export class GamesComponent implements OnInit {
   isLoading: boolean = true;
   canImport: boolean = false;
 
+
   constructor(
     private gameService: GameService,
     public authService: AuthService,
@@ -48,8 +49,7 @@ export class GamesComponent implements OnInit {
 
   ngOnInit(): void {
     const role = this.authService.getUserRole();
-    this.canImport = role === 'ROLE_ADMIN' || role === 'ADMIN' ||
-      role === 'ROLE_ORGANIZER' || role === 'ORGANIZER';
+    this.canImport = role === 'ROLE_ADMIN' || role === 'ADMIN'
     this.caricaGiochiLocali();
     this.caricaMiaLibreria();
   }
@@ -144,16 +144,6 @@ export class GamesComponent implements OnInit {
     this.rawgSearchResults = [];
     this.dispatchFiltering();
 
-
-
-    //if (mode === 'local') {
-    //  this.filteredGames = this.games;
-    //} else if (!this.canImport) {
-    //  this.filteredGames = this.games;   
-    //}
-
-    //this.updateDisplayedGames();
-    //this.cdr.markForCheck();
   }
 
   onSearchInput(): void {
@@ -164,23 +154,16 @@ export class GamesComponent implements OnInit {
     let baseArray: any[] = [];
 
     if (this.sourceMode === 'local') {
-      // TAB: "Giochi dell'Arena"
-      // L'Admin vede tutto il catalogo (this.games)
-      // Il Player vede SOLO la sua libreria personale (this.myLibraryGames)
       baseArray = this.canImport ? this.games : this.myLibraryGames;
     } else {
-      // TAB: "Cerca"
       if (this.canImport) {
-        // Admin: cerca globalmente online su RAWG (popola rawgSearchResults)
         this.cercaSuRawg();
         return; 
       } else {
-        // Player: cerca all'interno del catalogo dell'Arena globale
         baseArray = this.games;
       }
     }
 
-    // Filtra per nome e per genere basandosi sull'array corretto
     this.filteredGames = baseArray.filter(game => {
       const matchesSearch = game.title.toLowerCase().includes(this.searchQuery.toLowerCase());
       const matchesGenre = this.selectedGenre ? game.genere === this.selectedGenre : true;
@@ -190,19 +173,6 @@ export class GamesComponent implements OnInit {
     this.updateDisplayedGames();
     this.cdr.markForCheck();
   }
-
-  /*
-
-  filterLibrary(): void{
-    this.filteredGames = this.myLibraryGames.filter(game => {
-      const matchesSearch = game.title.toLowerCase().includes(this.searchQuery.toLowerCase());
-      const matchesGenre = this.selectedGenre ? game.genere === this.selectedGenre : true;
-      return matchesSearch && matchesGenre;
-    });
-    this.updateDisplayedGames();
-    this.cdr.markForCheck();
-  }
-  */
 
   filterGames(): void {
     this.filteredGames = this.games.filter(game => {
@@ -214,7 +184,6 @@ export class GamesComponent implements OnInit {
     this.cdr.markForCheck();
   }
   
-
   updateDisplayedGames(): void {
     if (this.sourceMode === 'local') {
       this.giochiDaMostrare = this.filteredGames;

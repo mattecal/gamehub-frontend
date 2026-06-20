@@ -35,17 +35,17 @@
         {{ game.isSaving ? '⏳ Salvataggio...' : '➕ Aggiungi all\'Arena' }}
       </button>
 
-      <button *ngIf="sourceMode === 'rawg' && !canImport && !isInLibrary(game)" class="import-btn"
+      <button *ngIf="sourceMode === 'rawg' && !isInLibrary(game) && !canImport" class="import-btn"
         (click)="aggiungiALibreria(game, $event)">
         📚 Aggiungi alla libreria
       </button>
 
-      <button *ngIf="sourceMode === 'rawg' && !canImport && isInLibrary(game)" class="import-btn"
+      <button *ngIf="sourceMode === 'rawg' &&  isInLibrary(game)" class="import-btn"
         (click)="rimuoviDaLibreria(game, $event)">
         ✅ Nella libreria — Rimuovi
       </button>
 
-      <button *ngIf="sourceMode === 'local'" class="import-btn"
+      <button *ngIf="sourceMode === 'local' && canImport" class="import-btn"
         (click)="rimuoviDaLibreria(game, $event)">
         🗑 Rimuovi dalla libreria
       </button>
