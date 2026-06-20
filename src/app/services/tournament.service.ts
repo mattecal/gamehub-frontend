@@ -74,7 +74,7 @@ export class TournamentService {
     return this.http.get(url, { headers });
   }
 
-  createTournament(title: string, gameId: number, registrationDeadLine: string, description: string, maxParticipants: number): Observable<Tournament> {
+  createTournament(title: string, gameId: number, startDate: string, description: string, maxParticipants: number): Observable<Tournament> {
   const token = this.authService.getToken();
   const headers = new HttpHeaders({
     'Authorization': `Bearer ${token}`
@@ -82,10 +82,23 @@ export class TournamentService {
   return this.http.post<Tournament>(`${environment.apiUrl}/tournaments`, {
     title,
     gameId,
-    registrationDeadLine,
+    startDate,
     description,
     maxParticipants
   }, { headers });
+  }
+
+  reportMatchResult(matchId: number, userId: number, isWinner: boolean): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+    const url = `${environment.apiUrl}/tournaments/match/${matchId}/report?userId=${userId}&isWinner=${isWinner}`;
+    return this.http.post(url, {}, { headers });
+  }
+
+  getMyMatch(tournamentId: number, userId: number): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+    return this.http.get(`${environment.apiUrl}/tournaments/${tournamentId}/my-match/${userId}`, { headers });
   }
 
 }

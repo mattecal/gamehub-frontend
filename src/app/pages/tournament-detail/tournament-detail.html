@@ -16,6 +16,36 @@
         <p class="description">{{ tournament.description || 'Nessuna descrizione disponibile.' }}</p>
       </div>
 
+      <div class="timer-wrapper">
+  <!-- VISIBILE SE IL TORNEO NON E' ANCORA INIZIATO -->
+  <div class="countdown-container" *ngIf="!isTournamentStarted">
+    <h3 class="timer-title">IL TORNEO INIZIA TRA:</h3>
+    <div class="timer-boxes">
+      <div class="time-box">
+        <span class="time-value">{{ days < 10 ? '0' + days : days }}</span>
+        <span class="time-label">GIORNI</span>
+      </div>
+      <div class="time-box">
+        <span class="time-value">{{ hours < 10 ? '0' + hours : hours }}</span>
+        <span class="time-label">ORE</span>
+      </div>
+      <div class="time-box">
+        <span class="time-value">{{ minutes < 10 ? '0' + minutes : minutes }}</span>
+        <span class="time-label">MIN</span>
+      </div>
+      <div class="time-box">
+        <span class="time-value">{{ seconds < 10 ? '0' + seconds : seconds }}</span>
+        <span class="time-label">SEC</span>
+      </div>
+    </div>
+  </div>
+  <!-- VISIBILE QUANDO IL TIMER SCADE -->
+  <div class="started-container" *ngIf="isTournamentStarted">
+    <h2 class="neon-text-red">🔥 INIZIO TORNEO! 🔥</h2>
+    <p>Il tabellone ufficiale è stato generato. Preparati a combattere!</p>
+  </div>
+</div>
+
       <div class="registration-section" *ngIf="isPlayer">
       <div class="registration-content">
         <h3>Partecipa al Torneo!</h3>
@@ -31,7 +61,7 @@
     </div>
 
     <!-- Sezione dedicata al Game ID: Visibile solo ai giocatori -->
-    <div class="game-id-section" *ngIf="isPlayer">
+    <div class="game-id-section" *ngIf="isPlayer && isUserJoined">
       
       <!-- Appare SOLO SE l'utente NON ha ancora salvato il Game ID -->
       <div *ngIf="!savedGameId" class="game-id-form">
@@ -43,6 +73,54 @@
       <div *ngIf="savedGameId" class="game-id-saved" style="padding: 10px; background-color: rgba(106, 90, 205, 0.2); border-left: 4px solid #6a5acd; margin-top: 10px;">
         <p style="color: #cfcfcf; margin: 0;">Il tuo Game ID per questo torneo è: <strong style="color: white; font-family: 'Orbitron';">{{ savedGameId }}</strong></p>
       </div>
+    </div>
+
+    <!-- SEZIONE SFIDA: Mostra avversario e bottoni SOLO se l'utente è iscritto e ha un match attivo -->
+    <div class="match-container" *ngIf="isUserJoined && myMatchData" style="margin-top: 30px;">
+      
+      <!-- Se ha un avversario -->
+      <div class="opponent-box" *ngIf="myMatchData.opponentName" style="background: rgba(20, 20, 40, 0.8); border: 2px solid #00ffcc; border-radius: 12px; padding: 20px; text-align: center;">
+        <h3 class="neon-text-blue" style="margin-bottom: 5px; color: #00ffcc;">IL TUO AVVERSARIO:</h3>
+        <h2 class="opponent-name" style="font-size: 2rem; margin: 10px 0;">{{ myMatchData.opponentName }}</h2>
+        <p class="opponent-id" style="font-size: 1.2rem; color: #cfcfcf;">
+          ID Gioco: <strong style="color: white; font-family: 'Orbitron'; background: #6a5acd; padding: 5px 10px; border-radius: 5px;">{{ myMatchData.opponentGameId }}</strong>
+        </p>
+
+        <!-- CASO 1: PARTITA IN CORSO E NON HO ANCORA VOTATO -->
+        <div class="match-actions" *ngIf="myMatchData.matchStatus === 'PENDING' && !myMatchData.hasReported" style="margin-top: 25px; display: flex; gap: 15px; justify-content: center;">
+          <button class="btn" (click)="reportResult(true)" style="background: #00ffcc; color: black; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 800; font-size: 1.1rem; cursor: pointer; box-shadow: 0 0 15px rgba(0, 255, 204, 0.5);">
+            🏆 HO VINTO
+          </button>
+          <button class="btn" (click)="reportResult(false)" style="background: #ff0055; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 800; font-size: 1.1rem; cursor: pointer; box-shadow: 0 0 15px rgba(255, 0, 85, 0.5);">
+            💀 HO PERSO
+          </button>
+        </div>
+        <!-- CASO 2: HO VOTATO MA L'AVVERSARIO NON HA ANCORA RISPOSTO -->
+        <div *ngIf="myMatchData.matchStatus === 'PENDING' && myMatchData.hasReported" style="margin-top: 25px; background: rgba(255, 204, 0, 0.2); border: 1px solid #ffcc00; border-radius: 8px; padding: 15px;">
+          <h4 style="color: #ffcc00; margin: 0;">⏳ Risposta inviata!</h4>
+          <p style="font-size: 0.9rem; margin: 5px 0 0 0;">In attesa della conferma del tuo avversario...</p>
+        </div>
+        <!-- CASO 3: MATCH FINITO - HO VINTO -->
+        <div *ngIf="myMatchData.matchStatus === 'FINISHED' && myMatchData.isWinner" style="margin-top: 25px; background: rgba(0, 255, 204, 0.2); border: 2px solid #00ffcc; border-radius: 8px; padding: 15px;">
+          <h3 style="color: #00ffcc; margin: 0; text-shadow: 0 0 10px #00ffcc;">🎉 HAI VINTO!</h3>
+        </div>
+        <!-- CASO 4: MATCH FINITO - HO PERSO -->
+        <div *ngIf="myMatchData.matchStatus === 'FINISHED' && !myMatchData.isWinner" style="margin-top: 25px; background: rgba(255, 0, 85, 0.2); border: 2px solid #ff0055; border-radius: 8px; padding: 15px;">
+          <h3 style="color: #ff0055; margin: 0; text-shadow: 0 0 10px #ff0055;">☠️ HAI PERSO.</h3>
+        </div>
+        <!-- CASO 5: RISULTATI IN CONFLITTO (Es. Tutti dicono di aver vinto) -->
+        <div *ngIf="myMatchData.matchStatus === 'DISPUTED'" style="margin-top: 25px; background: rgba(255, 100, 0, 0.2); border: 2px solid #ff6600; border-radius: 8px; padding: 15px;">
+          <h3 style="color: #ff6600; margin: 0;">⚠️ MATCH CONTESTATO</h3>
+          <p style="font-size: 0.9rem; margin: 5px 0 0 0;">I risultati non coincidono. L'organizzatore verificherà la partita.</p>
+        </div>
+      </div>
+
+      <!-- Se passa il turno automaticamente -->
+      <div class="opponent-box" *ngIf="!myMatchData.opponentName && !myMatchData.message" style="background: rgba(20, 20, 40, 0.8); border: 2px solid #6a5acd; border-radius: 12px; padding: 20px; text-align: center;">
+        <h3 class="neon-text-blue">PASSI IL TURNO!</h3>
+        <p>Nessun avversario trovato, avanzi automaticamente al prossimo round.</p>
+      </div>
+
     </div>
 
     </div>

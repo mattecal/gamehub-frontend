@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TournamentService } from '../../services/tournament.service';
 import { CommonModule } from '@angular/common';
@@ -21,7 +21,7 @@ Chart.register(...registerables);
   changeDetection: ChangeDetectionStrategy.OnPush
   
 })
-export class TournamentDetailComponent implements OnInit {
+export class TournamentDetailComponent implements OnInit, OnDestroy {
   tournament?: Tournament;
   isRatingModalOpen = false;
   selectedScore = 0;
@@ -32,6 +32,13 @@ export class TournamentDetailComponent implements OnInit {
   mostraMessaggioSuccesso = false;
   savedGameId: string | null = null;
   gameIdInput: string = '';
+  days: number = 0;
+  hours: number = 0;
+  minutes: number = 0;
+  seconds: number = 0;
+  isTournamentStarted: boolean = false;
+  private timerInterval: any;
+  myMatchData: any = null;
 
   // Chart configuration
   public barChartType: ChartType = 'bar';
@@ -81,6 +88,7 @@ export class TournamentDetailComponent implements OnInit {
         this.tournament = data;
         this.loadGameId();
         this.setupChartData();
+        this.startTimer();
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -215,6 +223,69 @@ export class TournamentDetailComponent implements OnInit {
       },
       error: (err) => alert('Impossibile salvare il Game ID: ' + (err.error?.error || 'Errore sconosciuto'))
     });
+  }
+
+  startTimer(): void {
+    // Se non c'è una data, consideriamolo iniziato
+    if (!this.tournament || !this.tournament.startDate) {
+      this.isTournamentStarted = true;
+      this.loadMyMatch();
+      return;
+    }
+    // Angular riceve la data come "YYYY-MM-DDTHH:mm:ss", il browser la legge nell'orario locale
+    const startDateTime = new Date(this.tournament.startDate).getTime();
+    // Aggiorna il timer ogni secondo (1000 millisecondi)
+    this.timerInterval = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = startDateTime - now;
+      if (distance <= 0) {
+        // Il tempo è scaduto!
+        clearInterval(this.timerInterval);
+        this.isTournamentStarted = true;
+        this.days = 0; this.hours = 0; this.minutes = 0; this.seconds = 0;
+        this.loadMyMatch();
+      } else {
+        // Calcola giorni, ore, minuti e secondi
+        this.isTournamentStarted = false;
+        this.days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        this.hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        this.minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        this.seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      }
+      
+      // Avvisa Angular di aggiornare la grafica dello schermo
+      this.cdr.detectChanges(); 
+    }, 1000);
+  }
+  // Questo serve per spegnere il timer quando l'utente cambia pagina (evita lag)
+  ngOnDestroy(): void {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+  }
+
+  loadMyMatch(): void {
+    if (this.currentUserId === null || !this.tournament) return;
+    this.tournamentService.getMyMatch(this.tournament.id, this.currentUserId).subscribe({
+      next: (res) => {
+        this.myMatchData = res;
+        this.cdr.detectChanges();
+      },
+      error: err => console.log("Errore caricamento match", err)
+    });
+  }
+
+  reportResult(isWinner: boolean): void {
+    if (!this.myMatchData || !this.myMatchData.matchId || this.currentUserId === null) return;
+    
+    this.tournamentService.reportMatchResult(this.myMatchData.matchId, this.currentUserId, isWinner)
+      .subscribe({
+        next: () => {
+          alert('Risultato inviato con successo! In attesa della conferma dell\'avversario...');
+          this.loadMyMatch(); // Ricarica per bloccare il doppio voto
+        },
+        error: (err) => alert('Errore: ' + (err.error?.error || 'Impossibile salvare il risultato'))
+      });
   }
 
 }
