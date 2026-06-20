@@ -39,6 +39,8 @@ export class TournamentDetailComponent implements OnInit, OnDestroy {
   isTournamentStarted: boolean = false;
   private timerInterval: any;
   myMatchData: any = null;
+  selectedFile: File | null = null;
+  isUploading: boolean = false;
 
   // Chart configuration
   public barChartType: ChartType = 'bar';
@@ -287,6 +289,30 @@ export class TournamentDetailComponent implements OnInit, OnDestroy {
         },
         error: (err) => alert('Errore: ' + (err.error?.error || 'Impossibile salvare il risultato'))
       });
+  }
+
+  onFileSelected(event: any): void {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+    }
+  }
+
+  submitScreenshot(): void {
+    if (!this.selectedFile || !this.myMatchData || !this.myMatchData.matchId || this.currentUserId === null) return;
+    this.isUploading = true;
+    this.tournamentService.uploadScreenshot(this.myMatchData.matchId, this.currentUserId, this.selectedFile).subscribe({
+      next: (res) => {
+        alert('Screenshot inviato con successo!');
+        this.isUploading = false;
+        this.selectedFile = null;
+        this.loadMyMatch();
+      },
+      error: (err) => {
+        alert('Errore durante l\'invio: ' + (err.error?.error || err.message || 'Errore sconosciuto'));
+        this.isUploading = false;
+      }
+    });
   }
 
 }
