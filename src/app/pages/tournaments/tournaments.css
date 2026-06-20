@@ -5,11 +5,18 @@
 }
 
 h2 {
-  font-size: 36px;
-  font-weight: 800;
+  font-size: 40px;
+  font-weight: 900;
+  text-align: center;
+  margin-top: 10px;
   margin-bottom: 25px;
-  color: #6a5acd;
-  text-shadow: 0 0 10px #6a5acd; 
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  text-shadow: 
+    0 0 10px rgba(106, 90, 205, 0.8), 
+    0 0 20px rgba(106, 90, 205, 0.6),
+    0 0 30px rgba(106, 90, 205, 0.4);
 }
 
 .btn {

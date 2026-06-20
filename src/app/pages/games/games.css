@@ -5,11 +5,18 @@
 }
 
 h2 {
-  font-size: 36px;
-  font-weight: 800;
-  margin-bottom: 30px;
-  color: #6a5acd;
-  text-shadow: 0 0 10px #6a5acd;
+  font-size: 40px;
+  font-weight: 900;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 25px;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  text-shadow: 
+    0 0 10px rgba(106, 90, 205, 0.8), 
+    0 0 20px rgba(106, 90, 205, 0.6),
+    0 0 30px rgba(106, 90, 205, 0.4);
 }
 
 .games-grid {
@@ -254,16 +261,24 @@ h2 {
 }
 .tab-btn {
   background: transparent;
-  color: #cfcfcf;
-  border: 1px solid #6a5acd;
-  padding: 6px 12px;
-  margin-right: 8px;
+  color: #888888;
+  border: none;
+  padding: 10px 24px;
   margin-bottom: 3px;
-  border-radius: 6px;
+  border-radius: 25px;
+  font-weight: bold;
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: all 0.3s ease;
+}
+.tab-btn:hover {
+  color: #cfcfcf;
 }
 .tab-btn.active {
   background: #6a5acd;
   color: white;
+  box-shadow: 0 0 15px rgba(106, 90, 205, 0.5);
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
