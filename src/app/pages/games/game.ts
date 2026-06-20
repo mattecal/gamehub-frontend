@@ -31,7 +31,7 @@ export class GamesComponent implements OnInit {
 
   sourceMode: 'local' | 'rawg' = 'local';
   selectedGame: any | null = null;
-  
+
   myLibraryGames: any[] = [];
   myLibraryIds: Set<number> = new Set<number>();
 
@@ -61,7 +61,6 @@ export class GamesComponent implements OnInit {
     this.gameService.getCachedGames().subscribe({
       next: (data: Game[]) => {
         this.games = data;
-        //this.filteredGames = data;
         this.extractGenres();
         this.dispatchFiltering();
         this.isLoading = false;
@@ -77,15 +76,15 @@ export class GamesComponent implements OnInit {
     });
   }
 
-  caricaMiaLibreria(): void{
+  caricaMiaLibreria(): void {
     this.libraryService.getMyLibrary().subscribe({
-      next: (data : Game[]) =>{
+      next: (data: Game[]) => {
         this.myLibraryGames = data;
-        this.myLibraryIds = new Set(data.map(g=>g.id));
+        this.myLibraryIds = new Set(data.map(g => g.id));
         this.dispatchFiltering();
         this.cdr.markForCheck();
       },
-      error : (err) => {
+      error: (err) => {
         console.error('Errore caricamento libreria', err);
         this.cdr.markForCheck();
       }
@@ -141,19 +140,7 @@ export class GamesComponent implements OnInit {
     this.sourceMode = mode;
     this.searchQuery = '';
     this.selectedGenre = '';
-    this.rawgSearchResults = [];
     this.dispatchFiltering();
-
-
-
-    //if (mode === 'local') {
-    //  this.filteredGames = this.games;
-    //} else if (!this.canImport) {
-    //  this.filteredGames = this.games;   
-    //}
-
-    //this.updateDisplayedGames();
-    //this.cdr.markForCheck();
   }
 
   onSearchInput(): void {
@@ -164,23 +151,16 @@ export class GamesComponent implements OnInit {
     let baseArray: any[] = [];
 
     if (this.sourceMode === 'local') {
-      // TAB: "Giochi dell'Arena"
-      // L'Admin vede tutto il catalogo (this.games)
-      // Il Player vede SOLO la sua libreria personale (this.myLibraryGames)
       baseArray = this.canImport ? this.games : this.myLibraryGames;
     } else {
-      // TAB: "Cerca"
       if (this.canImport) {
-        // Admin: cerca globalmente online su RAWG (popola rawgSearchResults)
         this.cercaSuRawg();
-        return; 
+        return;
       } else {
-        // Player: cerca all'interno del catalogo dell'Arena globale
         baseArray = this.games;
       }
     }
 
-    // Filtra per nome e per genere basandosi sull'array corretto
     this.filteredGames = baseArray.filter(game => {
       const matchesSearch = game.title.toLowerCase().includes(this.searchQuery.toLowerCase());
       const matchesGenre = this.selectedGenre ? game.genere === this.selectedGenre : true;
@@ -191,18 +171,7 @@ export class GamesComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  /*
 
-  filterLibrary(): void{
-    this.filteredGames = this.myLibraryGames.filter(game => {
-      const matchesSearch = game.title.toLowerCase().includes(this.searchQuery.toLowerCase());
-      const matchesGenre = this.selectedGenre ? game.genere === this.selectedGenre : true;
-      return matchesSearch && matchesGenre;
-    });
-    this.updateDisplayedGames();
-    this.cdr.markForCheck();
-  }
-  */
 
   filterGames(): void {
     this.filteredGames = this.games.filter(game => {
@@ -213,7 +182,7 @@ export class GamesComponent implements OnInit {
     this.updateDisplayedGames();
     this.cdr.markForCheck();
   }
-  
+
 
   updateDisplayedGames(): void {
     if (this.sourceMode === 'local') {
@@ -317,13 +286,13 @@ export class GamesComponent implements OnInit {
     });
   }
 
-  isInLibrary(game:any): boolean{
+  isInLibrary(game: any): boolean {
     return this.myLibraryIds.has(game.id);
   }
 
-  aggiungiALibreria(game:any, event:Event): void{
+  aggiungiALibreria(game: any, event: Event): void {
     event.stopPropagation();
-    
+
     this.libraryService.addGame(game.id).subscribe({
       next: () => {
         this.myLibraryIds.add(game.id);
@@ -338,7 +307,7 @@ export class GamesComponent implements OnInit {
     });
   }
 
-  rimuoviDaLibreria(game:any, event:Event): void{
+  rimuoviDaLibreria(game: any, event: Event): void {
     event.stopPropagation();
     this.libraryService.removeGame(game.id).subscribe({
       next: () => {
