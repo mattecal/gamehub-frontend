@@ -164,7 +164,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   toggleReviewForm() {
     if (!this.authService.isLoggedIn()) {
-      this.reviewFeedback = 'DEVI FARE IL LOGIN PER LASCIARE UNA RECENSIONE!';
+      this.reviewFeedback = 'DEVI EFFETTUARE IL LOGIN PER LASCIARE UNA RECENSIONE!';
       setTimeout(() => {
         this.reviewFeedback = ''
         this.cdr.markForCheck()

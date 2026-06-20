@@ -111,11 +111,7 @@ export class GamesComponent implements OnInit {
   }
 
   onGenreChange(): void {
-    if (this.sourceMode === 'local') {
-      this.filterGames();
-    } else {
-      this.cercaSuRawg();
-    }
+    this.dispatchFiltering();
   }
 
   cercaSuRawg(): void {
@@ -239,7 +235,7 @@ export class GamesComponent implements OnInit {
       coverUrl: gameFromRawg.backgroundImage,
       rating: gameFromRawg.rating,
       rawgId: gameFromRawg.slug,
-      description: gameFromRawg.description || "Descrizione nel trailer di Gioco"
+      description: gameFromRawg.description || "Dettagli disponibili nel trailer ufficiale."
     };
 
     this.gameService.saveGame(nuovoGioco).subscribe({

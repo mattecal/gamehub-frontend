@@ -133,6 +133,8 @@ h2 {
   outline: none;
   backdrop-filter: blur(4px);
   transition: border-color 0.2s, box-shadow 0.2s;
+  min-width: 200px;
+  cursor: pointer;
 }
 
 .search-input {
@@ -260,6 +262,7 @@ h2 {
   border: 1px solid #6a5acd;
   padding: 6px 12px;
   margin-right: 8px;
+  margin-bottom: 3px;
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
