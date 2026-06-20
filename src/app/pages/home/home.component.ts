@@ -33,7 +33,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     { title: "Rainbow Six Siege", image: 'https://media.rawg.io/media/games/b34/b3419c2706f8f8dbe40d08e23642ad06.jpg' },
     { title: "Marvel's Wolverine", image: 'https://media.rawg.io/media/resize/640/-/games/28d/28d61be51ec0411e24c28f71122dcaaf.jpeg' },
     { title: "Marvel's Spiderman 2", image: 'https://media.rawg.io/media/games/7ae/7ae5a14cdb4ab222a134c15f4629e430.jpg' },
-    { title: "Fifa 2025", image: 'https://media.rawg.io/media/games/355/355d2ec5d6b87518228dc30a9bb0e70d.jpg' },
 
     { title: 'Dragon Ball Xenoverse', image: 'https://media.rawg.io/media/resize/640/-/games/729/729822a7ac978607241a310677c7775d.jpg' },
     { title: 'The Witcher 3', image: 'https://media.rawg.io/media/games/618/618c2031a07bbff6b4f611f10b6bcdbc.jpg' },
@@ -48,7 +47,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     { title: "Rainbow Six Siege", image: 'https://media.rawg.io/media/games/b34/b3419c2706f8f8dbe40d08e23642ad06.jpg' },
     { title: "Marvel's Wolverine", image: 'https://media.rawg.io/media/resize/640/-/games/28d/28d61be51ec0411e24c28f71122dcaaf.jpeg' },
     { title: "Marvel's Spider-Man 2", image: 'https://media.rawg.io/media/games/7ae/7ae5a14cdb4ab222a134c15f4629e430.jpg' },
-    { title: "Fifa 2025", image: 'https://media.rawg.io/media/games/355/355d2ec5d6b87518228dc30a9bb0e70d.jpg' }
 
 
   ];
@@ -137,10 +135,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     if (this.newChatMessage.trim() !== '') {
-      let senderName = localStorage.getItem('username');
-      if (!senderName) {
-        senderName = 'Utente_Sconosciuto';
-      }
+      const currentUser = this.authService.getCurrentUser();
+      const senderName = currentUser ? currentUser.username : 'Utente_Sconosciuto';
 
       const msg: ChatMessage = {
         sender: senderName,
