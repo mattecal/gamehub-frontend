@@ -41,7 +41,6 @@ export class ProfileComponent implements OnInit {
   sendMsgFeedback = '';
   sendMsgFeedbackType = '';
 
-  // 👑 FIX DEFINITIVO: Aggiunto 'role: string' all'interfaccia dell'oggetto
   usersList: { id: number, username: string, role: string }[] = [];
   isLoadingUsers = false;
 
@@ -121,24 +120,20 @@ export class ProfileComponent implements OnInit {
     this.deleteMessageType = '';
     this.cdr.detectChanges();
 
-    this.authService.deleteUser(this.username).subscribe({
+    this.authService.deleteMyAccount().subscribe({
       next: (res) => {
         if (res === 'SELF_DELETED') {
-          this.authService.logout();
-          this.router.navigate(['/login']);
-          return;
+          this.isDeleteLoading = false;
+          this.deleteMessage = 'Account eliminato con successo. Arrivederci!';
+          this.deleteMessageType = 'success';
+          this.cdr.detectChanges();
+
+          setTimeout(() => {
+            this.closeDeleteModal();
+            this.authService.logout();
+            this.router.navigate(['/login']);
+          }, 1800);
         }
-
-        this.isDeleteLoading = false;
-        this.deleteMessage = res;
-        this.deleteMessageType = 'success';
-        this.cdr.detectChanges();
-
-        setTimeout(() => {
-          this.closeDeleteModal();
-          this.authService.logout();
-          this.router.navigate(['/login']);
-        }, 1800);
       },
       error: (err) => {
         this.isDeleteLoading = false;

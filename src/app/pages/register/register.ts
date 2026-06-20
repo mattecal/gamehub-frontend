@@ -18,15 +18,15 @@ export class RegisterComponent {
   confermaPassword = '';
   errore = '';
   caricamento = false;
-  ruolo = '';
+  ruolo = 'PLAYER';
 
   constructor(
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   register(): void {
-    if (!this.username || !this.email || !this.password || !this.confermaPassword || !this.ruolo) {
+    if (!this.username || !this.email || !this.password || !this.confermaPassword) {
       this.errore = 'Tutti i campi sono obbligatori.';
       return;
     }
@@ -36,7 +36,7 @@ export class RegisterComponent {
       this.errore = 'Inserisci un indirizzo email valido (es. utente@dominio.com).';
       return;
     }
-    
+
     if (this.password !== this.confermaPassword) {
       this.errore = 'Le password non coincidono.';
       return;

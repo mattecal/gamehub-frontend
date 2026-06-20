@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, BehaviorSubject } from 'rxjs';
 import { environment } from '../app.config';
 
 export interface AuthResponse {
@@ -36,7 +36,18 @@ export class AuthService {
   private readonly TOKEN_KEY = 'gh_token';
   private readonly USER_KEY = 'gh_user';
 
+  private currentUserSubject = new BehaviorSubject<AuthResponse | null>(this.getInitialUser());
+  public currentUser$ = this.currentUserSubject.asObservable();
+
   constructor(private http: HttpClient) { }
+
+  private getInitialUser(): AuthResponse | null {
+    if (typeof sessionStorage !== 'undefined') {
+      const raw = sessionStorage.getItem(this.USER_KEY);
+      return raw ? JSON.parse(raw) : null;
+    }
+    return null;
+  }
 
   login(credentials: UserLoginDTO): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials).pipe(
@@ -54,6 +65,8 @@ export class AuthService {
     if (typeof sessionStorage !== 'undefined') {
       sessionStorage.removeItem(this.TOKEN_KEY);
       sessionStorage.removeItem(this.USER_KEY);
+
+      this.currentUserSubject.next(null);
     }
   }
 
@@ -80,6 +93,7 @@ export class AuthService {
     if (typeof sessionStorage !== 'undefined') {
       sessionStorage.setItem(this.TOKEN_KEY, res.token);
       sessionStorage.setItem(this.USER_KEY, JSON.stringify(res));
+      this.currentUserSubject.next(res);
     }
   }
 
@@ -183,5 +197,17 @@ export class AuthService {
   getUserId(): number | null {
     const user = this.getCurrentUser();
     return user ? user.id : null;
+  }
+
+  deleteMyAccount(): Observable<string> {
+    const token = this.getToken();
+    if (!token) throw new Error('Nessun token trovato!');
+
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+
+    return this.http.delete(`${environment.apiUrl}/users/delete-me`, {
+      headers,
+      responseType: 'text'
+    });
   }
 }
