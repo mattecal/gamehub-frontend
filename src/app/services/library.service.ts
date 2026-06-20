@@ -16,10 +16,10 @@ import { environment } from "../app.config";
     }
 
     addGame(gameId : number): Observable<any> {
-        return this.http.post(`${this.apiUrl}/${gameId}`, {});
+        return this.http.post(`${this.apiUrl}/${gameId}`, {}, {responseType: "text"});
     }
 
     removeGame(gameId: number): Observable<any>{
-        return this.http.delete(`${this.apiUrl}/${gameId}`);
+        return this.http.delete(`${this.apiUrl}/${gameId}`, {responseType: "text"});
     }
 }

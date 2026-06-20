@@ -6,6 +6,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Tournament } from '../../models/tournament';
 import { FormsModule } from '@angular/forms';
 import { GameService} from '../../services/games.service';
+import { LibraryService } from '../../services/library.service';
 
 @Component({
   selector: 'app-tournaments',
@@ -26,6 +27,7 @@ export class TournamentsComponent implements OnInit {
   constructor(
     private tournamentService: TournamentService,
     private gameService : GameService,
+    private libraryService: LibraryService,
     private cdr: ChangeDetectorRef,
     private sanitizer: DomSanitizer
   ) {}
@@ -36,7 +38,7 @@ export class TournamentsComponent implements OnInit {
         this.tournaments = data;
         this.avalaibleGames = [...new Set(data.map(t=> t.game?.title).filter(title => title))].sort();
         this.isLoading = false;
-        this.gameService.getCachedGames().subscribe( {next : (libGames)=> {this.libraryGameIds = libGames.map(g=>g.id);
+        this.libraryService.getMyLibrary().subscribe( {next : (libGames)=> {this.libraryGameIds = libGames.map(g=>g.id);
           this.isLoading = false;
           this.cdr.detectChanges();
         }, 
