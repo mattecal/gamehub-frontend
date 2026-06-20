@@ -41,8 +41,20 @@
   </div>
   <!-- VISIBILE QUANDO IL TIMER SCADE -->
   <div class="started-container" *ngIf="isTournamentStarted">
-    <h2 class="neon-text-red">🔥 INIZIO TORNEO! 🔥</h2>
-    <p>Il tabellone ufficiale è stato generato. Preparati a combattere!</p>
+
+    <!-- Caso Torneo Normale (In Corso / Concluso) -->
+    <ng-container *ngIf="tournament.status !== 'ANNULLATO'">
+      <h2 class="neon-text-red">🔥 INIZIO TORNEO! 🔥</h2>
+      <p>Il tabellone ufficiale è stato generato. Preparati a combattere!</p>
+    </ng-container>
+    <!-- Caso Torneo Deserto -->
+    <ng-container *ngIf="tournament.status === 'ANNULLATO'">
+      <div style="background: rgba(255, 0, 0, 0.2); border: 2px solid #ff0000; border-radius: 12px; padding: 20px; text-align: center; margin-top: 15px;">
+        <h2 style="color: #ff0000; margin-bottom: 10px;">❌ TORNEO ANNULLATO: Partecipanti insufficienti</h2>
+        <p style="color: white; font-size: 1.1rem;">Non è stato raggiunto il numero minimo di giocatori.</p>
+      </div>
+    </ng-container>
+
   </div>
 </div>
 
@@ -54,7 +66,7 @@
       <div class="registration-actions">
         <!-- Mostra questo bottone SOLO se l'utente NON è ancora iscritto -->
         <button *ngIf="!isUserJoined" class="btn btn-join-large" (click)="joinTournament()">🚀 Iscriviti Ora</button>
-        
+
         <!-- Mostra questo bottone grigio/disabilitato se è GIA' iscritto -->
         <button *ngIf="isUserJoined" class="btn btn-join-large" disabled style="background-color: #555; border-color: #444; cursor: not-allowed;">✅ Sei già Iscritto</button>
       </div>
@@ -62,11 +74,11 @@
 
     <!-- Sezione dedicata al Game ID: Visibile solo ai giocatori -->
     <div class="game-id-section" *ngIf="isPlayer && isUserJoined">
-      
+
       <!-- Appare SOLO SE l'utente NON ha ancora salvato il Game ID -->
       <div *ngIf="!savedGameId" class="game-id-form">
         <p style="color: #e0ffff; font-size: 14px;">Inserisci l'ID del gioco per farti riconoscere dal tuo avversario:</p>
-          <input type="text" [(ngModel)]="gameIdInput" placeholder="Es. NomeSuLoL#1234" class="terminal-input" style="background-color: #1a1a2e; color: #e0ffff; border: 1px solid #6a5acd; padding: 8px;">        
+          <input type="text" [(ngModel)]="gameIdInput" placeholder="Es. NomeSuLoL#1234" class="terminal-input" style="background-color: #1a1a2e; color: #e0ffff; border: 1px solid #6a5acd; padding: 8px;">
           <button (click)="submitGameId()" class="btn btn-submit" style="margin-left: 10px; padding: 8px 16px;">Salva ID</button>
       </div>
       <!-- Appare SOLO SE l'utente HA GIÀ salvato il Game ID -->
@@ -77,9 +89,12 @@
 
     <!-- SEZIONE SFIDA: Mostra avversario e bottoni SOLO se l'utente è iscritto e ha un match attivo -->
     <div class="match-container" *ngIf="isUserJoined && myMatchData" style="margin-top: 30px;">
-      
+
       <!-- Se ha un avversario -->
       <div class="opponent-box" *ngIf="myMatchData.opponentName" style="background: rgba(20, 20, 40, 0.8); border: 2px solid #00ffcc; border-radius: 12px; padding: 20px; text-align: center;">
+        <div style="background: #ff0055; color: white; display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-family: 'Orbitron'; margin-bottom: 10px; text-transform: uppercase;">
+          {{ myMatchData.roundNumber === myMatchData.totalRounds ? 'ROUND FINALE 🏆' : 'ROUND ' + myMatchData.roundNumber }}
+        </div>
         <h3 class="neon-text-blue" style="margin-bottom: 5px; color: #00ffcc;">IL TUO AVVERSARIO:</h3>
         <h2 class="opponent-name" style="font-size: 2rem; margin: 10px 0;">{{ myMatchData.opponentName }}</h2>
         <p class="opponent-id" style="font-size: 1.2rem; color: #cfcfcf;">
@@ -112,11 +127,35 @@
         <div *ngIf="myMatchData.matchStatus === 'DISPUTED'" style="margin-top: 25px; background: rgba(255, 100, 0, 0.2); border: 2px solid #ff6600; border-radius: 8px; padding: 15px;">
           <h3 style="color: #ff6600; margin: 0;">⚠️ MATCH CONTESTATO</h3>
           <p style="font-size: 0.9rem; margin: 5px 0 0 0;">I risultati non coincidono. L'organizzatore verificherà la partita.</p>
+
+          <div style="margin-top: 15px; border-top: 1px dashed #ff6600; padding-top: 15px;">
+            <p style="margin-bottom: 10px; font-weight: bold; color: white;">Allega la prova della tua vittoria:</p>
+
+            <div *ngIf="!myMatchData.myScreenshot">
+              <input type="file" accept="image/*" (change)="onFileSelected($event)" style="margin-bottom: 10px; color: white; width: 100%;">
+              <button class="btn" (click)="submitScreenshot()" [disabled]="!selectedFile || isUploading" style="background: #ff6600; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; display: block; margin: 0 auto;">
+                {{ isUploading ? 'Invio in corso...' : 'Invia Prova' }}
+              </button>
+            </div>
+
+            <div *ngIf="myMatchData.myScreenshot" style="background: rgba(0, 255, 136, 0.2); padding: 10px; border-radius: 5px; border: 1px solid #00ff88;">
+              <p style="color: #00ff88; margin: 0 0 10px 0;">✅ Prova inviata con successo!</p>
+              <a [href]="'http://localhost:8080' + myMatchData.myScreenshot" target="_blank" style="color: #00ffcc; text-decoration: underline;">Visualizza la tua prova</a>
+            </div>
+
+            <div *ngIf="myMatchData.opponentScreenshot" style="margin-top: 15px; background: rgba(255, 0, 85, 0.2); padding: 10px; border-radius: 5px; border: 1px solid #ff0055;">
+              <p style="color: #ff0055; margin: 0 0 10px 0;">L'avversario ha allegato una prova:</p>
+              <a [href]="'http://localhost:8080' + myMatchData.opponentScreenshot" target="_blank" style="color: #ffcccc; text-decoration: underline;">Visualizza prova avversario</a>
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Se passa il turno automaticamente -->
       <div class="opponent-box" *ngIf="!myMatchData.opponentName && !myMatchData.message" style="background: rgba(20, 20, 40, 0.8); border: 2px solid #6a5acd; border-radius: 12px; padding: 20px; text-align: center;">
+        <div style="background: #ff0055; color: white; display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-family: 'Orbitron'; margin-bottom: 10px; text-transform: uppercase;">
+          {{ myMatchData.roundNumber === myMatchData.totalRounds ? 'ROUND FINALE 🏆' : 'ROUND ' + myMatchData.roundNumber }}
+        </div>
         <h3 class="neon-text-blue">PASSI IL TURNO!</h3>
         <p>Nessun avversario trovato, avanzi automaticamente al prossimo round.</p>
       </div>
@@ -126,7 +165,7 @@
     </div>
 
 
-    
+
 
 
     <button *ngIf="isPlayer" class="btn btn-rate" (click)="openRatingModal()">⭐ Inserisci Rating</button>
@@ -203,7 +242,7 @@
         <button class="btn btn-cancel" (click)="closeRatingModal()">Annulla</button>
         <button class="btn btn-submit" [disabled]="selectedScore === 0" (click)="submitRating()">Conferma</button>
       </div>
-      
+
     </div>
   </div>
 </ng-container>

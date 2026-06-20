@@ -61,7 +61,7 @@ export class TournamentService {
   saveGameId(tournamentId: number, userId: number, gameId: string): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
-    
+
     const url = `${environment.apiUrl}/tournaments/${tournamentId}/player-id?userId=${userId}&gameId=${gameId}`;
     return this.http.post(url, {}, { headers });
   }
@@ -69,7 +69,7 @@ export class TournamentService {
   getGameId(tournamentId: number, userId: number): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
-    
+
     const url = `${environment.apiUrl}/tournaments/${tournamentId}/player-id/${userId}`;
     return this.http.get(url, { headers });
   }
@@ -99,6 +99,15 @@ export class TournamentService {
     const token = this.authService.getToken();
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
     return this.http.get(`${environment.apiUrl}/tournaments/${tournamentId}/my-match/${userId}`, { headers });
+  }
+
+  uploadScreenshot(matchId: number, userId: number, file: File): Observable<any> {
+    const token = this.authService.getToken();
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+    const formData = new FormData();
+    formData.append('file', file);
+    const url = `${environment.apiUrl}/tournaments/match/${matchId}/upload-screenshot?userId=${userId}`;
+    return this.http.post(url, formData, { headers });
   }
 
   getPlayerOfTheMonth(): import ('rxjs').Observable<any> {
