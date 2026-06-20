@@ -15,9 +15,9 @@ import { Message } from '../../models/message';
 })
 export class AdminPannelComponent implements OnInit {
   stats: AdminStats = {
-    totalUsers : 0,
-    activeTournaments:0,
-    bannedUsers:0
+    totalUsers: 0,
+    activeTournaments: 0,
+    bannedUsers: 0
   };
 
   isLoading = false;
@@ -61,19 +61,19 @@ export class AdminPannelComponent implements OnInit {
   sendMsgText = '';
   sendMsgFeedback = '';
   sendMsgFeedbackType = '';
-  usersList: {id: number, username: string}[] = [];
+  usersList: { id: number, username: string }[] = [];
   isLoadingUsers = false;
 
-  constructor(private authService: AuthService, 
-              private messageService: MessageService,
-              private cdr: ChangeDetectorRef,
-              private router : Router){}
+  constructor(private authService: AuthService,
+    private messageService: MessageService,
+    private cdr: ChangeDetectorRef,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.loadDashboardStats();
   }
 
-  loadDashboardStats():void{
+  loadDashboardStats(): void {
     this.authService.getAdminStats().subscribe({
       next: (data) => {
         this.stats = data;
@@ -84,19 +84,19 @@ export class AdminPannelComponent implements OnInit {
       }
     });
   }
-  openPasswordModal(){
+  openPasswordModal() {
     this.isPasswordModalOpen = true;
     this.oldPassword = '';
     this.newPassword = '';
     this.passwordMessage = '';
   }
 
-  closePasswordModal(){
+  closePasswordModal() {
     this.isPasswordModalOpen = false;
   }
 
-  submitChangePassword(){
-    if(!this.oldPassword || !this.newPassword){
+  submitChangePassword() {
+    if (!this.oldPassword || !this.newPassword) {
       this.passwordMessage = 'COMPILA ENTRAMBI I CAMPI.';
       this.passwordMessageType = 'error';
       return;
@@ -108,14 +108,14 @@ export class AdminPannelComponent implements OnInit {
     this.cdr.detectChanges();
 
     this.authService.changePassword(this.oldPassword, this.newPassword).subscribe({
-      next:(res) => {
+      next: (res) => {
         this.isLoading = false;
         this.passwordMessage = 'PASSWORD AGGIORNAA CON SUCCESSO!';
         this.passwordMessageType = 'succes';
 
         this.cdr.detectChanges();
 
-        setTimeout(() =>{
+        setTimeout(() => {
           this.closePasswordModal();
           this.cdr.detectChanges();
         }, 2000);
@@ -150,23 +150,23 @@ export class AdminPannelComponent implements OnInit {
     this.promoteMessageType = '';
     this.cdr.detectChanges();
 
-    this.authService.promoteToAdmin(this.promoteUsername).subscribe({
+    this.authService.promoteToOrganizer(this.promoteUsername).subscribe({
       next: (res) => {
         this.isPromoteLoading = false;
         this.promoteMessage = res;
         this.promoteMessageType = 'success';
         this.cdr.detectChanges();
-        
+
         setTimeout(() => {
           this.closePromoteModal();
-          this.loadDashboardStats(); 
+          this.loadDashboardStats();
           this.cdr.detectChanges();
         }, 2500);
       },
       error: (err) => {
         this.isPromoteLoading = false;
-       
-        this.promoteMessage = err.error || 'ERRORE DI SISTEMA DURANTE LA PROMOZIONE.'; 
+
+        this.promoteMessage = err.error || 'ERRORE DI SISTEMA DURANTE LA PROMOZIONE.';
         this.promoteMessageType = 'error';
         this.cdr.detectChanges();
       }
@@ -201,18 +201,18 @@ export class AdminPannelComponent implements OnInit {
     this.authService.deleteUser(this.deleteUsername).subscribe({
       next: (res) => {
         if (res === 'SELF_DELETED') {
-          this.authService.logout(); 
-          this.router.navigate(['/login']); 
-          return; 
+          this.authService.logout();
+          this.router.navigate(['/login']);
+          return;
         }
 
-        
+
         this.isDeleteLoading = false;
-        this.deleteMessage = res; 
+        this.deleteMessage = res;
         this.deleteMessageType = 'success';
-        this.loadDashboardStats(); 
+        this.loadDashboardStats();
         this.cdr.detectChanges();
-        
+
         setTimeout(() => {
           this.closeDeleteModal();
           this.cdr.detectChanges();
@@ -220,7 +220,7 @@ export class AdminPannelComponent implements OnInit {
       },
       error: (err) => {
         this.isDeleteLoading = false;
-        this.deleteMessage = err.error || 'Errore di sistema durante l\'eliminazione.'; 
+        this.deleteMessage = err.error || 'Errore di sistema durante l\'eliminazione.';
         this.deleteMessageType = 'error';
         this.cdr.detectChanges();
       }
@@ -252,12 +252,12 @@ export class AdminPannelComponent implements OnInit {
     this.authService.banUser(this.banUsername).subscribe({
       next: (res) => {
         this.isBanLoading = false;
-        this.banMessage = res; 
+        this.banMessage = res;
         this.banMessageType = 'success';
-        
-        this.loadDashboardStats(); 
+
+        this.loadDashboardStats();
         this.cdr.detectChanges();
-        
+
         setTimeout(() => {
           this.closeBanModal();
           this.cdr.detectChanges();
@@ -265,7 +265,7 @@ export class AdminPannelComponent implements OnInit {
       },
       error: (err) => {
         this.isBanLoading = false;
-        this.banMessage = err.error || 'Errore di sistema durante il ban.'; 
+        this.banMessage = err.error || 'Errore di sistema durante il ban.';
         this.banMessageType = 'error';
         this.cdr.detectChanges();
       }
@@ -298,10 +298,10 @@ export class AdminPannelComponent implements OnInit {
         this.isUnbanLoading = false;
         this.unbanMessage = res;
         this.unbanMessageType = 'success';
-        
-        this.loadDashboardStats(); 
+
+        this.loadDashboardStats();
         this.cdr.detectChanges();
-        
+
         setTimeout(() => {
           this.closeUnbanModal();
           this.cdr.detectChanges();

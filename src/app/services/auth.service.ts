@@ -7,7 +7,7 @@ export interface AuthResponse {
   token: string;
   username: string;
   role: string;
-  id : number;
+  id: number;
 }
 
 export interface UserLoginDTO {
@@ -103,7 +103,7 @@ export class AuthService {
       responseType: 'text'
     });
   }
-  promoteToAdmin(targetUsername: string): Observable<string> {
+  promoteToOrganizer(targetUsername: string): Observable<string> {
     const token = this.getToken();
     if (!token) {
       throw new Error('NESSUN TOKEN TROVATO, DEVI FARE IL LOGIN!')
@@ -111,7 +111,7 @@ export class AuthService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    return this.http.put(`${environment.apiUrl}/admin/promote/${targetUsername}`, {}, {
+    return this.http.put(`${environment.apiUrl}/admin/promote-organizer/${targetUsername}`, {}, {
       headers,
       responseType: 'text'
     });
@@ -180,7 +180,7 @@ export class AuthService {
     );
   }
 
-  getUserId(): number|null{
+  getUserId(): number | null {
     const user = this.getCurrentUser();
     return user ? user.id : null;
   }
