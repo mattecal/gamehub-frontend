@@ -23,6 +23,7 @@ export class TournamentsComponent implements OnInit {
   avalaibleGames: string[] = [];
   filterMode : 'all' | 'library' = 'all';
   libraryGameIds: number[] = [];
+  potm: any=null;
 
   constructor(
     private tournamentService: TournamentService,
@@ -55,6 +56,14 @@ export class TournamentsComponent implements OnInit {
     this.cdr.detectChanges();
     }
     });
+
+    this.tournamentService.getPlayerOfTheMonth().subscribe({
+      next: (res) => {
+        this.potm = res;
+        this.cdr.detectChanges();
+        },
+        error: (err) => console.error('Errore caricamento POTM', err)
+      });
   }
         
 

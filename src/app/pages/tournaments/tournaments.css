@@ -161,3 +161,27 @@ h2 {
   color: white;
 }
 
+.potm-banner{
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  color: #1a1a2e;
+  padding: 15px 25px;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  text-align: center;
+  font-size: 18px;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  animation: glow 2s infinite alternate;
+}
+
+.potm-banner , .potm-icon{
+  font-size: 24px
+}
+@keyframes glow {
+  from { box-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
+  to { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+}
+

@@ -1,5 +1,10 @@
 <div *ngIf="isLoading" class="loading-text">Caricamento della pagina in corso...</div>
 <div *ngIf="!isLoading && tournaments.length === 0" class="no-tournaments">Nessun torneo disponibile</div>
+<div class="potm-banner" *ngIf="potm && potm.points > 0">
+  <span class="potm-icon">🏆</span>
+  <span class="potm-text">Player of the Month: <strong>{{potm.username}}</strong> con <strong>{{potm.points}}</strong> punti guadagnati questo mese!</span>
+</div>
+
 
 <div class="tournaments-header">
   <h2 class="page-title">Tornei</h2>

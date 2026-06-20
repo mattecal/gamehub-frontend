@@ -101,5 +101,9 @@ export class TournamentService {
     return this.http.get(`${environment.apiUrl}/tournaments/${tournamentId}/my-match/${userId}`, { headers });
   }
 
+  getPlayerOfTheMonth(): import ('rxjs').Observable<any> {
+    return this.http.get(`${environment.apiUrl}/tournaments/potm`);
+  }
+
 }
 
