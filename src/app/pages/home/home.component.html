@@ -62,7 +62,8 @@
     <div class="card discord-card">
       <h2>COMMUNITY</h2>
       <p class="discord-text">
-        Unisciti al nostro server Discord ufficiale per essere sempre connesso con il tuo Team e restare aggiornato su annunci, novità e bug!
+        Unisciti al nostro server Discord ufficiale per essere sempre connesso con il tuo Team e restare aggiornato su
+        annunci, novità e bug!
       </p>
       <a href="https://discord.gg/FWezua4qTB" target="_blank" class="discord-btn">
         💬 Entra nel Server
@@ -77,14 +78,14 @@
 
         @for (msg of chatMessages; track $index) {
         <div class="chat-message"
-          style="margin-bottom: 8px; font-family: monospace; word-wrap: break-word; text-align: left;">
-          <span style="color: #8cedd6; font-weight: bold;">[{{ msg.sender }}]:</span>
-          <span style="color: #e0e0e0; font-size: 13px; margin-left: 5px;">{{ msg.content }}</span>
+          style="margin-bottom: 10px; word-wrap: break-word; text-align: left; line-height: 1.4;">
+          <span style="color: #a8b0d3; font-size: 11px;">[{{ msg.timestamp | date:'HH:mm' }}]</span>
+          <span style="color: #7289da; font-weight: bold; margin-left: 5px;">{{ msg.sender }}:</span>
+          <span class="discord-text" style="font-size: 14px; margin-left: 5px;">{{ msg.content }}</span>
         </div>
         } @empty {
-        <p
-          style="color: #888; font-family: monospace; font-size: 13px; text-align: center; margin-top: auto; margin-bottom: auto;">
-          La lobby è vuota.<br>Sii il primo a scrivere! _
+        <p class="discord-text" style="text-align: center; margin-top: auto; margin-bottom: auto; opacity: 0.7;">
+          La lobby è vuota.<br>Sii il primo a rompere il ghiaccio! 💬
         </p>
         }
 
@@ -96,14 +97,13 @@
         <input type="text" [(ngModel)]="newChatMessage" (keyup.enter)="sendChatMessage()"
           placeholder="Scrivi alla lobby..."
           style="flex: 1; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid #3a3a5a; padding: 8px; font-family: monospace; border-radius: 4px; outline: none; transition: border-color 0.3s;">
-        <button class="confirm-btn" (click)=" sendChatMessage()"
-          style="border-color: #00d2d3; color: #00d2d3; font-size: 12px; font-weight: bold; padding: 6px 12px; background: transparent; cursor: pointer; text-transform: uppercase;">
-          INVIA
-        </button>
+        <button class="discord-btn" (click)=" sendChatMessage()"
+          style="border: none; outline: none; font-family: inherit; cursor: pointer; padding: 0 20px; display: flex; align-items: center; justify-content: center;">
+          INVIA</button>
         } @else {
         <div
-          style="width: 100%; text-align: center; padding: 8px; color: #ff4757; font-family: monospace; font-size: 12px; border: 1px dashed #ff4757; border-radius: 4px; background: rgba(255, 71, 87, 0.05);">
-          [ ACCEDI PER SCRIVERE NELLA CHAT ]
+          style="width: 100%; text-align: center; padding: 10px; color: #ff4757; font-size: 13px; font-weight: 500; border-radius: 8px; background: rgba(255, 71, 87, 0.1); border: 1px solid rgba(255, 71, 87, 0.3);">
+          Effettua il login per scrivere nella chat
         </div>
         }
       </div>
@@ -116,17 +116,18 @@
 
         @for (rev of reviewsList; track rev.id) {
         <div class="review-item" style="border-bottom: 1px dashed #3a3a5a; padding: 8px 0; font-family: monospace;">
-          <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 3px;">
-            <span style="color: #00d2d3; font-weight: bold;">> {{ rev.username }}</span>
-            <span style="color: #ffd43b;">{{ '★'.repeat(rev.rating) }}{{ '☆'.repeat(5 - rev.rating) }}</span>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="color: #7289da; font-weight: 600; font-size: 14px;">{{ rev.username }}</span>
+            <span style="color: #ffd43b; font-size: 14px; letter-spacing: 2px;">{{ '★'.repeat(rev.rating) }}{{
+              '☆'.repeat(5 - rev.rating) }}</span>
           </div>
-          <p style="color: #cfcfcf; font-size: 13px; margin: 0; line-height: 1.4; word-break: break-word;">
+          <p class="discord-text" style="font-size: 14px; margin: 0; line-height: 1.5; word-break: break-word;">
             {{ rev.comment }}
           </p>
         </div>
         } @empty {
-        <p style="color: #888; font-family: monospace; font-size: 13px;">Nessuna recensione presente. Sii il primo!</p>
-        }
+        <p class="discord-text" style="text-align: center; margin-top: 20px; opacity: 0.7;">Nessuna recensione presente.
+          Sii il primo!</p>}
 
       </div>
 
@@ -135,10 +136,11 @@
         <textarea [(ngModel)]="newComment" class="terminal-input" rows="2" placeholder="Scrivi il tuo feedback..."
           style="width: 100%; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid #3a3a5a; resize: none; font-family: monospace; padding: 5px; box-sizing: border-box;"></textarea>
 
-        <div style="display: flex; justify-content: space-between; margin-top: 5px; align-items: center;">
-          <div>
-            <label style="color: #888; font-size: 11px;">VOTO: </label>
-            <select [(ngModel)]="newRating" style="background: #000; color: #ffd43b; border: 1px solid #3a3a5a;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <label style="color: #a8b0d3; font-size: 12px; font-weight: 600;">VOTO</label>
+            <select [(ngModel)]="newRating"
+              style="background: rgba(0,0,0,0.5); color: #ffd43b; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 4px 8px; outline: none; cursor: pointer;">
               <option [value]="5">5 ★</option>
               <option [value]="4">4 ★</option>
               <option [value]="3">3 ★</option>
@@ -146,20 +148,26 @@
               <option [value]="1">1 ★</option>
             </select>
           </div>
-          <div>
-            <button class="confirm-btn" (click)=" submitReview()"
-              style="border-color: #51cf66; color: #51cf66; font-size: 11px; padding: 2px 8px; background: transparent; cursor: pointer;">INVIA</button>
-            <button class="confirm-btn" (click)="toggleReviewForm()">ANNULLA</button>
+          <div style="display: flex; gap: 8px;">
+            <button class="discord-btn" (click)="submitReview()"
+              style="border: none; outline: none; font-family: inherit; cursor: pointer; padding: 8px 15px;">INVIA</button>
+            <button class="discord-btn" (click)="toggleReviewForm()"
+              style="border: none; outline: none; font-family: inherit; cursor: pointer; padding: 8px 15px; background-color: #4f545c;">ANNULLA</button>
           </div>
         </div>
       </div>
       } @else {
-      <button class="confirm-btn" (click)=" toggleReviewForm()">LASCIA UNA RECENSIONE</button>
+      <button class="discord-btn" (click)="toggleReviewForm()"
+        style="margin-top: auto; width: 100%; border: none; outline: none; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
+        ⭐LASCIA UNA RECENSIONE
+      </button>
       }
 
       @if (reviewFeedback) {
-      <div style="color: #ff4757; font-size: 11px; font-family: monospace; margin-top: 5px; text-align: center;">{{
-        reviewFeedback }}</div>
+      <div
+        style="color: #ff4757; font-size: 13px; font-weight: 500; margin-top: 10px; text-align: center; background: rgba(255, 71, 87, 0.1); padding: 6px; border-radius: 4px;">
+        {{ reviewFeedback }}
+      </div>
       }
     </div>
   </section>

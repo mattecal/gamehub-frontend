@@ -35,7 +35,7 @@ export class ChatService {
                 if (message.body) {
                     const parsedMessage: ChatMessage = JSON.parse(message.body);
                     this.messages.push(parsedMessage);
-                    this.messageSubject.next([...this.messages]); // Invia l'aggiornamento alla UI
+                    this.messageSubject.next([...this.messages]);
                 }
             });
         };
