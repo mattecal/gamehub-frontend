@@ -31,7 +31,7 @@ export class GamesComponent implements OnInit {
 
   sourceMode: 'local' | 'rawg' = 'local';
   selectedGame: any | null = null;
-  
+
   myLibraryGames: any[] = [];
   myLibraryIds: Set<number> = new Set<number>();
 
@@ -61,7 +61,6 @@ export class GamesComponent implements OnInit {
     this.gameService.getCachedGames().subscribe({
       next: (data: Game[]) => {
         this.games = data;
-        //this.filteredGames = data;
         this.extractGenres();
         this.dispatchFiltering();
         this.isLoading = false;
@@ -77,15 +76,15 @@ export class GamesComponent implements OnInit {
     });
   }
 
-  caricaMiaLibreria(): void{
+  caricaMiaLibreria(): void {
     this.libraryService.getMyLibrary().subscribe({
-      next: (data : Game[]) =>{
+      next: (data: Game[]) => {
         this.myLibraryGames = data;
-        this.myLibraryIds = new Set(data.map(g=>g.id));
+        this.myLibraryIds = new Set(data.map(g => g.id));
         this.dispatchFiltering();
         this.cdr.markForCheck();
       },
-      error : (err) => {
+      error: (err) => {
         console.error('Errore caricamento libreria', err);
         this.cdr.markForCheck();
       }
@@ -141,9 +140,7 @@ export class GamesComponent implements OnInit {
     this.sourceMode = mode;
     this.searchQuery = '';
     this.selectedGenre = '';
-    this.rawgSearchResults = [];
     this.dispatchFiltering();
-
   }
 
   onSearchInput(): void {
@@ -158,7 +155,7 @@ export class GamesComponent implements OnInit {
     } else {
       if (this.canImport) {
         this.cercaSuRawg();
-        return; 
+        return;
       } else {
         baseArray = this.games;
       }
@@ -286,13 +283,13 @@ export class GamesComponent implements OnInit {
     });
   }
 
-  isInLibrary(game:any): boolean{
+  isInLibrary(game: any): boolean {
     return this.myLibraryIds.has(game.id);
   }
 
-  aggiungiALibreria(game:any, event:Event): void{
+  aggiungiALibreria(game: any, event: Event): void {
     event.stopPropagation();
-    
+
     this.libraryService.addGame(game.id).subscribe({
       next: () => {
         this.myLibraryIds.add(game.id);
@@ -307,7 +304,7 @@ export class GamesComponent implements OnInit {
     });
   }
 
-  rimuoviDaLibreria(game:any, event:Event): void{
+  rimuoviDaLibreria(game: any, event: Event): void {
     event.stopPropagation();
     this.libraryService.removeGame(game.id).subscribe({
       next: () => {

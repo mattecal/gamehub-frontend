@@ -78,7 +78,6 @@ export class AdminPannelComponent implements OnInit {
       next: (data) => {
         this.stats = data;
         this.cdr.detectChanges();
-        console.log('Statistiche caricate con successo!', data);
       },
       error: (err) => {
         console.error('ERRORE NEL CARICAMENTO DELLE STATISICHE', err)

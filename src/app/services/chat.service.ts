@@ -24,13 +24,10 @@ export class ChatService {
     constructor(private http: HttpClient) {
         this.stompClient = new Client({
             webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
-            debug: (msg: string) => console.log(msg),
             reconnectDelay: 5000,
         });
 
         this.stompClient.onConnect = (frame) => {
-            console.log('Connesso al WebSocket! 🟢');
-
             this.stompClient.subscribe('/topic/public', (message: Message) => {
                 if (message.body) {
                     const parsedMessage: ChatMessage = JSON.parse(message.body);
