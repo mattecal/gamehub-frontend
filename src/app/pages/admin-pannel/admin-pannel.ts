@@ -334,7 +334,6 @@ export class AdminPannelComponent implements OnInit {
         this.messages = data;
         this.isLoadingMessages = false;
         this.cdr.detectChanges();
-        // Marca come letto ogni messaggio non ancora letto
         data.filter(m => !m.read).forEach(m => {
           this.messageService.markAsRead(m.id).subscribe({
             next: () => { m.read = true; this.cdr.detectChanges(); }

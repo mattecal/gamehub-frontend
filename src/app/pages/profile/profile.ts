@@ -209,7 +209,6 @@ export class ProfileComponent implements OnInit {
         this.usersList = users
           .filter(u => u.username !== currentUser)
           .map((u: any) => {
-            // 👑 CONTROLLO INTELLIGENTE: Cerca il ruolo ovunque possa essere nascosto nel JSON
             let ruoloRilevato = 'UTENTE';
 
             if (u.role) {
@@ -217,7 +216,6 @@ export class ProfileComponent implements OnInit {
             } else if (u.authority) {
               ruoloRilevato = u.authority;
             } else if (u.authorities && u.authorities.length > 0) {
-              // Spesso Spring Security restituisce un array di authorities!
               ruoloRilevato = u.authorities[0].authority || u.authorities[0];
             } else if (u.ruolo) {
               ruoloRilevato = u.ruolo;

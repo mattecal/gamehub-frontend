@@ -21,12 +21,8 @@ export class GameService {
   getGameById(id: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
-
-    private gamesCache$: Observable<Game[]> | null = null;
-
-  /**
-   * Returns cached games if available, otherwise fetches from API and caches the result.
-   */
+    
+  private gamesCache$: Observable<Game[]> | null = null;
   getCachedGames(): Observable<Game[]> {
     if (!this.gamesCache$) {
       this.gamesCache$ = this.http.get<Game[]>(this.apiUrl).pipe(
@@ -48,12 +44,10 @@ export class GameService {
     return this.http.get(`${this.apiUrl}/${rawgId}/trailer`);
   }
 
-  // Cerca giochi su RAWG
   searchGamesOnRawg(query: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/search?query=${encodeURIComponent(query)}`);
   }
 
-  // Salva un nuovo gioco nel database locale
   saveGame(game: any): Observable<any> {
     return this.http.post(this.apiUrl, game);
   }

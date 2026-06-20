@@ -65,14 +65,11 @@ export class TournamentsComponent implements OnInit {
         error: (err) => console.error('Errore caricamento POTM', err)
       });
   }
-        
 
-  /** Track by tournament id */
   trackByTournamentId(index: number, tournament: Tournament): number {
     return tournament.id;
   }
 
-  /** Safe image URL with fallback */
   getTournamentImageUrl(tournament: Tournament): SafeUrl {
     const img = tournament.gameImageUrl ?? tournament.game?.coverUrl;
     return img ? this.sanitizer.bypassSecurityTrustUrl(img) : ('assets/default-game.jpg' as any);

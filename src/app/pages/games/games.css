@@ -14,7 +14,6 @@ h2 {
 
 .games-grid {
   display: grid;
-  /* Griglia flessibile: le card si adattano allo schermo */
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 25px;
 }
@@ -38,7 +37,7 @@ h2 {
 
 .cover-image {
   width: 100%;
-  height: 280px; /* Più alta per far risaltare l'artwork del gioco */
+  height: 280px;
   object-fit: cover;
   border-bottom: 1px solid #3a3a5a;
 }
@@ -67,7 +66,7 @@ h2 {
 }
 
 .rating-section {
-  margin-top: auto; /* Spinge il rating sempre in fondo alla card */
+  margin-top: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -169,7 +168,7 @@ h2 {
   align-items: center;
   z-index: 1000;
 }
-/* Contenitore bianco/scuro del popup */
+
 .modal-content {
   background: #1e1e2f;
   border: 1px solid #6a5acd;
@@ -188,7 +187,7 @@ h2 {
   from { opacity: 0; transform: scale(0.9); }
   to { opacity: 1; transform: scale(1); }
 }
-/* Bottone per chiudere la modale */
+
 .close-btn {
   position: absolute;
   top: 15px;
@@ -203,7 +202,7 @@ h2 {
 .close-btn:hover {
   color: white;
 }
-/* Immagine dentro la modale */
+
 .modal-image {
   width: 100%;
   height: 250px;
@@ -231,13 +230,12 @@ h2 {
   scrollbar-width: thin;
   scrollbar-color: #666666 transparent;
 }
+
 .popup-trailer-btn {
   margin-top: 10px;
   width: auto;
   align-self: flex-start;
 }
-
-/* Bottone Importa all'Arena */
 .import-btn {
   background-color: #6a5acd;
   color: white;
@@ -254,8 +252,6 @@ h2 {
   background-color: #5b49c3;
   transform: translateY(-2px);
 }
-
-/* Bottone tab sorgente */
 .tab-btn {
   background: transparent;
   color: #cfcfcf;

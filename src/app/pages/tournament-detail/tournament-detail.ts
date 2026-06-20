@@ -42,7 +42,6 @@ export class TournamentDetailComponent implements OnInit, OnDestroy {
   selectedFile: File | null = null;
   isUploading: boolean = false;
 
-  // Chart configuration
   public barChartType: ChartType = 'bar';
   public barChartData: ChartConfiguration['data'] = {
     labels: [],
@@ -80,7 +79,6 @@ export class TournamentDetailComponent implements OnInit, OnDestroy {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     const userRole = this.authService.getUserRole();
     this.isPlayer = userRole === 'PLAYER' || userRole === 'ROLE_PLAYER';
-    // Try to obtain current user id if method exists
     if ((this.authService as any).getUserId) {
       this.currentUserId = (this.authService as any).getUserId();
     }
@@ -103,7 +101,6 @@ export class TournamentDetailComponent implements OnInit, OnDestroy {
   }
 
   get isUserJoined(): boolean {
-    // Controlla se la lista squadre contiene una squadra con lo stesso ID dell'utente
     if (!this.tournament || !this.tournament.teams || this.currentUserId === null) return false;
     return this.tournament.teams.some(team => team.id === this.currentUserId);
   }
@@ -116,7 +113,6 @@ export class TournamentDetailComponent implements OnInit, OnDestroy {
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
 
-  /** fallback image for tournament */
   getTournamentImageUrl(): SafeUrl {
     const img = this.tournament?.gameImageUrl ?? this.tournament?.game?.coverUrl;
     return img ? this.getSafeImageUrl(img) : ('assets/default-game.jpg' as any);
@@ -150,7 +146,6 @@ export class TournamentDetailComponent implements OnInit, OnDestroy {
     this.tournamentService.rateTournament(this.tournament.id, this.currentUserId, this.selectedScore)
       .subscribe({
         next: () => {
-          //alert('Grazie per il tuo voto!');
           this.closeRatingModal();
           window.scrollTo({ top: 0, behavior: 'smooth' });
           this.mostraMessaggioSuccesso = true;
@@ -161,7 +156,6 @@ export class TournamentDetailComponent implements OnInit, OnDestroy {
             this.cdr.detectChanges();
           }, 5000);
 
-          // Invalidate cache and reload tournament data to refresh rating
           this.tournamentService.invalidateTournamentCache(this.tournament!.id);
           this.tournamentService.getTournamentByIdCached(this.tournament!.id).subscribe(data => {
             this.tournament = data;
@@ -174,7 +168,6 @@ export class TournamentDetailComponent implements OnInit, OnDestroy {
   }
 
   joinTournament(): void {
-    // Controlliamo che i dati siano caricati e l'utente sia loggato
     if (!this.tournament || this.currentUserId === null) {
         alert('Devi essere loggato per iscriverti!');
         return;
@@ -183,20 +176,15 @@ export class TournamentDetailComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           alert("Iscrizione avvenuta con successo! Benvenuto nell'arena.");
-
-          // Sfruttiamo il sistema di cache già presente per aggiornare subito
-          // i grafici e la lista squadre in tempo reale
           this.tournamentService.invalidateTournamentCache(this.tournament!.id);
           this.tournamentService.getTournamentByIdCached(this.tournament!.id).subscribe(data => {
             this.tournament = data;
-            // Aggiorna i dati per i grafici e triggera il change detection
             this.setupChartData();
             this.cdr.detectChanges();
           });
         },
         error: err => {
           console.error('Errore durante l\'iscrizione', err);
-          // Messaggio in caso di errore (es. sei già iscritto)
           alert('Si è verificato un errore o sei già iscritto al torneo.');
         }
       });
@@ -208,7 +196,7 @@ export class TournamentDetailComponent implements OnInit, OnDestroy {
         next: (res: any) => {
           if (res && res.gameId) {
             this.savedGameId = res.gameId;
-            this.cdr.detectChanges(); // Aggiorna la grafica
+            this.cdr.detectChanges(); 
           }
         },
         error: (err) => console.error('Errore nel caricamento del Game ID', err)
@@ -220,7 +208,7 @@ export class TournamentDetailComponent implements OnInit, OnDestroy {
 
     this.tournamentService.saveGameId(this.tournament.id, this.currentUserId, this.gameIdInput).subscribe({
       next: () => {
-        this.savedGameId = this.gameIdInput; // Lo salva localmente così l'interfaccia si aggiorna scomparendo
+        this.savedGameId = this.gameIdInput;
         alert('Game ID salvato con successo!');
         this.cdr.detectChanges();
       },
@@ -229,38 +217,31 @@ export class TournamentDetailComponent implements OnInit, OnDestroy {
   }
 
   startTimer(): void {
-    // Se non c'è una data, consideriamolo iniziato
     if (!this.tournament || !this.tournament.startDate) {
       this.isTournamentStarted = true;
       this.loadMyMatch();
       return;
     }
-    // Angular riceve la data come "YYYY-MM-DDTHH:mm:ss", il browser la legge nell'orario locale
     const startDateTime = new Date(this.tournament.startDate).getTime();
-    // Aggiorna il timer ogni secondo (1000 millisecondi)
     this.timerInterval = setInterval(() => {
       const now = new Date().getTime();
       const distance = startDateTime - now;
       if (distance <= 0) {
-        // Il tempo è scaduto!
         clearInterval(this.timerInterval);
         this.isTournamentStarted = true;
         this.days = 0; this.hours = 0; this.minutes = 0; this.seconds = 0;
         this.loadMyMatch();
       } else {
-        // Calcola giorni, ore, minuti e secondi
         this.isTournamentStarted = false;
         this.days = Math.floor(distance / (1000 * 60 * 60 * 24));
         this.hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         this.minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         this.seconds = Math.floor((distance % (1000 * 60)) / 1000);
       }
-
-      // Avvisa Angular di aggiornare la grafica dello schermo
       this.cdr.detectChanges();
     }, 1000);
   }
-  // Questo serve per spegnere il timer quando l'utente cambia pagina (evita lag)
+
   ngOnDestroy(): void {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
@@ -285,7 +266,7 @@ export class TournamentDetailComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           alert('Risultato inviato con successo! In attesa della conferma dell\'avversario...');
-          this.loadMyMatch(); // Ricarica per bloccare il doppio voto
+          this.loadMyMatch(); 
         },
         error: (err) => alert('Errore: ' + (err.error?.error || 'Impossibile salvare il risultato'))
       });

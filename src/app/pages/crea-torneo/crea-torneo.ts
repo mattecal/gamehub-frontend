@@ -35,7 +35,6 @@ export class CreaTorneoComponent implements OnInit {
 
   ngOnInit(): void {
     const role = this.authService.getUserRole();
-    // Controllo di sicurezza: se non sei Organizzatore, ti rispedisce alla Home
     if (role !== 'ROLE_ORGANIZER' && role !== 'ORGANIZER') {
       this.router.navigate(['/']);
     } else {

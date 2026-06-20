@@ -15,9 +15,6 @@ export class TournamentService {
 
   private tournamentCache = new Map<number, Observable<Tournament>>();
 
-  /**
-   * Returns cached tournament observable or fetches and caches it.
-   */
   getTournamentByIdCached(id: number): Observable<Tournament> {
     if (!this.tournamentCache.has(id)) {
       const obs = this.http.get<Tournament>(`${environment.apiUrl}/tournaments/${id}`).pipe(
@@ -28,9 +25,6 @@ export class TournamentService {
     return this.tournamentCache.get(id) as Observable<Tournament>;
   }
 
-  /**
-   * Invalidate cache for a tournament (e.g., after rating).
-   */
   invalidateTournamentCache(id: number): void {
     this.tournamentCache.delete(id);
   }
@@ -53,11 +47,9 @@ export class TournamentService {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
-    // Sfruttiamo l'endpoint che avevamo già nel TournamentController del backend
     return this.http.post(`${environment.apiUrl}/tournaments/${tournamentId}/join/${userId}`, {}, { headers });
   }
 
-  // Salva il Game ID
   saveGameId(tournamentId: number, userId: number, gameId: string): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
@@ -65,7 +57,7 @@ export class TournamentService {
     const url = `${environment.apiUrl}/tournaments/${tournamentId}/player-id?userId=${userId}&gameId=${gameId}`;
     return this.http.post(url, {}, { headers });
   }
-  // Recupera il Game ID
+
   getGameId(tournamentId: number, userId: number): Observable<any> {
     const token = this.authService.getToken();
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });

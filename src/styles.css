@@ -4,5 +4,5 @@ html, body {
   min-height: 100vh;
   background: radial-gradient(circle at top, #1a1a2e, #0f0f1a) no-repeat center center fixed;
   background-size: cover;
-  color: white; /* Rimette il testo bianco di default */
+  color: white; 
 }

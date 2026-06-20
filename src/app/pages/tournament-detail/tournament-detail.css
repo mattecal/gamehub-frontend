@@ -2,7 +2,7 @@
   display: block;
   padding: 40px 20px;
   color: white;
-  font-family: 'Orbitron', sans-serif; /* Manteniamo il font del sito */
+  font-family: 'Orbitron', sans-serif;
 }
 
 .detail-container {
@@ -50,7 +50,7 @@ h2 {
   color: #cfcfcf;
   font-size: 16px;
   line-height: 1.6;
-  font-family: 'Inter', sans-serif; /* Font più leggibile per le descrizioni lunghe */
+  font-family: 'Inter', sans-serif;
 }
 
 h3 {
@@ -134,7 +134,7 @@ h3 {
 
 .btn-rate {
   background: #ffaa00;
-  color: #1a1a2e; /* Colore scuro per contrasto */
+  color: #1a1a2e;
   box-shadow: 0 0 10px rgba(255, 170, 0, 0.5);
   margin-top: 10px;
 }
@@ -173,7 +173,6 @@ h3 {
   }
 }
 
-/* --- Tabella Classifica --- */
 .ranking-table {
   width: 100%;
   border-collapse: collapse;
@@ -236,7 +235,7 @@ h3 {
 }
 
 .modal-content {
-  background: #1e1e38; /* Sfondo scuro in stile col tuo sito */
+  background: #1e1e38;
   border: 1px solid #6a5acd;
   border-radius: 12px;
   padding: 30px;
@@ -255,7 +254,6 @@ h3 {
 .modal-content h3 { color: #9b8cff; margin-bottom: 10px; }
 .modal-content p { color: #cfcfcf; margin-bottom: 20px; }
 
-/* --- Le Stelle Interattive --- */
 .stars-container {
   display: flex;
   justify-content: center;
@@ -263,18 +261,17 @@ h3 {
   margin-bottom: 30px;
   font-size: 40px;
   cursor: pointer;
-  color: #3a3a5a; /* Stella spenta */
+  color: #3a3a5a; 
   transition: 0.2s;
 }
 
 .star.active {
-  color: #ffaa00; /* Stella accesa (Oro) */
+  color: #ffaa00; 
   text-shadow: 0 0 15px rgba(255, 170, 0, 0.7);
 }
 
 .star:hover { transform: scale(1.2); }
 
-/* --- Bottoni Modale --- */
 .modal-actions {
   display: flex;
   justify-content: center;
@@ -346,7 +343,6 @@ h3 {
   }
 }
 
-/* ================= TIMER CYBERPUNK ================= */
 .timer-wrapper {
   margin: 40px 0;
   text-align: center;
@@ -377,7 +373,7 @@ h3 {
   position: relative;
   overflow: hidden;
 }
-/* Striscia al neon superiore sulla singola casella */
+
 .time-box::before {
   content: '';
   position: absolute;
@@ -400,7 +396,7 @@ h3 {
   color: #00ffcc;
   letter-spacing: 1px;
 }
-/* ======== STILE "INIZIO TORNEO" ======== */
+
 .started-container {
   background: rgba(255, 0, 85, 0.1);
   border: 2px solid #ff0055;
@@ -415,7 +411,7 @@ h3 {
   text-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055, 0 0 40px #ff0055;
   margin: 0 0 10px 0;
 }
-/* Animazione pulsante per l'allerta di inizio */
+
 @keyframes pulse-red {
   0% { box-shadow: 0 0 10px rgba(255, 0, 85, 0.2); }
   50% { box-shadow: 0 0 25px rgba(255, 0, 85, 0.6); }

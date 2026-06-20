@@ -166,7 +166,7 @@ select:focus {
 }
 
 select option {
-  background-color: #1a1a2e; /* Uno sfondo scuro in tema con la tua UI */
+  background-color: #1a1a2e;
   color: white;
   padding: 10px;
 }
