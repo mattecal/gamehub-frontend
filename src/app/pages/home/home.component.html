@@ -2,13 +2,22 @@
 
 
 
-  <section class="carousel-section">
-    <h1>Competi. Vinci. Scala la classifica.</h1>
-    <h2>GIOCHI IN EVIDENZA</h2>
-    <p class="carousel-subtitle">GameHub offre ai giocatori la migliore esperienza di gioco su tutti i titoli
-      supportati.</p>
+  <section class="carousel-section gamehub-arena-hero">
 
-    <div class="carousel-wrapper">
+    <h1 class="hero-main-title">
+      <span class="line-1">COMPETI. VINCI.</span>
+      <span class="line-2">SCALA LA CLASSIFICA.</span>
+    </h1>
+
+    <div class="hero-sub-graphic">
+      <div class="sub-text-top">DON'T BOTHER ME</div>
+      <div class="sub-text-bottom">
+        <span class="headset-icon">🎧</span> I'M GAMING
+      </div>
+    </div>
+
+
+    <div class="carousel-wrapper" (mousemove)="gestisciMouse($event)" (mouseleave)="ripristinaCarosello($event)">
       <div class="carousel-track">
         @for(game of carouselGames; track $index){
         <div class="carousel-item" (mousedown)="vaiAlGioco(game.title)"
@@ -53,20 +62,51 @@
     <div class="card discord-card">
       <h2>COMMUNITY</h2>
       <p class="discord-text">
-        Unisciti al nostro server Discord ufficiale per trovare compagni di squadra e chattare con i giocatori!
+        Unisciti al nostro server Discord ufficiale per essere sempre connesso con il tuo Team e restare aggiornato su annunci, novità e bug!
       </p>
       <a href="https://discord.gg/FWezua4qTB" target="_blank" class="discord-btn">
         💬 Entra nel Server
       </a>
     </div>
 
-    <div class="card">
-      <h2>TORNEI LIVE</h2>
-      <ul>
-        <li>FIFA CUP</li>
-        <li>LoL Arena</li>
-        <li>Fortnite Night</li>
-      </ul>
+    <div class="card chat-card" style="display: flex; flex-direction: column; height: 350px;">
+      <h2>GLOBAL CHAT</h2>
+
+      <div class="chat-scroll-container reviews-scroll-container"
+        style="flex: 1; overflow-y: auto; margin-bottom: 10px; padding-right: 5px; display: flex; flex-direction: column;">
+
+        @for (msg of chatMessages; track $index) {
+        <div class="chat-message"
+          style="margin-bottom: 8px; font-family: monospace; word-wrap: break-word; text-align: left;">
+          <span style="color: #8cedd6; font-weight: bold;">[{{ msg.sender }}]:</span>
+          <span style="color: #e0e0e0; font-size: 13px; margin-left: 5px;">{{ msg.content }}</span>
+        </div>
+        } @empty {
+        <p
+          style="color: #888; font-family: monospace; font-size: 13px; text-align: center; margin-top: auto; margin-bottom: auto;">
+          La lobby è vuota.<br>Sii il primo a scrivere! _
+        </p>
+        }
+
+      </div>
+
+      <div class="chat-input-area" style="display: flex; gap: 10px; border-top: 1px dashed #3a3a5a; padding-top: 10px;">
+
+        @if (userRole) {
+        <input type="text" [(ngModel)]="newChatMessage" (keyup.enter)="sendChatMessage()"
+          placeholder="Scrivi alla lobby..."
+          style="flex: 1; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid #3a3a5a; padding: 8px; font-family: monospace; border-radius: 4px; outline: none; transition: border-color 0.3s;">
+        <button class="confirm-btn" (click)=" sendChatMessage()"
+          style="border-color: #00d2d3; color: #00d2d3; font-size: 12px; font-weight: bold; padding: 6px 12px; background: transparent; cursor: pointer; text-transform: uppercase;">
+          INVIA
+        </button>
+        } @else {
+        <div
+          style="width: 100%; text-align: center; padding: 8px; color: #ff4757; font-family: monospace; font-size: 12px; border: 1px dashed #ff4757; border-radius: 4px; background: rgba(255, 71, 87, 0.05);">
+          [ ACCEDI PER SCRIVERE NELLA CHAT ]
+        </div>
+        }
+      </div>
     </div>
 
     <div class="card review-card" style="display: flex; flex-direction: column; height: 350px;">
@@ -107,18 +147,14 @@
             </select>
           </div>
           <div>
-            <button class="btn-terminal" (click)="submitReview()"
+            <button class="confirm-btn" (click)=" submitReview()"
               style="border-color: #51cf66; color: #51cf66; font-size: 11px; padding: 2px 8px; background: transparent; cursor: pointer;">INVIA</button>
-            <button class="btn-terminal" (click)="toggleReviewForm()"
-              style="border-color: #ff4757; color: #ff4757; font-size: 11px; padding: 2px 8px; background: transparent; cursor: pointer; margin-left: 5px;">ANNULLA</button>
+            <button class="confirm-btn" (click)="toggleReviewForm()">ANNULLA</button>
           </div>
         </div>
       </div>
       } @else {
-      <button class="btn-terminal-action" (click)="toggleReviewForm()"
-        style="width: 100%; border: 1px dashed #00d2d3; color: #00d2d3; background: transparent; padding: 6px; font-family: monospace; font-size: 12px; cursor: pointer; text-transform: uppercase;">
-        + Lascia una recensione _
-      </button>
+      <button class="confirm-btn" (click)=" toggleReviewForm()">LASCIA UNA RECENSIONE</button>
       }
 
       @if (reviewFeedback) {

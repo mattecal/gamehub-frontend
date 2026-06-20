@@ -150,14 +150,15 @@ export class TournamentDetailComponent implements OnInit, OnDestroy {
         next: () => {
           //alert('Grazie per il tuo voto!');
           this.closeRatingModal();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
           this.mostraMessaggioSuccesso = true;
           this.cdr.detectChanges();
           
           setTimeout(() => {
             this.mostraMessaggioSuccesso = false;
             this.cdr.detectChanges();
-          }, 3000);
-          this.closeRatingModal();
+          }, 5000);
+          
           // Invalidate cache and reload tournament data to refresh rating
           this.tournamentService.invalidateTournamentCache(this.tournament!.id);
           this.tournamentService.getTournamentByIdCached(this.tournament!.id).subscribe(data => {

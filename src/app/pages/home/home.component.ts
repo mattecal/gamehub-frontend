@@ -1,10 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef } from "@angular/core";
+import { Component, OnInit, ChangeDetectorRef, ViewChild, ElementRef, HostListener, OnDestroy } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { AuthService } from "../../services/auth.service";
 import { CommonModule } from "@angular/common";
 import { Review } from "../../models/review";
 import { ReviewService } from "../../review/review.service";
 import { FormsModule } from "@angular/forms";
+import { ChatMessage, ChatService } from "../../services/chat.service";
 
 @Component({
   selector: 'app-home',
@@ -13,8 +14,10 @@ import { FormsModule } from "@angular/forms";
   styleUrls: ['./home.component.css'],
   imports: [CommonModule, RouterLink, FormsModule]
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   userRole: string | null = null;
+  chatMessages: ChatMessage[] = [];
+  newChatMessage: string = '';
 
   carouselGames = [
     { title: 'Dragon Ball Xenoverse', image: 'https://media.rawg.io/media/resize/640/-/games/729/729822a7ac978607241a310677c7775d.jpg' },
@@ -56,17 +59,97 @@ export class HomeComponent implements OnInit {
   newComment = '';
   newRating = 5;
   reviewFeedback = '';
+  currentZone = 'normal';
 
   constructor(
     private authService: AuthService,
     private reviewService: ReviewService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private chatService: ChatService
   ) { }
+
+  gestisciMouse(event: MouseEvent) {
+    const track = document.querySelector('.carousel-track') as HTMLElement;
+    const wrapper = document.querySelector('.carousel-wrapper') as HTMLElement;
+    if (!track || !wrapper) return;
+
+    const animations = track.getAnimations();
+    if (animations.length === 0) return;
+
+    const larghezza = wrapper.offsetWidth;
+    const rect = wrapper.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+
+    let nuovaZona = 'center';
+    if (x > larghezza * 0.75) {
+      nuovaZona = 'right';
+    } else if (x < larghezza * 0.25) {
+      nuovaZona = 'left';
+    }
+
+    if (this.currentZone !== nuovaZona) {
+      this.currentZone = nuovaZona;
+
+      if (nuovaZona === 'right') {
+        track.style.animationPlayState = 'running';
+        animations[0].playbackRate = 3;
+      } else if (nuovaZona === 'left') {
+        track.style.animationPlayState = 'running';
+        animations[0].playbackRate = 0.3;
+      } else {
+        track.style.animationPlayState = 'paused';
+        animations[0].playbackRate = 1;
+      }
+    }
+  }
+
+  ripristinaCarosello(event: MouseEvent) {
+    this.currentZone = 'normal';
+    const track = document.querySelector('.carousel-track') as HTMLElement;
+    if (!track) return;
+    track.style.animationPlayState = 'running';
+
+    const animations = track.getAnimations();
+    if (animations.length > 0) {
+      animations[0].playbackRate = 1;
+    }
+  }
 
   ngOnInit() {
     this.loadReviews();
     this.userRole = this.authService.getUserRole();
+    this.chatService.loadHistory();
+    this.chatService.connect();
+    this.chatService.messages$.subscribe(msgs => {
+      this.chatMessages = msgs;
+      this.cdr.markForCheck();
+    });
+  }
+
+  ngOnDestroy() {
+    this.chatService.disconnect();
+  }
+
+  sendChatMessage() {
+    if (!this.authService.isLoggedIn()) {
+      return;
+    }
+
+    if (this.newChatMessage.trim() !== '') {
+      let senderName = localStorage.getItem('username');
+      if (!senderName) {
+        senderName = 'Utente_Sconosciuto';
+      }
+
+      const msg: ChatMessage = {
+        sender: senderName,
+        content: this.newChatMessage
+      };
+
+      this.chatService.sendMessage(msg);
+      this.newChatMessage = '';
+    }
   }
 
   loadReviews() {
@@ -81,7 +164,7 @@ export class HomeComponent implements OnInit {
 
   toggleReviewForm() {
     if (!this.authService.isLoggedIn()) {
-      this.reviewFeedback = 'DEVI FARE IL LOGIN PER LASCIARE UNA RECENSIONE!';
+      this.reviewFeedback = 'DEVI EFFETTUARE IL LOGIN PER LASCIARE UNA RECENSIONE!';
       setTimeout(() => {
         this.reviewFeedback = ''
         this.cdr.markForCheck()
@@ -110,7 +193,6 @@ export class HomeComponent implements OnInit {
   }
 
   vaiAlGioco(titoloGioco: string) {
-    console.log("🔥 Bersaglio colpito! Vado al gioco:", titoloGioco); // Riga di debug!
     this.router.navigate(['/giochi'], { queryParams: { openGame: titoloGioco } });
   }
 }

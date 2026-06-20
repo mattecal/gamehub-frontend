@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { Game } from '../../models/game';
 import { AuthService } from '../../services/auth.service';
 import { ActivatedRoute } from '@angular/router';
+import { LibraryService } from '../../services/library.service';
 
 
 
@@ -15,11 +16,11 @@ import { ActivatedRoute } from '@angular/router';
   imports: [RouterModule, CommonModule, FormsModule],
   templateUrl: './games.html',
   styleUrls: ['./games.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush // Mantenuta l'ottimizzazione OnPush!
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class GamesComponent implements OnInit {
 
-  games: any[] = [];               // Cambiato in any[] per la massima flessibilità con RAWG
+  games: any[] = [];
   filteredGames: any[] = [];
   rawgSearchResults: any[] = [];
   giochiDaMostrare: any[] = [];
@@ -30,6 +31,9 @@ export class GamesComponent implements OnInit {
 
   sourceMode: 'local' | 'rawg' = 'local';
   selectedGame: any | null = null;
+  
+  myLibraryGames: any[] = [];
+  myLibraryIds: Set<number> = new Set<number>();
 
   isLoading: boolean = true;
   canImport: boolean = false;
@@ -37,6 +41,7 @@ export class GamesComponent implements OnInit {
   constructor(
     private gameService: GameService,
     public authService: AuthService,
+    private libraryService: LibraryService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute
   ) { }
@@ -46,6 +51,7 @@ export class GamesComponent implements OnInit {
     this.canImport = role === 'ROLE_ADMIN' || role === 'ADMIN' ||
       role === 'ROLE_ORGANIZER' || role === 'ORGANIZER';
     this.caricaGiochiLocali();
+    this.caricaMiaLibreria();
   }
 
   caricaGiochiLocali(): void {
@@ -55,9 +61,9 @@ export class GamesComponent implements OnInit {
     this.gameService.getCachedGames().subscribe({
       next: (data: Game[]) => {
         this.games = data;
-        this.filteredGames = data;
+        //this.filteredGames = data;
         this.extractGenres();
-        this.updateDisplayedGames();
+        this.dispatchFiltering();
         this.isLoading = false;
 
         this.controllaSeAprireGiocoDaHome();
@@ -66,6 +72,21 @@ export class GamesComponent implements OnInit {
       error: (err) => {
         console.error('Errore nel caricamento dei giochi:', err);
         this.isLoading = false;
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  caricaMiaLibreria(): void{
+    this.libraryService.getMyLibrary().subscribe({
+      next: (data : Game[]) =>{
+        this.myLibraryGames = data;
+        this.myLibraryIds = new Set(data.map(g=>g.id));
+        this.dispatchFiltering();
+        this.cdr.markForCheck();
+      },
+      error : (err) => {
+        console.error('Errore caricamento libreria', err);
         this.cdr.markForCheck();
       }
     });
@@ -90,11 +111,7 @@ export class GamesComponent implements OnInit {
   }
 
   onGenreChange(): void {
-    if (this.sourceMode === 'local') {
-      this.filterGames();
-    } else {
-      this.cercaSuRawg();
-    }
+    this.dispatchFiltering();
   }
 
   cercaSuRawg(): void {
@@ -125,22 +142,67 @@ export class GamesComponent implements OnInit {
     this.searchQuery = '';
     this.selectedGenre = '';
     this.rawgSearchResults = [];
+    this.dispatchFiltering();
 
-    if (mode === 'local') {
-      this.filteredGames = this.games;
+
+
+    //if (mode === 'local') {
+    //  this.filteredGames = this.games;
+    //} else if (!this.canImport) {
+    //  this.filteredGames = this.games;   
+    //}
+
+    //this.updateDisplayedGames();
+    //this.cdr.markForCheck();
+  }
+
+  onSearchInput(): void {
+    this.dispatchFiltering();
+  }
+
+  private dispatchFiltering(): void {
+    let baseArray: any[] = [];
+
+    if (this.sourceMode === 'local') {
+      // TAB: "Giochi dell'Arena"
+      // L'Admin vede tutto il catalogo (this.games)
+      // Il Player vede SOLO la sua libreria personale (this.myLibraryGames)
+      baseArray = this.canImport ? this.games : this.myLibraryGames;
+    } else {
+      // TAB: "Cerca"
+      if (this.canImport) {
+        // Admin: cerca globalmente online su RAWG (popola rawgSearchResults)
+        this.cercaSuRawg();
+        return; 
+      } else {
+        // Player: cerca all'interno del catalogo dell'Arena globale
+        baseArray = this.games;
+      }
     }
+
+    // Filtra per nome e per genere basandosi sull'array corretto
+    this.filteredGames = baseArray.filter(game => {
+      const matchesSearch = game.title.toLowerCase().includes(this.searchQuery.toLowerCase());
+      const matchesGenre = this.selectedGenre ? game.genere === this.selectedGenre : true;
+      return matchesSearch && matchesGenre;
+    });
 
     this.updateDisplayedGames();
     this.cdr.markForCheck();
   }
 
-  onSearchInput(): void {
-    if (this.sourceMode === 'local') {
-      this.filterGames();
-    } else {
-      this.cercaSuRawg();
-    }
+  /*
+
+  filterLibrary(): void{
+    this.filteredGames = this.myLibraryGames.filter(game => {
+      const matchesSearch = game.title.toLowerCase().includes(this.searchQuery.toLowerCase());
+      const matchesGenre = this.selectedGenre ? game.genere === this.selectedGenre : true;
+      return matchesSearch && matchesGenre;
+    });
+    this.updateDisplayedGames();
+    this.cdr.markForCheck();
   }
+  */
 
   filterGames(): void {
     this.filteredGames = this.games.filter(game => {
@@ -151,9 +213,14 @@ export class GamesComponent implements OnInit {
     this.updateDisplayedGames();
     this.cdr.markForCheck();
   }
+  
 
   updateDisplayedGames(): void {
-    this.giochiDaMostrare = this.sourceMode === 'local' ? this.filteredGames : this.rawgSearchResults;
+    if (this.sourceMode === 'local') {
+      this.giochiDaMostrare = this.filteredGames;
+    } else {
+      this.giochiDaMostrare = this.canImport ? this.rawgSearchResults : this.filteredGames;
+    }
   }
 
   importaGiocoInArena(gameFromRawg: any, event: Event): void {
@@ -168,7 +235,7 @@ export class GamesComponent implements OnInit {
       coverUrl: gameFromRawg.backgroundImage,
       rating: gameFromRawg.rating,
       rawgId: gameFromRawg.slug,
-      description: gameFromRawg.description || "Descrizione nel trailer di Gioco"
+      description: gameFromRawg.description || "Dettagli disponibili nel trailer ufficiale."
     };
 
     this.gameService.saveGame(nuovoGioco).subscribe({
@@ -246,6 +313,43 @@ export class GamesComponent implements OnInit {
         } else {
           console.warn('Gioco non trovato nel database locale:', titoloDaAprire);
         }
+      }
+    });
+  }
+
+  isInLibrary(game:any): boolean{
+    return this.myLibraryIds.has(game.id);
+  }
+
+  aggiungiALibreria(game:any, event:Event): void{
+    event.stopPropagation();
+    
+    this.libraryService.addGame(game.id).subscribe({
+      next: () => {
+        this.myLibraryIds.add(game.id);
+        this.myLibraryGames.push(game);
+        this.dispatchFiltering();
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Errore aggiunta alla libreria:', err);
+        alert('Impossibile aggiungere il gioco alla libreria.');
+      }
+    });
+  }
+
+  rimuoviDaLibreria(game:any, event:Event): void{
+    event.stopPropagation();
+    this.libraryService.removeGame(game.id).subscribe({
+      next: () => {
+        this.myLibraryIds.delete(game.id);
+        this.myLibraryGames = this.myLibraryGames.filter(g => g.id !== game.id);
+        this.dispatchFiltering();
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Errore rimozione dalla libreria:', err);
+        alert('Impossibile rimuovere il gioco dalla libreria.');
       }
     });
   }
