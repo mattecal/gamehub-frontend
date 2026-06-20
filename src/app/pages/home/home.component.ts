@@ -173,7 +173,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   submitReview() {
     if (!this.newComment.trim()) return;
 
-    this.reviewService.addReview(this.newComment, this.newRating).subscribe({
+    this.reviewService.addReview(this.newComment, Number(this.newRating)).subscribe({
       next: (savedReview) => {
         this.reviewsList.unshift(savedReview);
         this.isWritingReview = false;
