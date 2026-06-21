@@ -7,10 +7,13 @@ import { shareReplay } from 'rxjs/operators';
 import { HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
 
+// TIPS: I Service in Angular servono per incapsulare la logica di business e le chiamate API.
+// @Injectable({ providedIn: 'root' }) lo rende disponibile in tutta l'app tramite Dependency Injection.
 @Injectable({
   providedIn: 'root',
 })
 export class TournamentService {
+  // TIPS: HttpClient è il modulo usato per fare richieste REST al backend (GET, POST, ecc).
   constructor(private http: HttpClient, private authService: AuthService) { }
 
   private tournamentCache = new Map<number, Observable<Tournament>>();
@@ -29,6 +32,8 @@ export class TournamentService {
     this.tournamentCache.delete(id);
   }
 
+  // TIPS: Ritorna un Observable, che è un flusso asincrono. I Componenti Angular
+  // si "iscriveranno" (subscribe) a questo Observable per ricevere il JSON parsato in un array di Tournament.
   getAllTournaments(): Observable<Tournament[]> {
     return this.http.get<Tournament[]>(`${environment.apiUrl}/tournaments`);
   }

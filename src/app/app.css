@@ -1,3 +1,5 @@
+/* TIPS: Regola CSS personalizzata 1 (NavBar). 
+Usa Flexbox (display: flex) per gestire il layout in modo 'responsive', allineando gli elementi ai bordi. */
 .navbar {
   position: sticky;
   top: 0;
@@ -51,6 +53,8 @@
   font-family: 'Orbitron', sans-serif;
 }
 
+/* TIPS: Regola CSS personalizzata 2 (Hover e Transizioni). 
+Il prof valuta le interazioni dinamiche per l'Aesthetics. */
 .navbar li:hover {
   color: #9b8cff;
   text-shadow: 0 0 8px #6a5acd;
@@ -144,6 +148,8 @@
   display: inline-block;
 }
 
+/* TIPS: Regola CSS personalizzata 3 (Keyframes). 
+Ottimo esempio di CSS avanzato per animazioni personalizzate. */
 @keyframes pulse {
   0% {
     transform: scale(1);

@@ -7,6 +7,8 @@ import { ReviewService } from "../../review/review.service";
 import { FormsModule } from "@angular/forms";
 import { ChatMessage, ChatService } from "../../services/chat.service";
 
+// TIPS: Decoratore base di Angular. Associa il file TypeScript al suo template HTML e al foglio di stile CSS.
+// 'standalone: true' significa che non ha bisogno di essere dichiarato in un file module (app.module.ts).
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -59,6 +61,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   reviewFeedback = '';
   currentZone = 'normal';
 
+  // TIPS: Il Costruttore in Angular viene usato quasi esclusivamente per la Dependency Injection (iniettare i service).
+  // Non va usato per la logica di inizializzazione pesante.
   constructor(
     private authService: AuthService,
     private reviewService: ReviewService,
@@ -114,6 +118,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  // TIPS: ngOnInit fa parte del ciclo di vita del Componente. Scatta non appena il componente viene caricato.
+  // È il posto giusto dove fare chiamate ai service (es. caricare le recensioni) invece che nel costruttore.
   ngOnInit() {
     this.loadReviews();
     this.userRole = this.authService.getUserRole();
