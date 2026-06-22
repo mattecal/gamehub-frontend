@@ -20,7 +20,14 @@ export class GameService {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
 
-  // Il trailer viene ora richiesto tramite backend (evita di esporre la chiave RAWG nel frontend)
+  searchGamesOnRawg(query: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/search?query=${encodeURIComponent(query)}`);
+  }
+
+  saveGame(gameData: any): Observable<any> {
+    return this.http.post<any>(this.apiUrl, gameData);
+  }
+
   getTrailerFromRawg(rawgId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/${rawgId}/trailer`);
   }

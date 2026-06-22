@@ -229,3 +229,59 @@ h2 {
   width: auto;
   align-self: flex-start;
 }
+
+.source-tabs {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.source-tabs button {
+  background: rgba(255, 255, 255, 0.03);
+  color: #cfcfcf;
+  border: 1px solid #3a3a5a;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.source-tabs button:hover {
+  border-color: #6a5acd;
+  color: white;
+}
+
+/* Stile per la tab attiva (effetto neon viola) */
+.source-tabs button.active {
+  background: #6a5acd;
+  color: white;
+  border-color: #9b8cff;
+  box-shadow: 0 0 15px rgba(106, 90, 205, 0.6);
+}
+
+/* Bottone fucsia cyberpunk per salvare il gioco in Arena */
+.import-btn {
+  background-color: #ff007f;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+  margin-top: 15px;
+  box-shadow: 0 0 8px rgba(255, 0, 127, 0.3);
+  transition: all 0.2s ease;
+}
+
+.import-btn:hover {
+  background-color: #ff3399;
+  box-shadow: 0 0 15px rgba(255, 0, 127, 0.7);
+  transform: translateY(-2px);
+}

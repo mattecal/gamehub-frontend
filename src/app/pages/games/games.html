@@ -1,30 +1,49 @@
 <h2>Libreria Giochi</h2>
 
+<div class = "source-tabs">
+  <button [class.active]="sourceMode === 'local'"(click) = "setSourceMode('local')">🎮 Giochi dell'Arena</button>
+  <button [class.active]="sourceMode === 'rawg'"(click) = "setSourceMode('rawg')">🌐 Cerca su RAWG API</button>
+</div>
+
+
+
 <div class="filters-container">
-  <input type="text" [(ngModel)]="searchQuery" (input)="filterGames()" placeholder="Cerca un gioco per titolo..." class="search-input">
-  
-  <select [(ngModel)]="selectedGenre" (change)="filterGames()" class="genre-select">
-    <option value="">Tutti i generi</option>
-    @for (genre of availableGenres; track genre) {
-      <option [value]="genre">{{ genre }}</option>
-    }
-  </select>
+  <input type="text" 
+         [(ngModel)]="searchQuery" 
+         (input)="onSearchInput()" 
+         placeholder="{{ sourceMode === 'local' ? 'Cerca un gioco per titolo...' : '🔍 Cerca un gioco globale su RAWG...' }}" 
+         class="search-input">
+         
+  @if (sourceMode === 'local') {
+    <select [(ngModel)]="selectedGenre" (change)="filterGames()" class="genre-select">
+      <option value="">Tutti i generi</option>
+      @for (genre of availableGenres; track genre) {
+        <option [value]="genre">{{ genre }}</option>
+      }
+    </select>
+  }
 </div>
 
 <div class="games-grid">
-  @for (game of filteredGames; track game.id) {
+  @for (game of giochiDaMostrare; track game.id) {
     <div class="game-card" (click)="apriPopup(game)">
-      <img class="cover-image" [src]="game.coverUrl" alt="Cover del gioco">
+      <img class="cover-image" 
+            [src]="sourceMode === 'local' ? game.coverUrl : game.backgroundImage"
+            alt="Cover del gioco">
       
       <div class="game-info">
-        <h3>{{ game.title }}</h3>
-        <p class="genre">{{ game.genere || 'Genere non specificato' }}</p>
+        <h3>{{ game.title  }}</h3>
+        <p class="genre">{{game.genere || 'Generico'}}</p>
         
         <div class="rating-section">
           <span class="rating-label">Valutazione RAWG:</span>
-          <span class="stars">{{ game.rating }} ⭐</span>
-          
+          <span class="stars">{{ game.rating }} ⭐</span>   
         </div>
+        @if (sourceMode === 'rawg' && (authService.getUserRole() === 'ROLE_ADMIN' || authService.getUserRole() === 'ROLE_ORGANIZER')) {
+          <button class="import-btn" (click)="importaGiocoInArena(game, $event)">
+            ➕ Aggiungi all'Arena
+          </button>
+        }
       </div>
     </div>
   } @empty {
