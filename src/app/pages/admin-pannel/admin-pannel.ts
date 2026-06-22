@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { AdminStats, AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MessageService } from '../../services/message.service';
+import { Message } from '../../models/message';
 
 @Component({
   selector: 'app-admin-pannel',
@@ -13,9 +15,9 @@ import { Router } from '@angular/router';
 })
 export class AdminPannelComponent implements OnInit {
   stats: AdminStats = {
-    totalUsers : 0,
-    activeTournaments:0,
-    bannedUsers:0
+    totalUsers: 0,
+    activeTournaments: 0,
+    bannedUsers: 0
   };
 
   isLoading = false;
@@ -49,39 +51,52 @@ export class AdminPannelComponent implements OnInit {
   unbanMessageType = '';
   isUnbanLoading = false;
 
-  constructor(private authService: AuthService, 
-              private cdr: ChangeDetectorRef,
-              private router : Router){}
+  isMessagesModalOpen = false;
+  messages: Message[] = [];
+  isLoadingMessages = false;
+
+  isSendMessageModalOpen = false;
+  isSendingMessage = false;
+  sendMsgReceiver: any = '';
+  sendMsgText = '';
+  sendMsgFeedback = '';
+  sendMsgFeedbackType = '';
+  usersList: { id: number, username: string }[] = [];
+  isLoadingUsers = false;
+
+  constructor(private authService: AuthService,
+    private messageService: MessageService,
+    private cdr: ChangeDetectorRef,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.loadDashboardStats();
   }
 
-  loadDashboardStats():void{
+  loadDashboardStats(): void {
     this.authService.getAdminStats().subscribe({
       next: (data) => {
         this.stats = data;
         this.cdr.detectChanges();
-        console.log('Statistiche caricate con successo!', data);
       },
       error: (err) => {
         console.error('ERRORE NEL CARICAMENTO DELLE STATISICHE', err)
       }
     });
   }
-  openPasswordModal(){
+  openPasswordModal() {
     this.isPasswordModalOpen = true;
     this.oldPassword = '';
     this.newPassword = '';
     this.passwordMessage = '';
   }
 
-  closePasswordModal(){
+  closePasswordModal() {
     this.isPasswordModalOpen = false;
   }
 
-  submitChangePassword(){
-    if(!this.oldPassword || !this.newPassword){
+  submitChangePassword() {
+    if (!this.oldPassword || !this.newPassword) {
       this.passwordMessage = 'COMPILA ENTRAMBI I CAMPI.';
       this.passwordMessageType = 'error';
       return;
@@ -93,14 +108,14 @@ export class AdminPannelComponent implements OnInit {
     this.cdr.detectChanges();
 
     this.authService.changePassword(this.oldPassword, this.newPassword).subscribe({
-      next:(res) => {
+      next: (res) => {
         this.isLoading = false;
         this.passwordMessage = 'PASSWORD AGGIORNAA CON SUCCESSO!';
         this.passwordMessageType = 'succes';
 
         this.cdr.detectChanges();
 
-        setTimeout(() =>{
+        setTimeout(() => {
           this.closePasswordModal();
           this.cdr.detectChanges();
         }, 2000);
@@ -135,23 +150,23 @@ export class AdminPannelComponent implements OnInit {
     this.promoteMessageType = '';
     this.cdr.detectChanges();
 
-    this.authService.promoteToAdmin(this.promoteUsername).subscribe({
+    this.authService.promoteToOrganizer(this.promoteUsername).subscribe({
       next: (res) => {
         this.isPromoteLoading = false;
         this.promoteMessage = res;
         this.promoteMessageType = 'success';
         this.cdr.detectChanges();
-        
+
         setTimeout(() => {
           this.closePromoteModal();
-          this.loadDashboardStats(); 
+          this.loadDashboardStats();
           this.cdr.detectChanges();
         }, 2500);
       },
       error: (err) => {
         this.isPromoteLoading = false;
-       
-        this.promoteMessage = err.error || 'ERRORE DI SISTEMA DURANTE LA PROMOZIONE.'; 
+
+        this.promoteMessage = err.error || 'ERRORE DI SISTEMA DURANTE LA PROMOZIONE.';
         this.promoteMessageType = 'error';
         this.cdr.detectChanges();
       }
@@ -186,18 +201,18 @@ export class AdminPannelComponent implements OnInit {
     this.authService.deleteUser(this.deleteUsername).subscribe({
       next: (res) => {
         if (res === 'SELF_DELETED') {
-          this.authService.logout(); 
-          this.router.navigate(['/login']); 
-          return; 
+          this.authService.logout();
+          this.router.navigate(['/login']);
+          return;
         }
 
-        
+
         this.isDeleteLoading = false;
-        this.deleteMessage = res; 
+        this.deleteMessage = res;
         this.deleteMessageType = 'success';
-        this.loadDashboardStats(); 
+        this.loadDashboardStats();
         this.cdr.detectChanges();
-        
+
         setTimeout(() => {
           this.closeDeleteModal();
           this.cdr.detectChanges();
@@ -205,7 +220,7 @@ export class AdminPannelComponent implements OnInit {
       },
       error: (err) => {
         this.isDeleteLoading = false;
-        this.deleteMessage = err.error || 'Errore di sistema durante l\'eliminazione.'; 
+        this.deleteMessage = err.error || 'Errore di sistema durante l\'eliminazione.';
         this.deleteMessageType = 'error';
         this.cdr.detectChanges();
       }
@@ -237,12 +252,12 @@ export class AdminPannelComponent implements OnInit {
     this.authService.banUser(this.banUsername).subscribe({
       next: (res) => {
         this.isBanLoading = false;
-        this.banMessage = res; 
+        this.banMessage = res;
         this.banMessageType = 'success';
-        
-        this.loadDashboardStats(); 
+
+        this.loadDashboardStats();
         this.cdr.detectChanges();
-        
+
         setTimeout(() => {
           this.closeBanModal();
           this.cdr.detectChanges();
@@ -250,7 +265,7 @@ export class AdminPannelComponent implements OnInit {
       },
       error: (err) => {
         this.isBanLoading = false;
-        this.banMessage = err.error || 'Errore di sistema durante il ban.'; 
+        this.banMessage = err.error || 'Errore di sistema durante il ban.';
         this.banMessageType = 'error';
         this.cdr.detectChanges();
       }
@@ -283,10 +298,10 @@ export class AdminPannelComponent implements OnInit {
         this.isUnbanLoading = false;
         this.unbanMessage = res;
         this.unbanMessageType = 'success';
-        
-        this.loadDashboardStats(); 
+
+        this.loadDashboardStats();
         this.cdr.detectChanges();
-        
+
         setTimeout(() => {
           this.closeUnbanModal();
           this.cdr.detectChanges();
@@ -296,6 +311,99 @@ export class AdminPannelComponent implements OnInit {
         this.isUnbanLoading = false;
         this.unbanMessage = err.error || 'Errore di sistema durante la riammissione.';
         this.unbanMessageType = 'error';
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  openMessagesModal() {
+    this.isMessagesModalOpen = true;
+    this.loadMessages();
+  }
+
+  closeMessagesModal() {
+    this.isMessagesModalOpen = false;
+  }
+
+  loadMessages() {
+    this.isLoadingMessages = true;
+    this.cdr.detectChanges();
+
+    this.messageService.getMessagesForCurrentUser().subscribe({
+      next: (data) => {
+        this.messages = data;
+        this.isLoadingMessages = false;
+        this.cdr.detectChanges();
+        data.filter(m => !m.read).forEach(m => {
+          this.messageService.markAsRead(m.id).subscribe({
+            next: () => { m.read = true; this.cdr.detectChanges(); }
+          });
+        });
+      },
+      error: (err) => {
+        console.error('Errore durante il caricamento dei messaggi', err);
+        this.isLoadingMessages = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  openSendMessageModal() {
+    this.isSendMessageModalOpen = true;
+    this.sendMsgReceiver = '';
+    this.sendMsgText = '';
+    this.sendMsgFeedback = '';
+    this.loadUsers();
+  }
+
+  closeSendMessageModal() {
+    this.isSendMessageModalOpen = false;
+  }
+
+  loadUsers() {
+    this.isLoadingUsers = true;
+    this.authService.getAllUsers().subscribe({
+      next: (users) => {
+        const currentUser = this.authService.getCurrentUser()?.username;
+        this.usersList = users.filter(u => u.username !== currentUser);
+        this.isLoadingUsers = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Errore caricamento utenti', err);
+        this.isLoadingUsers = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  submitSendMessage() {
+    if (!this.sendMsgReceiver || !this.sendMsgText) {
+      this.sendMsgFeedback = 'COMPILA TUTTI I CAMPI.';
+      this.sendMsgFeedbackType = 'error';
+      return;
+    }
+
+    this.isSendingMessage = true;
+    this.sendMsgFeedback = 'INVIO IN CORSO...';
+    this.sendMsgFeedbackType = '';
+    this.cdr.detectChanges();
+
+    this.messageService.sendMessage(Number(this.sendMsgReceiver), this.sendMsgText).subscribe({
+      next: () => {
+        this.isSendingMessage = false;
+        this.sendMsgFeedback = 'MESSAGGIO INVIATO CON SUCCESSO!';
+        this.sendMsgFeedbackType = 'success';
+        this.cdr.detectChanges();
+        setTimeout(() => {
+          this.closeSendMessageModal();
+          this.cdr.detectChanges();
+        }, 1500);
+      },
+      error: (err) => {
+        this.isSendingMessage = false;
+        this.sendMsgFeedback = err.error || 'Errore durante l\'invio.';
+        this.sendMsgFeedbackType = 'error';
         this.cdr.detectChanges();
       }
     });

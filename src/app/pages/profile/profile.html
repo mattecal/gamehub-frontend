@@ -1,29 +1,13 @@
 <div class="admin-page">
   <div class="admin-container">
 
-    <h1 class="main-title">ADMIN PANEL <span class="blink">_</span></h1>
+    <h1 class="main-title">PROFILE PANEL <span class="blink">_</span></h1>
 
-    <div class="cards-wrapper">
+    <div class="cards-wrapper" style="justify-content: center; display: flex;">
 
-      <div class="terminal-card">
-        <div class="card-header">> DASHBOARD ADMIN</div>
-        <div class="card-body">
-          <ul class="stats-list">
-            <li><span class="prefix">>></span> Utenti Registrati: <span class="number">{{stats.totalUsers}}</span></li>
-            <li><span class="prefix">>></span> Tornei Attivi: <span class="number">{{stats.activeTournaments }}</span>
-            </li>
-            <li><span class="prefix">>></span> Utenti Bannati: <span class="number error">{{ stats.bannedUsers }}</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="terminal-card">
-        <div class="card-header">> GESTIONE UTENTI</div>
+      <div class="terminal-card" style="width: 100%; max-width: 500px;">
+        <div class="card-header">> GESTIONE PROFILO ({{role}})</div>
         <div class="card-body actions">
-          <button class="btn-terminal ban" (click)="openBanModal()"> BAN </button>
-          <button class="btn-terminal promote" (click)="openUnbanModal()">RIMUOVI BAN</button>
-          <button class="btn-terminal promote" (click)="openPromoteModal()"> PROMUOVI A ORGANIZER </button>
           <button class="btn-terminal change" (click)="openPasswordModal()"> CAMBIA PASSWORD </button>
           <button class="btn-terminal promote" (click)="openMessagesModal()" style="border-bottom-color: #00d2d3;">
             LEGGI MESSAGGI </button>
@@ -32,6 +16,7 @@
           <button class="btn-terminal delete" (click)="openDeleteModal()"> ELIMINA ACCOUNT </button>
         </div>
       </div>
+
     </div>
   </div>
 </div>
@@ -70,39 +55,6 @@
 </div>
 }
 
-@if (isPromoteModalOpen) {
-<div class="modal-overlay">
-  <div class="terminal-card modal-card">
-    <div class="card-header">> SYSTEM LOG: PROMUOVI ORGANIZER_</div>
-
-    <div class="card-body">
-
-      <div class="input-group">
-        <label>> INSERISCI USERNAME DA PROMUOVERE AD ORGANIZER:</label>
-        <input type="text" [(ngModel)]="promoteUsername" class="terminal-input" placeholder="es. player_123">
-      </div>
-
-      @if (promoteMessage) {
-      <div class="system-message {{ promoteMessageType }}">
-        >> {{ promoteMessage }}
-      </div>
-      }
-
-      <div class="modal-actions">
-        <button class="btn-terminal promote" (click)="submitPromote()" [disabled]="isPromoteLoading">
-          {{ isPromoteLoading ? 'ATTENDERE...' : 'CONFERMA' }}
-        </button>
-
-        <button class="btn-terminal delete" (click)="closePromoteModal()" [disabled]="isPromoteLoading">
-          ANNULLA
-        </button>
-      </div>
-
-    </div>
-  </div>
-</div>
-}
-
 @if (isDeleteModalOpen) {
 <div class="modal-overlay">
   <div class="terminal-card modal-card" style="border-color: #ff4757; box-shadow: 0 0 15px rgba(255, 71, 87, 0.2);">
@@ -112,9 +64,10 @@
     <div class="card-body">
 
       <div class="input-group">
-        <label style="color: #ff4757;">> INSERISCI USERNAME DA ELIMINARE:</label>
-        <input type="text" [(ngModel)]="deleteUsername" class="terminal-input" placeholder="es. hacker_99"
-          style="border-color: #ff4757; color: #ff6b81;">
+        <p style="color: #ff6b81; font-family: monospace; line-height: 1.5; font-size: 14px;">
+          Sei sicuro di voler eliminare il tuo account, <strong style="color: white;">{{ username }}</strong>? Questa
+          azione è IRREVERSIBILE e tutti i tuoi dati andranno persi.
+        </p>
       </div>
 
       @if (deleteMessage) {
@@ -129,75 +82,6 @@
         </button>
 
         <button class="btn-terminal promote" (click)="closeDeleteModal()" [disabled]="isDeleteLoading">
-          ANNULLA
-        </button>
-      </div>
-
-    </div>
-  </div>
-</div>
-}
-@if (isBanModalOpen) {
-<div class="modal-overlay">
-  <div class="terminal-card modal-card" style="border-color: #ffa502; box-shadow: 0 0 15px rgba(255, 165, 2, 0.2);">
-    <div class="card-header" style="color: #ffa502; border-bottom-color: #ffa502;">> SYSTEM COMMAND: BAN_USER</div>
-
-    <div class="card-body">
-
-      <div class="input-group">
-        <label style="color: #ffa502;">> INSERISCI USERNAME DA BANNARE:</label>
-        <input type="text" [(ngModel)]="banUsername" class="terminal-input" placeholder="es. toxic_player"
-          style="border-color: #ffa502; color: #ffebcc;">
-      </div>
-
-      @if (banMessage) {
-      <div class="system-message {{ banMessageType }}">
-        >> {{ banMessage }}
-      </div>
-      }
-
-      <div class="modal-actions">
-        <button class="btn-terminal ban" (click)="submitBan()" [disabled]="isBanLoading"
-          style="border-color: #ffa502; color: #ffa502;">
-          {{ isBanLoading ? 'ATTENDERE...' : 'CONFERMA BAN' }}
-        </button>
-
-        <button class="btn-terminal change" (click)="closeBanModal()" [disabled]="isBanLoading">
-          ANNULLA
-        </button>
-      </div>
-
-    </div>
-  </div>
-</div>
-}
-
-@if (isUnbanModalOpen) {
-<div class="modal-overlay">
-  <div class="terminal-card modal-card" style="border-color: #00d2d3; box-shadow: 0 0 15px rgba(0, 210, 211, 0.2);">
-    <div class="card-header" style="color: #00d2d3; border-bottom-color: #00d2d3;">> SYSTEM COMMAND: RESTORE_USER</div>
-
-    <div class="card-body">
-
-      <div class="input-group">
-        <label style="color: #00d2d3;">> USERNAME DA RIAMMETTERE:</label>
-        <input type="text" [(ngModel)]="unbanUsername" class="terminal-input" placeholder="es. player_pentito"
-          style="border-color: #00d2d3; color: #e0ffff;">
-      </div>
-
-      @if (unbanMessage) {
-      <div class="system-message {{ unbanMessageType }}">
-        >> {{ unbanMessage }}
-      </div>
-      }
-
-      <div class="modal-actions">
-        <button class="btn-terminal" (click)="submitUnban()" [disabled]="isUnbanLoading"
-          style="border-color: #00d2d3; color: #00d2d3; background: transparent;">
-          {{ isUnbanLoading ? 'ATTENDERE...' : 'CONFERMA RIAMMISSIONE' }}
-        </button>
-
-        <button class="btn-terminal delete" (click)="closeUnbanModal()" [disabled]="isUnbanLoading">
           ANNULLA
         </button>
       </div>
@@ -268,8 +152,11 @@
         <label style="color: #51cf66;">> SELEZIONA DESTINATARIO:</label>
         <select [(ngModel)]="sendMsgReceiver" class="terminal-input" style="border-color: #51cf66; color: #e0ffff;">
           <option value="" disabled selected>-- Seleziona un utente --</option>
+
           @for (u of usersList; track u.id) {
-          <option [value]="u.id">{{ u.username }}</option>
+          <option [value]="u.id">
+            {{ u.username }} ({{ u.role ? u.role.replace('ROLE_', '') : 'PLAYER' }})
+          </option>
           }
         </select>
         @if (isLoadingUsers) {

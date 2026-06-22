@@ -6,82 +6,40 @@
     <p class="subtitle">Unisciti all'arena dei campioni</p>
 
     @if (errore) {
-      <div class="error-box">{{ errore }}</div>
+    <div class="error-box">{{ errore }}</div>
     }
+
 
     <form (ngSubmit)="register()" #registerForm="ngForm">
       <div class="form-group">
         <label for="username">Username</label>
-        <input
-          id="username"
-          type="text"
-          [(ngModel)]="username"
-          name="username"
-          placeholder="Scegli un username"
-          autocomplete="username"
-          required
-        />
+        <input id="username" type="text" [(ngModel)]="username" name="username" placeholder="Scegli un username"
+          autocomplete="username" required />
       </div>
 
       <div class="form-group">
         <label for="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          [(ngModel)]="email"
-          name="email"
-          placeholder="La tua email"
-          autocomplete="email"
-          required
-        />
+        <input id="email" type="email" [(ngModel)]="email" name="email" placeholder="La tua email" autocomplete="email"
+          required />
       </div>
 
       <div class="form-group">
         <label for="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          [(ngModel)]="password"
-          name="password"
-          placeholder="Almeno 6 caratteri"
-          autocomplete="new-password"
-          required
-        />
+        <input id="password" type="password" [(ngModel)]="password" name="password" placeholder="Almeno 6 caratteri"
+          autocomplete="new-password" required />
       </div>
 
       <div class="form-group">
         <label for="confermaPassword">Conferma Password</label>
-        <input
-          id="confermaPassword"
-          type="password"
-          [(ngModel)]="confermaPassword"
-          name="confermaPassword"
-          placeholder="Ripeti la password"
-          autocomplete="new-password"
-          required
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="ruolo">Seleziona il tuo ruolo</label>
-        <select
-          id="ruolo"
-          [(ngModel)]="ruolo"
-          name="ruolo"
-          required
-        >
-          <option value="" disabled selected>Scegli un ruolo...</option>
-          <option value="PLAYER">Player</option>
-          <option value="ORGANIZER">Organizzatore</option>
-          <option value="ADMIN">Admin</option>
-        </select>
+        <input id="confermaPassword" type="password" [(ngModel)]="confermaPassword" name="confermaPassword"
+          placeholder="Ripeti la password" autocomplete="new-password" required />
       </div>
 
       <button type="submit" class="btn-submit" [disabled]="caricamento">
         @if (caricamento) {
-          <span>Registrazione in corso...</span>
+        <span>Registrazione in corso...</span>
         } @else {
-          <span>CREA ACCOUNT</span>
+        <span>CREA ACCOUNT</span>
         }
       </button>
     </form>

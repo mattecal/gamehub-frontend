@@ -1,65 +1,175 @@
 <div class="home-container">
 
-  
 
-   <section class="carousel-section">
-  <h1>Competi. Vinci. Scala la classifica.</h1>
-  <h2>GIOCHI IN EVIDENZA</h2>
-  
-  <div class="carousel-wrapper">
-    <div class="carousel-track">
-      @for(game of carouselGames; track $index){
-        <div class="carousel-item">
-          <img [src]="game.image" [alt]="game.title">
-          <div class="carousel-caption">{{game.title}}</div>
-        </div>
-      }
+
+  <section class="carousel-section gamehub-arena-hero">
+
+    <h1 class="hero-main-title">
+      <span class="line-1">COMPETI. VINCI.</span>
+      <span class="line-2">SCALA LA CLASSIFICA.</span>
+    </h1>
+
+    <div class="hero-sub-graphic">
+      <div class="sub-text-top">DON'T BOTHER ME</div>
+      <div class="sub-text-bottom">
+        <span class="headset-icon">🎧</span> I'M GAMING
+      </div>
     </div>
-  </div>
-</section>
 
-  <section class="hero">
-    <div class="hero-buttons">
-        <button class="btn-primary" (click)="gestisciCreaTorneo()">CREA TORNEO</button>
-        <a class="btn-secondary" routerLink="/giochi">ESPLORA GIOCHI</a>
+
+    <div class="carousel-wrapper" (mousemove)="gestisciMouse($event)" (mouseleave)="ripristinaCarosello($event)">
+      <div class="carousel-track">
+        @for(game of carouselGames; track $index){
+        <div class="carousel-item" (mousedown)="vaiAlGioco(game.title)"
+          style="cursor: pointer; z-index: 100; pointer-events: auto;">
+
+          <img [src]="game.image" [alt]="game.title" style="pointer-events: none;">
+          <div class="carousel-caption" style="pointer-events: none;">{{game.title}}</div>
+
+        </div>
+        }
+      </div>
     </div>
   </section>
 
- 
+  <section class="banner-section" *ngIf="userRole !== 'ROLE_ADMIN' && userRole !== 'ADMIN'">
+
+    <ng-container *ngIf="!userRole">
+      <h3>Pronto a sfidare i migliori?</h3>
+      <button class="btn-primary banner-btn" routerLink="/login">ACCEDI PER INIZIARE</button>
+    </ng-container>
+
+    <ng-container *ngIf="userRole === 'ROLE_PLAYER' || userRole === 'PLAYER'">
+      <h3>L'arena ti aspetta, Campione.</h3>
+      <button class="btn-primary banner-btn" routerLink="/tornei">ESPLORA TORNEI</button>
+    </ng-container>
+
+    <ng-container *ngIf="userRole === 'ROLE_ORGANIZER' || userRole === 'ORGANIZER'">
+      <h3>Gestisci la prossima grande sfida.</h3>
+      <button class="btn-primary banner-btn" routerLink="/crea-torneo">CREA TORNEO</button>
+    </ng-container>
+
+  </section>
+
+
 
   <section class="grid-section">
 
-      <div class="card">
-        <h2>TOP PLAYERS</h2>
-        <ul>
-          <li>#1 Marco – 2500 ELO</li>
-          <li>#2 Luca – 2300 ELO</li>
-          <li>#3 Simone – 2200 ELO</li>
-        </ul>
+    <div class="card discord-card">
+      <h2>COMMUNITY</h2>
+      <p class="discord-text">
+        Unisciti al nostro server Discord ufficiale per essere sempre connesso con il tuo Team e restare aggiornato su
+        annunci, novità e bug!
+      </p>
+      <a href="https://discord.gg/FWezua4qTB" target="_blank" class="discord-btn">
+        💬 Entra nel Server
+      </a>
+    </div>
+
+    <div class="card chat-card" style="display: flex; flex-direction: column; height: 350px;">
+      <h2>GLOBAL CHAT</h2>
+
+      <div class="chat-scroll-container reviews-scroll-container"
+        style="flex: 1; overflow-y: auto; margin-bottom: 10px; padding-right: 5px; display: flex; flex-direction: column;">
+
+        @for (msg of chatMessages; track $index) {
+        <div class="chat-message"
+          style="margin-bottom: 10px; word-wrap: break-word; text-align: left; line-height: 1.4;">
+          <span style="color: #a8b0d3; font-size: 11px;">[{{ msg.timestamp | date:'HH:mm' }}]</span>
+          <span style="color: #7289da; font-weight: bold; margin-left: 5px;">{{ msg.sender }}:</span>
+          <span class="discord-text" style="font-size: 14px; margin-left: 5px;">{{ msg.content }}</span>
+        </div>
+        } @empty {
+        <p class="discord-text" style="text-align: center; margin-top: auto; margin-bottom: auto; opacity: 0.7;">
+          La lobby è vuota.<br>Sii il primo a rompere il ghiaccio! 💬
+        </p>
+        }
+
       </div>
 
-      <div class="card">
-        <h2>TORNEI LIVE</h2>
-        <ul>
-          <li>FIFA CUP</li>
-          <li>LoL Arena</li>
-          <li>Fortnite Night</li>
-        </ul>
+      <div class="chat-input-area" style="display: flex; gap: 10px; border-top: 1px dashed #3a3a5a; padding-top: 10px;">
+
+        @if (userRole) {
+        <input type="text" [(ngModel)]="newChatMessage" (keyup.enter)="sendChatMessage()"
+          placeholder="Scrivi alla lobby..."
+          style="flex: 1; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid #3a3a5a; padding: 8px; font-family: monospace; border-radius: 4px; outline: none; transition: border-color 0.3s;">
+        <button class="discord-btn" (click)=" sendChatMessage()"
+          style="border: none; outline: none; font-family: inherit; cursor: pointer; padding: 0 20px; display: flex; align-items: center; justify-content: center;">
+          INVIA</button>
+        } @else {
+        <div
+          style="width: 100%; text-align: center; padding: 10px; color: #ff4757; font-size: 13px; font-weight: 500; border-radius: 8px; background: rgba(255, 71, 87, 0.1); border: 1px solid rgba(255, 71, 87, 0.3);">
+          Effettua il login per scrivere nella chat
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="card review-card" style="display: flex; flex-direction: column; height: 350px;">
+      <h2>FEEDBACK ARENA</h2>
+
+      <div class="reviews-scroll-container" style="flex: 1; overflow-y: auto; margin-bottom: 10px; padding-right: 5px;">
+
+        @for (rev of reviewsList; track rev.id) {
+        <div class="review-item" style="border-bottom: 1px dashed #3a3a5a; padding: 8px 0; font-family: monospace;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="color: #7289da; font-weight: 600; font-size: 14px;">{{ rev.username }}</span>
+            <span style="color: #ffd43b; font-size: 14px; letter-spacing: 2px;">{{ '★'.repeat(rev.rating) }}{{
+              '☆'.repeat(5 - rev.rating) }}</span>
+          </div>
+          <p class="discord-text" style="font-size: 14px; margin: 0; line-height: 1.5; word-break: break-word;">
+            {{ rev.comment }}
+          </p>
+        </div>
+        } @empty {
+        <p class="discord-text" style="text-align: center; margin-top: 20px; opacity: 0.7;">Nessuna recensione presente.
+          Sii il primo!</p>}
+
       </div>
 
-      <div class="card">
-        <h2>TOP GAMES</h2>
-        <ul>
-          <li>Valorant</li>
-          <li>CS2</li>
-          <li>Minecraft</li>
-        </ul>
-      </div>
+      @if (isWritingReview) {
+      <div class="review-form" style="border-top: 1px solid #51cf66; padding-top: 10px; font-family: monospace;">
+        <textarea [(ngModel)]="newComment" class="terminal-input" rows="2" placeholder="Scrivi il tuo feedback..."
+          style="width: 100%; background: rgba(0,0,0,0.5); color: #fff; border: 1px solid #3a3a5a; resize: none; font-family: monospace; padding: 5px; box-sizing: border-box;"></textarea>
 
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <label style="color: #a8b0d3; font-size: 12px; font-weight: 600;">VOTO</label>
+            <select [(ngModel)]="newRating"
+              style="background: rgba(0,0,0,0.5); color: #ffd43b; border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; padding: 4px 8px; outline: none; cursor: pointer;">
+              <option [value]="5">5 ★</option>
+              <option [value]="4">4 ★</option>
+              <option [value]="3">3 ★</option>
+              <option [value]="2">2 ★</option>
+              <option [value]="1">1 ★</option>
+            </select>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="discord-btn" (click)="submitReview()"
+              style="border: none; outline: none; font-family: inherit; cursor: pointer; padding: 8px 15px;">INVIA</button>
+            <button class="discord-btn" (click)="toggleReviewForm()"
+              style="border: none; outline: none; font-family: inherit; cursor: pointer; padding: 8px 15px; background-color: #4f545c;">ANNULLA</button>
+          </div>
+        </div>
+      </div>
+      } @else {
+      <button class="discord-btn" (click)="toggleReviewForm()"
+        style="margin-top: auto; width: 100%; border: none; outline: none; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">
+        ⭐LASCIA UNA RECENSIONE
+      </button>
+      }
+
+      @if (reviewFeedback) {
+      <div
+        style="color: #ff4757; font-size: 13px; font-weight: 500; margin-top: 10px; text-align: center; background: rgba(255, 71, 87, 0.1); padding: 6px; border-radius: 4px;">
+        {{ reviewFeedback }}
+      </div>
+      }
+    </div>
   </section>
 
   <footer>
-      © 2026 GameHub Arena – Tutti i diritti riservati
+    © 2026 GameHub Arena – Tutti i diritti riservati
   </footer>
 
 </div>

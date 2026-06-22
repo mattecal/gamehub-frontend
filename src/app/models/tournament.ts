@@ -3,6 +3,7 @@ import { Game } from './game';
 export interface Tournament {
 date: any;
   id: number;
+  startDate: string;
   title: string;
   description?: string;
   status?: string;

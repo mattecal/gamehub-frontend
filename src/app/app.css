@@ -1,3 +1,5 @@
+/* TIPS: Regola CSS personalizzata 1 (NavBar). 
+Usa Flexbox (display: flex) per gestire il layout in modo 'responsive', allineando gli elementi ai bordi. */
 .navbar {
   position: sticky;
   top: 0;
@@ -6,9 +8,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 40px;
-  background: #1a1a2e; 
-  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  background: #1a1a2e;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
+
 .navbar a {
   color: inherit;
   text-decoration: none;
@@ -16,10 +19,23 @@
 }
 
 .navbar .logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: #6a5acd;
+  font-size: 28px;
+  font-weight: 900;
   font-family: 'Orbitron', sans-serif;
+  display: flex;
+  cursor:pointer;
+}
+
+.logo-part1{
+  color: #ffffff;
+}
+
+.logo-part2{
+  color: #1a1a2e;
+  background-color: #9b8cff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 2px;
 }
 
 .navbar ul {
@@ -37,6 +53,8 @@
   font-family: 'Orbitron', sans-serif;
 }
 
+/* TIPS: Regola CSS personalizzata 2 (Hover e Transizioni). 
+Il prof valuta le interazioni dinamiche per l'Aesthetics. */
 .navbar li:hover {
   color: #9b8cff;
   text-shadow: 0 0 8px #6a5acd;
@@ -53,6 +71,22 @@
   background: #6a5acd;
   color: white;
   box-shadow: 0 0 10px #6a5acd;
+}
+
+.register-btn {
+  padding: 6px 14px;
+  background: #6a5acd;
+  color: white !important;
+  border: 1px solid #6a5acd;
+  border-radius: 6px;
+  transition: 0.2s;
+  font-weight: 600;
+}
+
+.register-btn:hover {
+  background: #7b6df5;
+  border-color: #7b6df5;
+  box-shadow: 0 0 12px #6a5acd;
 }
 
 .username-label {
@@ -83,13 +117,49 @@
 }
 
 .clickable-name {
-  text-decoration: none; 
+  text-decoration: none;
   cursor: pointer;
-  color: white; 
+  color: white;
   transition: color 0.2s, text-shadow 0.2s;
 }
 
 .clickable-name:hover {
-  color: #9b8cff; 
+  color: #9b8cff;
   text-shadow: 0 0 8px #9b8cff;
+}
+
+.username-label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.notification-badge {
+  background-color: #ff4d4d;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  min-width: 14px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  display: inline-block;
+}
+
+/* TIPS: Regola CSS personalizzata 3 (Keyframes). 
+Ottimo esempio di CSS avanzato per animazioni personalizzate. */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }

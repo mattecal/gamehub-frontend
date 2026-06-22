@@ -6,15 +6,28 @@ import { GamesComponent } from './pages/games/game';
 import { LoginComponent } from './pages/login/login';
 import { RegisterComponent } from './pages/register/register';
 import { AdminPannelComponent } from './pages/admin-pannel/admin-pannel';
+import { ProfileComponent } from './pages/profile/profile';
+import { CreaTorneoComponent } from './pages/crea-torneo/crea-torneo';
 
+// TIPS: Gestione del Routing di Angular. L'array di Routes associa un URL a un Componente specifico.
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'tornei', component: TournamentsComponent },
+  // TIPS: Passaggio di parametri tramite URL (es. /tornei/5). L'id potrà essere recuperato nel Componente con ActivatedRoute.
   { path: 'tornei/:id', component: TournamentDetailComponent },
-  {path: 'admin',component:AdminPannelComponent},
+  { path: 'admin', component: AdminPannelComponent },
   { path: 'giochi', component: GamesComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registrati', component: RegisterComponent },
-  { path: 'tornei-details', component: TournamentDetailComponent},
+  { path: 'tornei-details', component: TournamentDetailComponent },
+  { path: 'player', component: ProfileComponent },
+  { path: 'organizer', component: ProfileComponent },
+  { path: 'crea-torneo', component: CreaTorneoComponent },
   { path: '**', redirectTo: '' }
 ];
+
+
+export function getPrerenderParams(params: any) {
+  return {};
+}
+

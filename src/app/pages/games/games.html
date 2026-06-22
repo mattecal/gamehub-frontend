@@ -1,5 +1,6 @@
 <h2>Libreria Giochi</h2>
 
+<<<<<<< HEAD
 <div class = "source-tabs">
   <button [class.active]="sourceMode === 'local'"(click) = "setSourceMode('local')">🎮 Giochi dell'Arena</button>
   <button [class.active]="sourceMode === 'rawg'"(click) = "setSourceMode('rawg')">🌐 Cerca su RAWG API</button>
@@ -50,25 +51,80 @@
     <p class="loading-text">Nessun gioco presente o caricamento in corso...</p>
   }
 </div>
+=======
+<div class="source-tabs">
+  <button class="tab-btn" [class.active]="sourceMode === 'local'" (click)="setSourceMode('local')">🎮 Libreria</button>
+  <button class="tab-btn" [class.active]="sourceMode === 'rawg'" (click)="setSourceMode('rawg')">🌐 Catalogo </button>
+</div>
 
-@if (selectedGame) {
-  <div class="modal-overlay" (click)="chiudiPopup()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <button class="close-btn" (click)="chiudiPopup()">✖</button>
-      
-      <img class="modal-image" [src]="selectedGame.coverUrl" alt="Cover del gioco">
-      
-      <div class="modal-info">
-        <h2>{{ selectedGame.title }}</h2>
-        <p class="modal-description">
-          {{ selectedGame.description || 'Nessuna descrizione disponibile per questo gioco.' }}
-        </p>
-        
-        <!-- IL BOTTONE GUARDA TRAILER È STATO SPOSTATO QUI SOTTO LA DESCRIZIONE -->
-        <button class="trailer-btn popup-trailer-btn" (click)="apriTrailer(selectedGame)">
-          ▶ Guarda Trailer
-        </button>
+<div class="filters-container">
+  <input type="text" [(ngModel)]="searchQuery" (input)="onSearchInput()"
+    placeholder="{{ sourceMode === 'local' ? 'Cerca nella tua libreria...' : (canImport ? '🔍 Cerca un gioco globale su RAWG...' : 'Cerca un gioco nel catalogo...') }}"
+  class="search-input">
+
+  <select [(ngModel)]="selectedGenre" (change)="onGenreChange()" class="genre-select">
+    <option value="">Tutti i generi</option>
+    <option *ngFor="let genre of availableGenres" [value]="genre">{{ genre }}</option>
+  </select>
+</div>
+
+<div class="games-grid">
+  <div class="game-card" *ngFor="let game of giochiDaMostrare" (click)="apriPopup(game)">
+    <img class="cover-image" [src]="game.coverUrl || game.backgroundImage || 'assets/images/default-cover.png'" alt="Cover del gioco">
+>>>>>>> b0e5c1643f02a21a794631d568db1b9d44480bac
+
+    <div class="game-info">
+      <h3>{{ game.title }}</h3>
+      <p class="genre">{{ game.genere || 'Generico' }}</p>
+
+      <div class="rating-section">
+        <span class="rating-label">Valutazione Gioco:</span>
+        <span class="stars">{{ game.rating }} ⭐</span>
       </div>
+
+      <button *ngIf="sourceMode === 'rawg' && canImport" class="import-btn" [disabled]="game.isSaving"
+        [style.opacity]="game.isSaving ? '0.5' : '1'" [style.cursor]="game.isSaving ? 'not-allowed' : 'pointer'"
+        (click)="importaGiocoInArena(game, $event)">
+        {{ game.isSaving ? '⏳ Salvataggio...' : '➕ Aggiungi all\'Arena' }}
+      </button>
+
+      <button *ngIf="sourceMode === 'rawg' && !isInLibrary(game) && !canImport" class="import-btn"
+        (click)="aggiungiALibreria(game, $event)">
+        📚 Aggiungi alla libreria
+      </button>
+
+      <button *ngIf="sourceMode === 'rawg' &&  isInLibrary(game)" class="import-btn"
+        (click)="rimuoviDaLibreria(game, $event)">
+        ✅ Nella libreria — Rimuovi
+      </button>
+
+      <button *ngIf="sourceMode === 'local' && canImport" class="import-btn"
+        (click)="rimuoviDaLibreria(game, $event)">
+        🗑 Rimuovi dalla libreria
+      </button>
+
     </div>
   </div>
-}
+  <div *ngIf="isLoading" class="loader"></div>
+  <p *ngIf="isLoading" class="loading-text">Caricamento della pagina in corso...</p>
+  <p *ngIf="!isLoading && giochiDaMostrare.length === 0" class="loading-text">Nessun gioco disponibile</p>
+</div>
+
+<div *ngIf="selectedGame" class="modal-overlay" (click)="chiudiPopup()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="chiudiPopup()">✖</button>
+
+    <img class="modal-image" [src]="selectedGame.coverUrl" alt="Cover del gioco">
+
+    <div class="modal-info">
+      <h2>{{ selectedGame.title }}</h2>
+      <p class="modal-description">
+        {{ selectedGame.description || 'Nessuna descrizione disponibile per questo gioco.' }}
+      </p>
+
+      <button class="trailer-btn popup-trailer-btn" (click)="apriTrailer(selectedGame)">
+        ▶ Guarda Trailer
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from './services/auth.service';
+import { AuthResponse, AuthService } from './services/auth.service';
 import { Router } from '@angular/router';
+import { MessageService } from './services/message.service';
+import { GameService } from './services/games.service';
 
 @Component({
   selector: 'app-root',
@@ -14,13 +16,32 @@ import { Router } from '@angular/router';
 export class App {
 
   menuAperto = false;
+  messaggiNonLetti = 0;
+
+  currentUser: AuthResponse | null = null;
+
   constructor(
     public authService: AuthService,
-    private router: Router
-  ) {}
+    private gameService: GameService,
+    private router: Router,
+    private cdr: ChangeDetectorRef,
+    private messageService: MessageService
+  ) { }
+
+  ngOnInit(): void {
+    this.messageService.unreadCount$.subscribe(count => {
+      this.messaggiNonLetti = count;
+      this.cdr.detectChanges();
+    });
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+      this.cdr.detectChanges();
+    });
+  }
 
   logout(): void {
     this.authService.logout();
+    this.gameService.clearCache();
     this.router.navigate(['/']);
   }
   toggleMenu() {
@@ -28,6 +49,6 @@ export class App {
   }
   chiudiEdEsci() {
     this.menuAperto = false;
-    this.logout(); 
+    this.logout();
   }
 }
